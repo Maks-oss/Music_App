@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class TrackViewModel(private val trackRepository: TrackRepository) : ViewModel() {
     private val _trackListLiveData: MutableLiveData<List<TrackResult>> = MutableLiveData()
-    private val trackListLiveData: LiveData<List<TrackResult>> = _trackListLiveData
+    val trackListLiveData: LiveData<List<TrackResult>> = _trackListLiveData
 
     val searchFieldValue = mutableStateOf("")
     fun findTracksByName(name: String) {

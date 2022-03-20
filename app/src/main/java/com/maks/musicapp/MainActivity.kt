@@ -14,6 +14,7 @@ import com.maks.musicapp.ui.screens.WebViewScreen
 import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.viewmodels.AuthorizationViewModel
+import com.maks.musicapp.viewmodels.TrackViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class MainActivity : ComponentActivity() {
@@ -23,8 +24,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MusicAppTheme {
-//                AppNavigator()
-                MainScreen()
+                AppNavigator()
             }
         }
     }
@@ -34,6 +34,7 @@ class MainActivity : ComponentActivity() {
     fun AppNavigator() {
         val navController = rememberNavController()
         val musicViewModel = getViewModel<AuthorizationViewModel>()
+        val trackViewModel = getViewModel<TrackViewModel>()
         NavHost(navController = navController, startDestination = Routes.LoginScreenRoute.route) {
             composable(Routes.LoginScreenRoute.route) {
                 LoginScreen {
@@ -58,7 +59,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
             composable(Routes.MainScreenRoute.route) {
-                MainScreen()
+                MainScreen(trackViewModel)
             }
         }
     }

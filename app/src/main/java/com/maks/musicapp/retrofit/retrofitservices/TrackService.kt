@@ -7,7 +7,7 @@ import retrofit2.http.Query
 
 interface TrackService {
     @GET("tracks")
-    fun getTrackResponse(
+    suspend fun getTrackResponse(
         @Query("client_id") clientId:String,
         @Query("name") name:String,
     ):Response<Track>
