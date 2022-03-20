@@ -1,10 +1,8 @@
-package com.maks.musicapp.retrofit
+package com.maks.musicapp.retrofit.retrofitservices
 
-import com.maks.musicapp.BuildConfig
-import com.maks.musicapp.data.RequestAccessToken
+import com.maks.musicapp.data.token.RequestAccessToken
 import retrofit2.Response
 import retrofit2.http.*
-import java.util.*
 
 interface AuthorizationService {
     @FormUrlEncoded

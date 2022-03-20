@@ -2,8 +2,8 @@ package com.maks.musicapp.repository
 
 import android.util.Log
 import com.maks.musicapp.BuildConfig
-import com.maks.musicapp.data.RequestAccessToken
-import com.maks.musicapp.retrofit.AuthorizationService
+import com.maks.musicapp.data.token.RequestAccessToken
+import com.maks.musicapp.retrofit.retrofitservices.AuthorizationService
 
 class AuthorizationRepositoryImpl(private val authorizationService: AuthorizationService) :
     AuthorizationRepository {

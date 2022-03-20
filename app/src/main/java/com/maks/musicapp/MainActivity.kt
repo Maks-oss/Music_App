@@ -1,12 +1,10 @@
 package com.maks.musicapp
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
-import androidx.datastore.preferences.preferencesDataStore
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -15,7 +13,7 @@ import com.maks.musicapp.ui.screens.MainScreen
 import com.maks.musicapp.ui.screens.WebViewScreen
 import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.utils.Routes
-import com.maks.musicapp.viewmodels.MusicViewModel
+import com.maks.musicapp.viewmodels.AuthorizationViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class MainActivity : ComponentActivity() {
@@ -25,7 +23,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MusicAppTheme {
-                AppNavigator()
+//                AppNavigator()
+                MainScreen()
             }
         }
     }
@@ -34,7 +33,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun AppNavigator() {
         val navController = rememberNavController()
-        val musicViewModel = getViewModel<MusicViewModel>()
+        val musicViewModel = getViewModel<AuthorizationViewModel>()
         NavHost(navController = navController, startDestination = Routes.LoginScreenRoute.route) {
             composable(Routes.LoginScreenRoute.route) {
                 LoginScreen {

@@ -1,39 +1,36 @@
 package com.maks.musicapp.retrofit
 
-import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
-import com.maks.musicapp.BuildConfig
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import com.maks.musicapp.retrofit.retrofitservices.AuthorizationService
+import com.maks.musicapp.retrofit.retrofitservices.TrackService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
 
 
 object RetrofitClient {
-    private const val SPOTIFY_REGISTRATION_URL = "https://api.jamendo.com/v3.0/"
+    private const val REGISTRATION_URL = "https://api.jamendo.com/v3.0/"
 
-    fun provideSpotifyAuthApi(retrofit: Retrofit): AuthorizationService = retrofit.create(
+    fun provideAuthApi(retrofit: Retrofit): AuthorizationService = retrofit.create(
         AuthorizationService::class.java
+    )
+    fun provideTrackApi(retrofit: Retrofit): TrackService = retrofit.create(
+        TrackService::class.java
     )
 
 //    @SuppressLint("NewApi")
 //    private val httpClient = OkHttpClient.Builder().addInterceptor { chain ->
-//        val login = Base64.getEncoder()
-//            .encode("${BuildConfig.clientId}:${BuildConfig.clientSecret}".toByteArray())
+//
 //        val newRequest: Request = chain.request().newBuilder()
-//            .addHeader("Authorization", login.toString())
-//            .addHeader("Content-Type","application/x-www-form-urlencoded")
+//            .addHeader("Authorization","Bearer")
 //            .build()
 //        chain.proceed(newRequest)
 //    }.build()
 
-    fun provideRetrofitSpotifyAuth(): Retrofit {
+    fun provideRetrofitAuth(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(SPOTIFY_REGISTRATION_URL)
+            .baseUrl(REGISTRATION_URL)
 //            .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+
 }

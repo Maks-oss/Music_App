@@ -1,4 +1,4 @@
-package com.maks.musicapp.data
+package com.maks.musicapp.data.token
 
 
 data class RequestAccessToken(

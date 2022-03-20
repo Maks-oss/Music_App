@@ -9,7 +9,7 @@ import com.maks.musicapp.repository.DataStoreRepository
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class MusicViewModel(
+class AuthorizationViewModel(
     private val authorizationRepository: AuthorizationRepository,
     private val dataStoreRepository: DataStoreRepository,
 ) : ViewModel() {
