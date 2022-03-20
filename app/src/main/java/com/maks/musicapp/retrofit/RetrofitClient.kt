@@ -12,25 +12,27 @@ import java.util.*
 
 
 object RetrofitClient {
-    private const val SPOTIFY_REGISTRATION_URL = "https://accounts.spotify.com/"
+    private const val SPOTIFY_REGISTRATION_URL = "https://api.jamendo.com/v3.0/"
+
     fun provideSpotifyAuthApi(retrofit: Retrofit): AuthorizationService = retrofit.create(
         AuthorizationService::class.java
     )
 
-    @SuppressLint("NewApi")
-    private val httpClient = OkHttpClient.Builder().addInterceptor { chain ->
-        val login = Base64.getEncoder()
-            .encode("${BuildConfig.clientId}:${BuildConfig.clientSecret}".toByteArray())
-        val newRequest: Request = chain.request().newBuilder()
-            .addHeader("Authorization", "Basic $login")
-            .build()
-        chain.proceed(newRequest)
-    }.build()
+//    @SuppressLint("NewApi")
+//    private val httpClient = OkHttpClient.Builder().addInterceptor { chain ->
+//        val login = Base64.getEncoder()
+//            .encode("${BuildConfig.clientId}:${BuildConfig.clientSecret}".toByteArray())
+//        val newRequest: Request = chain.request().newBuilder()
+//            .addHeader("Authorization", login.toString())
+//            .addHeader("Content-Type","application/x-www-form-urlencoded")
+//            .build()
+//        chain.proceed(newRequest)
+//    }.build()
 
     fun provideRetrofitSpotifyAuth(): Retrofit {
         return Retrofit.Builder()
             .baseUrl(SPOTIFY_REGISTRATION_URL)
-            .client(httpClient)
+//            .client(httpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

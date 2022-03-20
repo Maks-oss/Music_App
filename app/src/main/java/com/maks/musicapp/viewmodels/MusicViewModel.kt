@@ -4,17 +4,30 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.maks.musicapp.data.RequestAccessToken
-import com.maks.musicapp.repository.SpotifyAuthorizationRepository
+import com.maks.musicapp.repository.AuthorizationRepository
+import com.maks.musicapp.repository.DataStoreRepository
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class MusicViewModel(private val spotifyAuthorizationRepository: SpotifyAuthorizationRepository):ViewModel() {
-    private val _requestAccessTokenLiveData: MutableLiveData<RequestAccessToken> = MutableLiveData()
-    val requestAccessTokenLiveData:LiveData<RequestAccessToken> = _requestAccessTokenLiveData
+class MusicViewModel(
+    private val authorizationRepository: AuthorizationRepository,
+    private val dataStoreRepository: DataStoreRepository,
+) : ViewModel() {
 
-    fun uploadOauthToken(code:String){
+    private val requestAccessTokenLiveData: MutableLiveData<String> = MutableLiveData()
+    val requestAccessToken: LiveData<String?> = requestAccessTokenLiveData
+
+    fun saveOauthToken(code: String) {
         viewModelScope.launch {
-            _requestAccessTokenLiveData.postValue(spotifyAuthorizationRepository.getAuthorizationToken(code))
+            dataStoreRepository.setAccessToken(authorizationRepository.getAuthorizationToken(code).access_token)
+        }
+    }
+
+    fun uploadAccessToken() {
+        viewModelScope.launch {
+            dataStoreRepository.retrieveAccessToken().collect {
+                requestAccessTokenLiveData.postValue(it)
+            }
         }
     }
 }

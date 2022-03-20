@@ -1,6 +1,7 @@
 package com.maks.musicapp.ui.screens
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.ViewGroup
 import android.webkit.WebResourceRequest
 import android.webkit.WebView

@@ -1,19 +1,19 @@
 package com.maks.musicapp.retrofit
 
+import com.maks.musicapp.BuildConfig
 import com.maks.musicapp.data.RequestAccessToken
-import com.maks.musicapp.data.RequestAccessTokenData
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Headers
-import retrofit2.http.POST
-import retrofit2.http.Query
+import retrofit2.http.*
+import java.util.*
 
 interface AuthorizationService {
-    @Headers("Accept: application/json")
-    @POST("api/token")
+    @FormUrlEncoded
+    @POST("oauth/grant")
     suspend fun getAccessToken(
-        @Query("grant_type") grantType:String,
-        @Query("code") code:String,
-        @Query("redirect_uri") redirectUri:String
+        @Field("grant_type") grantType:String,
+        @Field("code") code:String,
+        @Field("redirect_uri") redirectUri:String,
+        @Field("client_id") clientId:String,
+        @Field("client_secret") clientSecret:String,
     ): Response<RequestAccessToken>
 }

@@ -1,10 +1,12 @@
 package com.maks.musicapp
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -17,8 +19,10 @@ import com.maks.musicapp.viewmodels.MusicViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             MusicAppTheme {
                 AppNavigator()
@@ -27,19 +31,21 @@ class MainActivity : ComponentActivity() {
     }
 
 
-
     @Composable
     fun AppNavigator() {
         val navController = rememberNavController()
-        val musicViewModel = getViewModel<MusicViewModel>().apply {
-            requestAccessTokenLiveData.observe(this@MainActivity){
-                Log.d("TAG", "AppNavigator: ${it.access_token}")
-            }
-        }
+        val musicViewModel = getViewModel<MusicViewModel>()
         NavHost(navController = navController, startDestination = Routes.LoginScreenRoute.route) {
             composable(Routes.LoginScreenRoute.route) {
                 LoginScreen {
-                    navController.navigate(Routes.WebViewScreenRoute.route)
+                    musicViewModel.uploadAccessToken()
+                    musicViewModel.requestAccessToken.observe(this@MainActivity) { token ->
+                        if (token == null) {
+                            navController.navigate(Routes.WebViewScreenRoute.route)
+                        } else {
+                            navController.navigate(Routes.MainScreenRoute.route)
+                        }
+                    }
                 }
             }
             composable(Routes.WebViewScreenRoute.route) {
@@ -47,8 +53,7 @@ class MainActivity : ComponentActivity() {
                     if (it.isEmpty()) {
                         navController.navigate(Routes.LoginScreenRoute.route)
                     } else {
-                        Log.d("TAG", "AppNavigator: $it")
-                        musicViewModel.uploadOauthToken(it)
+                        musicViewModel.saveOauthToken(it)
                         navController.navigate(Routes.MainScreenRoute.route)
                     }
                 }
