@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -13,6 +12,7 @@ import com.maks.musicapp.ui.screens.MainScreen
 import com.maks.musicapp.ui.screens.WebViewScreen
 import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.utils.Routes
+import com.maks.musicapp.utils.State
 import com.maks.musicapp.viewmodels.AuthorizationViewModel
 import com.maks.musicapp.viewmodels.TrackViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -35,6 +35,13 @@ class MainActivity : ComponentActivity() {
         val navController = rememberNavController()
         val musicViewModel = getViewModel<AuthorizationViewModel>()
         val trackViewModel = getViewModel<TrackViewModel>()
+        trackViewModel.trackListLiveData.observe(this) {
+            when (it.state) {
+                State.LOADING -> trackViewModel.setIsLoadingValue(true)
+                State.SUCCESS -> trackViewModel.setIsLoadingValue(false)
+                State.ERROR -> trackViewModel.setIsLoadingValue(false)
+            }
+        }
         NavHost(navController = navController, startDestination = Routes.LoginScreenRoute.route) {
             composable(Routes.LoginScreenRoute.route) {
                 LoginScreen {

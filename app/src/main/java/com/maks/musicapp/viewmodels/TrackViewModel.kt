@@ -7,16 +7,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maks.musicapp.data.music.TrackResult
 import com.maks.musicapp.repository.TrackRepository
+import com.maks.musicapp.utils.Resource
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class TrackViewModel(private val trackRepository: TrackRepository) : ViewModel() {
-    private val _trackListLiveData: MutableLiveData<List<TrackResult>> = MutableLiveData()
-    val trackListLiveData: LiveData<List<TrackResult>> = _trackListLiveData
+    private val _trackListLiveData: MutableLiveData<Resource<List<TrackResult>>> = MutableLiveData()
+    val trackListLiveData: LiveData<Resource<List<TrackResult>>> = _trackListLiveData
+
+    val isLoading = mutableStateOf(false)
 
     val searchFieldValue = mutableStateOf("")
     fun findTracksByName(name: String) {
+        _trackListLiveData.value = Resource.loading(null)
         viewModelScope.launch {
-            _trackListLiveData.postValue(trackRepository.getTracksByName(name))
+            delay(1000)
+            _trackListLiveData.postValue(Resource.success(trackRepository.getTracksByName(name)))
         }
+    }
+
+    fun setIsLoadingValue(value: Boolean) {
+        isLoading.value = value
     }
 }
