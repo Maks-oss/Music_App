@@ -1,4 +1,4 @@
-package com.maks.musicapp.data.music
+package com.maks.musicapp.data.music.track
 
 data class Tags(
     val genres: List<String>,

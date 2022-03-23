@@ -1,4 +1,4 @@
-package com.maks.musicapp.data.music
+package com.maks.musicapp.data.music.track
 
 data class TrackResult(
     val album_id: String,

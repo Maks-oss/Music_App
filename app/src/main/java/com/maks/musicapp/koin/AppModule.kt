@@ -3,7 +3,7 @@ package com.maks.musicapp.koin
 import com.maks.musicapp.repository.*
 import com.maks.musicapp.retrofit.RetrofitClient
 import com.maks.musicapp.viewmodels.AuthorizationViewModel
-import com.maks.musicapp.viewmodels.TrackViewModel
+import com.maks.musicapp.viewmodels.MusicViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -17,9 +17,9 @@ val retrofitModule = module {
 val repositoryModule = module {
     single<AuthorizationRepository> { AuthorizationRepositoryImpl(get()) }
     single<DataStoreRepository> { DataStoreRepositoryImpl(androidContext()) }
-    single<TrackRepository> { TrackRepositoryImpl(get()) }
+    single<MusicRepository> { MusicRepositoryImpl(get()) }
 }
 val viewModelModule = module {
     viewModel { AuthorizationViewModel(get(), get()) }
-    viewModel { TrackViewModel(get()) }
+    viewModel { MusicViewModel(get()) }
 }

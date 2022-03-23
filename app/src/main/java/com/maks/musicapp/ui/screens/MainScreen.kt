@@ -1,60 +1,60 @@
 package com.maks.musicapp.ui.screens
 
-import androidx.compose.foundation.border
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import com.maks.musicapp.ui.composeutils.MusicTabs
+import com.maks.musicapp.ui.composeutils.MusicTextField
+import com.maks.musicapp.ui.lists.ArtistsList
 import com.maks.musicapp.ui.lists.TracksList
-import com.maks.musicapp.viewmodels.TrackViewModel
+import com.maks.musicapp.utils.TabRoutes
+import com.maks.musicapp.utils.TabRowConstants
+import com.maks.musicapp.viewmodels.MusicViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 
+@ExperimentalMaterialApi
+@ExperimentalFoundationApi
 @Composable
-fun MainScreen(trackViewModel: TrackViewModel) {
-    val textValue = rememberSaveable { mutableStateOf("") }
-    val scope = rememberCoroutineScope()
+fun MainScreen(musicViewModel: MusicViewModel) {
 
+    val textValue by musicViewModel.searchName
+    val scope = rememberCoroutineScope()
     var currentJob by remember { mutableStateOf<Job?>(null) }
+    var tabState by remember { mutableStateOf(0) }
+    val tabsList = listOf(TabRoutes.TracksTab, TabRoutes.ArtistsTab)
+
     Column {
-        TextField(value = textValue.value, onValueChange = {
-            textValue.value = it
+        MusicTabs(tabIndex = tabState, tabsList = tabsList, tabAction = {
+            tabState = it
+        })
+        MusicTextField(textValue = textValue, onValueChange = {
+            musicViewModel.setSearchNameValue(it)
             currentJob?.cancel()
             if (it.isNotEmpty()) {
                 currentJob = scope.async {
-                    textValue.value = it
+                    musicViewModel.setSearchNameValue(it)
                     delay(1000)
-                    trackViewModel.findTracksByName(it)
+                    musicViewModel.findTracksByName()
+                    musicViewModel.findArtistsByName()
                 }
             }
+        })
+        val listScrollAction: () -> Unit = {
 
-        },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-                .clip(CircleShape)
-                .border(
-                    1.dp,
-                    Color.Black, CircleShape
-                ),
-            leadingIcon = {
-                Icon(Icons.Filled.Search, "")
-            }, label = {
-                Text("Enter song name or artist...")
-            })
-        TracksList(trackViewModel)
+        }
+        when (tabState) {
+            TabRowConstants.TRACK_TAB_INDEX -> TracksList(
+                musicViewModel,
+                listScrollAction = listScrollAction
+            )
+            TabRowConstants.ARTIST_TAB_INDEX -> ArtistsList(
+                musicViewModel,
+                listScrollAction = listScrollAction
+            )
+        }
     }
 
 }

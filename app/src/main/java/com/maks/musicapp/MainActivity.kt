@@ -3,6 +3,8 @@ package com.maks.musicapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -14,9 +16,11 @@ import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.State
 import com.maks.musicapp.viewmodels.AuthorizationViewModel
-import com.maks.musicapp.viewmodels.TrackViewModel
+import com.maks.musicapp.viewmodels.MusicViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
+@ExperimentalMaterialApi
+@ExperimentalFoundationApi
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,9 +36,10 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun AppNavigator() {
+
         val navController = rememberNavController()
         val musicViewModel = getViewModel<AuthorizationViewModel>()
-        val trackViewModel = getViewModel<TrackViewModel>()
+        val trackViewModel = getViewModel<MusicViewModel>()
         trackViewModel.trackListLiveData.observe(this) {
             when (it.state) {
                 State.LOADING -> trackViewModel.setIsLoadingValue(true)

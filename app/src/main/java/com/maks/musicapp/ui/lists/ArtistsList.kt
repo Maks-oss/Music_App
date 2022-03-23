@@ -3,6 +3,7 @@ package com.maks.musicapp.ui.lists
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -16,6 +17,7 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.maks.musicapp.R
+import com.maks.musicapp.data.music.artist.ArtistResult
 import com.maks.musicapp.data.music.track.TrackResult
 import com.maks.musicapp.ui.animation.DisplayShimmer
 import com.maks.musicapp.utils.Resource
@@ -25,47 +27,45 @@ import com.skydoves.landscapist.glide.GlideImage
 
 @ExperimentalFoundationApi
 @Composable
-fun TracksList(musicViewModel: MusicViewModel, listScrollAction:()->Unit) {
-    val tracks by musicViewModel.trackListLiveData.observeAsState()
+fun ArtistsList(musicViewModel: MusicViewModel, listScrollAction:()->Unit) {
+    val artists by musicViewModel.artistListLiveData.observeAsState()
     val isLoading by musicViewModel.isLoading
     val scrollState = rememberLazyListState()
     if (scrollState.isScrollInProgress){
         listScrollAction()
     }
     DisplayShimmer(isLoading)
-    DisplayTrackList(tracks, scrollState)
+    DisplayArtistsList(artists, scrollState)
 
 }
 
 @ExperimentalFoundationApi
 @Composable
-fun DisplayTrackList(
-    tracks: Resource<List<TrackResult>>?,
+fun DisplayArtistsList(
+    artists: Resource<List<ArtistResult>>?,
     scrollState: LazyListState
 ) {
-    tracks?.value?.let { trackList ->
+    artists?.value?.let { trackList ->
         LazyVerticalGrid(cells = GridCells.Fixed(2), state = scrollState) {
             items(trackList) {
-                TracksListItem(trackResult = it)
+                ArtistsListItem(artistResult = it)
             }
         }
     }
 }
 
 @Composable
-fun TracksListItem(trackResult: TrackResult) {
+fun ArtistsListItem(artistResult: ArtistResult) {
     Card(modifier = Modifier.padding(8.dp),elevation = 8.dp) {
         Column {
             GlideImage(
-                imageModel = trackResult.image,
+                imageModel = artistResult.image,
                 contentScale = ContentScale.Crop,
                 circularReveal = CircularReveal(duration = 350),
-                placeHolder = ImageBitmap.imageResource(R.drawable.music_background)
-
+                placeHolder = ImageBitmap.imageResource(R.drawable.music_background),
             )
-            Text(text = "${trackResult.artist_name} - ${trackResult.name}", fontWeight = FontWeight.Bold,modifier = Modifier.padding( 8.dp))
+            Text(text = artistResult.name, fontWeight = FontWeight.Bold,modifier = Modifier.padding( 8.dp))
         }
     }
 
 }
-
