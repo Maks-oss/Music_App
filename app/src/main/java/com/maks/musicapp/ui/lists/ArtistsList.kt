@@ -27,13 +27,11 @@ import com.skydoves.landscapist.glide.GlideImage
 
 @ExperimentalFoundationApi
 @Composable
-fun ArtistsList(musicViewModel: MusicViewModel, listScrollAction:()->Unit) {
+fun ArtistsList(musicViewModel: MusicViewModel, listScrollAction:(LazyListState)->Unit) {
     val artists by musicViewModel.artistListLiveData.observeAsState()
-    val isLoading by musicViewModel.isLoading
+    val isLoading by musicViewModel.musicViewModelStates.isLoading
     val scrollState = rememberLazyListState()
-    if (scrollState.isScrollInProgress){
-        listScrollAction()
-    }
+    listScrollAction(scrollState)
     DisplayShimmer(isLoading)
     DisplayArtistsList(artists, scrollState)
 
@@ -61,8 +59,8 @@ fun ArtistsListItem(artistResult: ArtistResult) {
             GlideImage(
                 imageModel = artistResult.image,
                 contentScale = ContentScale.Crop,
-                circularReveal = CircularReveal(duration = 350),
-                placeHolder = ImageBitmap.imageResource(R.drawable.music_background),
+                circularReveal = CircularReveal(),
+//                placeHolder = ImageBitmap.imageResource(R.drawable.music_background),
             )
             Text(text = artistResult.name, fontWeight = FontWeight.Bold,modifier = Modifier.padding( 8.dp))
         }

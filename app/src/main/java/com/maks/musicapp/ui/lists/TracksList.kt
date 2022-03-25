@@ -1,6 +1,7 @@
 package com.maks.musicapp.ui.lists
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.*
@@ -25,13 +26,11 @@ import com.skydoves.landscapist.glide.GlideImage
 
 @ExperimentalFoundationApi
 @Composable
-fun TracksList(musicViewModel: MusicViewModel, listScrollAction:()->Unit) {
+fun TracksList(musicViewModel: MusicViewModel, listScrollAction: (LazyListState) -> Unit) {
     val tracks by musicViewModel.trackListLiveData.observeAsState()
-    val isLoading by musicViewModel.isLoading
+    val isLoading by musicViewModel.musicViewModelStates.isLoading
     val scrollState = rememberLazyListState()
-    if (scrollState.isScrollInProgress){
-        listScrollAction()
-    }
+    listScrollAction(scrollState)
     DisplayShimmer(isLoading)
     DisplayTrackList(tracks, scrollState)
 
@@ -47,23 +46,29 @@ fun DisplayTrackList(
         LazyVerticalGrid(cells = GridCells.Fixed(2), state = scrollState) {
             items(trackList) {
                 TracksListItem(trackResult = it)
+                {}
             }
         }
     }
 }
 
 @Composable
-fun TracksListItem(trackResult: TrackResult) {
-    Card(modifier = Modifier.padding(8.dp),elevation = 8.dp) {
+fun TracksListItem(trackResult: TrackResult, cardClickAction: () -> Unit) {
+    Card(modifier = Modifier
+        .padding(8.dp)
+        .clickable(onClick = cardClickAction), elevation = 8.dp) {
         Column {
             GlideImage(
                 imageModel = trackResult.image,
                 contentScale = ContentScale.Crop,
-                circularReveal = CircularReveal(duration = 350),
+                circularReveal = CircularReveal(),
                 placeHolder = ImageBitmap.imageResource(R.drawable.music_background)
-
             )
-            Text(text = "${trackResult.artist_name} - ${trackResult.name}", fontWeight = FontWeight.Bold,modifier = Modifier.padding( 8.dp))
+            Text(
+                text = "${trackResult.artist_name} - ${trackResult.name}",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(8.dp)
+            )
         }
     }
 

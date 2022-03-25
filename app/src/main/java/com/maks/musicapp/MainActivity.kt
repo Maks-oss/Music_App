@@ -42,9 +42,9 @@ class MainActivity : ComponentActivity() {
         val trackViewModel = getViewModel<MusicViewModel>()
         trackViewModel.trackListLiveData.observe(this) {
             when (it.state) {
-                State.LOADING -> trackViewModel.setIsLoadingValue(true)
-                State.SUCCESS -> trackViewModel.setIsLoadingValue(false)
-                State.ERROR -> trackViewModel.setIsLoadingValue(false)
+                State.LOADING -> trackViewModel.musicViewModelStates.setIsLoadingValue(true)
+                State.SUCCESS -> trackViewModel.musicViewModelStates.setIsLoadingValue(false)
+                State.ERROR -> trackViewModel.musicViewModelStates.setIsLoadingValue(false)
             }
         }
         NavHost(navController = navController, startDestination = Routes.LoginScreenRoute.route) {

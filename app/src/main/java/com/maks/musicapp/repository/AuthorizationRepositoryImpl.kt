@@ -15,7 +15,5 @@ class AuthorizationRepositoryImpl(private val authorizationService: Authorizatio
                 BuildConfig.redirectUri,
                 BuildConfig.clientId,
                 BuildConfig.clientSecret
-            ).also {
-                Log.d("TAG", "getAuthorizationToken: ${it.body()}   ${it.raw().request().url()}")
-            }.body()!!
+            ).body()!!
 }

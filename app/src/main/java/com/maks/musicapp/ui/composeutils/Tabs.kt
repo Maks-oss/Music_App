@@ -1,9 +1,13 @@
 package com.maks.musicapp.ui.composeutils
 
 import androidx.compose.material.*
+import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.TabRoutes
 
