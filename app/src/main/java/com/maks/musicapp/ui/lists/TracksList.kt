@@ -26,13 +26,13 @@ import com.skydoves.landscapist.glide.GlideImage
 
 @ExperimentalFoundationApi
 @Composable
-fun TracksList(musicViewModel: MusicViewModel, listScrollAction: (LazyListState) -> Unit) {
+fun TracksList(musicViewModel: MusicViewModel, listScrollAction: (LazyListState) -> Unit,cardClickAction: (TrackResult) -> Unit) {
     val tracks by musicViewModel.trackListLiveData.observeAsState()
     val isLoading by musicViewModel.musicViewModelStates.isLoading
     val scrollState = rememberLazyListState()
     listScrollAction(scrollState)
     DisplayShimmer(isLoading)
-    DisplayTrackList(tracks, scrollState)
+    DisplayTrackList(tracks, scrollState,cardClickAction)
 
 }
 
@@ -40,23 +40,23 @@ fun TracksList(musicViewModel: MusicViewModel, listScrollAction: (LazyListState)
 @Composable
 fun DisplayTrackList(
     tracks: Resource<List<TrackResult>>?,
-    scrollState: LazyListState
+    scrollState: LazyListState,
+    cardClickAction: (TrackResult) -> Unit
 ) {
     tracks?.value?.let { trackList ->
         LazyVerticalGrid(cells = GridCells.Fixed(2), state = scrollState) {
             items(trackList) {
-                TracksListItem(trackResult = it)
-                {}
+                TracksListItem(trackResult = it,cardClickAction = cardClickAction)
             }
         }
     }
 }
 
 @Composable
-fun TracksListItem(trackResult: TrackResult, cardClickAction: () -> Unit) {
+fun TracksListItem(trackResult: TrackResult, cardClickAction: (TrackResult) -> Unit) {
     Card(modifier = Modifier
         .padding(8.dp)
-        .clickable(onClick = cardClickAction), elevation = 8.dp) {
+        .clickable(onClick = {cardClickAction(trackResult)}), elevation = 8.dp) {
         Column {
             GlideImage(
                 imageModel = trackResult.image,

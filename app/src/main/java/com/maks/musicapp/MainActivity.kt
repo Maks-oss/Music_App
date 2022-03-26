@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.maks.musicapp.ui.screens.LoginScreen
 import com.maks.musicapp.ui.screens.MainScreen
+import com.maks.musicapp.ui.screens.TrackDetailScreen
 import com.maks.musicapp.ui.screens.WebViewScreen
 import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.utils.Routes
@@ -30,6 +31,7 @@ class MainActivity : ComponentActivity() {
             MusicAppTheme {
                 AppNavigator()
             }
+
         }
     }
 
@@ -38,20 +40,20 @@ class MainActivity : ComponentActivity() {
     fun AppNavigator() {
 
         val navController = rememberNavController()
-        val musicViewModel = getViewModel<AuthorizationViewModel>()
-        val trackViewModel = getViewModel<MusicViewModel>()
-        trackViewModel.trackListLiveData.observe(this) {
+        val authorizationViewModel = getViewModel<AuthorizationViewModel>()
+        val musicViewModel = getViewModel<MusicViewModel>()
+        musicViewModel.trackListLiveData.observe(this) {
             when (it.state) {
-                State.LOADING -> trackViewModel.musicViewModelStates.setIsLoadingValue(true)
-                State.SUCCESS -> trackViewModel.musicViewModelStates.setIsLoadingValue(false)
-                State.ERROR -> trackViewModel.musicViewModelStates.setIsLoadingValue(false)
+                State.LOADING -> musicViewModel.musicViewModelStates.setIsLoadingValue(true)
+                State.SUCCESS -> musicViewModel.musicViewModelStates.setIsLoadingValue(false)
+                State.ERROR -> musicViewModel.musicViewModelStates.setIsLoadingValue(false)
             }
         }
-        NavHost(navController = navController, startDestination = Routes.LoginScreenRoute.route) {
+        NavHost(navController = navController, startDestination = Routes.MainScreenRoute.route) {
             composable(Routes.LoginScreenRoute.route) {
                 LoginScreen {
-                    musicViewModel.uploadAccessToken()
-                    musicViewModel.requestAccessToken.observe(this@MainActivity) { token ->
+                    authorizationViewModel.uploadAccessToken()
+                    authorizationViewModel.requestAccessToken.observe(this@MainActivity) { token ->
                         if (token == null) {
                             navController.navigate(Routes.WebViewScreenRoute.route)
                         } else {
@@ -65,14 +67,20 @@ class MainActivity : ComponentActivity() {
                     if (it.isEmpty()) {
                         navController.navigate(Routes.LoginScreenRoute.route)
                     } else {
-                        musicViewModel.saveOauthToken(it)
+                        authorizationViewModel.saveOauthToken(it)
                         navController.navigate(Routes.MainScreenRoute.route)
                     }
                 }
             }
             composable(Routes.MainScreenRoute.route) {
-                MainScreen(trackViewModel)
+                MainScreen(musicViewModel,navController)
+            }
+            composable(Routes.TrackDetailsScreenRoute.route){
+                TrackDetailScreen(track = musicViewModel.trackDetail,musicViewModel.musicViewModelStates)
             }
         }
     }
+
 }
+
+

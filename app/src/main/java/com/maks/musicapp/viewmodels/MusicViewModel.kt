@@ -1,6 +1,6 @@
 package com.maks.musicapp.viewmodels
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,6 +12,7 @@ import com.maks.musicapp.utils.Resource
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.properties.Delegates
 
 class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel() {
 
@@ -24,13 +25,30 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
 
     val musicViewModelStates = MusicViewModelStates()
 
+    var trackDetail: TrackResult by Delegates.notNull()
+
     class MusicViewModelStates {
         val isLoading = mutableStateOf(false)
         val searchName = mutableStateOf("")
-        var currentJob = mutableStateOf<Job?>(null)
+        val currentJob = mutableStateOf<Job?>(null)
         val tabState = mutableStateOf(0)
         val textFieldVisibility = mutableStateOf(true)
 
+        val isTrackPlaying = mutableStateOf(false)
+        val trackMinutes = mutableStateOf(0F)
+
+        fun clearTrackStates() {
+            isTrackPlaying.value = false
+            trackMinutes.value = 0f
+        }
+
+        fun setIsTrackPlayingValue(value: Boolean) {
+            isTrackPlaying.value = value
+        }
+
+        fun setTrackMinutesValue(value: Float) {
+            trackMinutes.value = value
+        }
 
         fun setIsLoadingValue(value: Boolean) {
             isLoading.value = value
@@ -48,8 +66,8 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
             searchName.value = value
         }
 
-        fun setTextFieldVisibilityValue(value: Boolean){
-            textFieldVisibility.value=value
+        fun setTextFieldVisibilityValue(value: Boolean) {
+            textFieldVisibility.value = value
         }
     }
 

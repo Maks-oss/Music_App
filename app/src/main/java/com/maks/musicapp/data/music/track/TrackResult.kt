@@ -14,7 +14,7 @@ data class TrackResult(
     val id: String,
     val image: String,
     val license_ccurl: String,
-    val musicinfo: Musicinfo,
+    val musicinfo: Musicinfo?,
     val name: String,
     val position: Int,
     val prourl: String,

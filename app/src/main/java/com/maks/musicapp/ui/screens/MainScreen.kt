@@ -7,10 +7,13 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.navigation.NavController
+import com.maks.musicapp.data.music.track.TrackResult
 import com.maks.musicapp.ui.composeutils.MusicTabs
 import com.maks.musicapp.ui.composeutils.MusicTextField
 import com.maks.musicapp.ui.lists.ArtistsList
 import com.maks.musicapp.ui.lists.TracksList
+import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.TabRoutes
 import com.maks.musicapp.utils.TabRowConstants
 import com.maks.musicapp.viewmodels.MusicViewModel
@@ -20,7 +23,7 @@ import kotlinx.coroutines.delay
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
-fun MainScreen(musicViewModel: MusicViewModel) {
+fun MainScreen(musicViewModel: MusicViewModel, navController: NavController) {
     val musicViewModelStates = musicViewModel.musicViewModelStates
     val textValue by musicViewModelStates.searchName
     val currentJob by musicViewModelStates.currentJob
@@ -51,9 +54,13 @@ fun MainScreen(musicViewModel: MusicViewModel) {
             }
         })
 
-        DisplayList(tabState, musicViewModel) { scrollState ->
-            musicViewModelStates.setTextFieldVisibilityValue(scrollState.firstVisibleItemIndex == 0)
-        }
+        DisplayList(tabState, musicViewModel,
+            listScrollAction = { scrollState ->
+                musicViewModelStates.setTextFieldVisibilityValue(scrollState.firstVisibleItemIndex == 0)
+            }, cardClickAction = { trackResult->
+                musicViewModel.trackDetail = trackResult
+                navController.navigate(Routes.TrackDetailsScreenRoute.route)
+            })
     }
 
 }
@@ -63,15 +70,13 @@ fun MainScreen(musicViewModel: MusicViewModel) {
 private fun DisplayList(
     tabState: Int,
     musicViewModel: MusicViewModel,
-    listScrollAction: (LazyListState) -> Unit
+    listScrollAction: (LazyListState) -> Unit, cardClickAction: (TrackResult) -> Unit
 ) {
-//    val listScrollAction: (LazyListState) -> Unit = { scrollState ->
-//        isTextFieldVisible1 = scrollState.firstVisibleItemIndex == 0
-//    }
     when (tabState) {
         TabRowConstants.TRACK_TAB_INDEX -> TracksList(
             musicViewModel,
-            listScrollAction = listScrollAction
+            listScrollAction = listScrollAction,
+            cardClickAction = cardClickAction
         )
         TabRowConstants.ARTIST_TAB_INDEX -> ArtistsList(
             musicViewModel,
