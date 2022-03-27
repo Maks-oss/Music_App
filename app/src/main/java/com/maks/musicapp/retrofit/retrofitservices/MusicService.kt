@@ -1,5 +1,6 @@
 package com.maks.musicapp.retrofit.retrofitservices
 
+import com.maks.musicapp.data.music.albums.Albums
 import com.maks.musicapp.data.music.artist.Artists
 import com.maks.musicapp.data.music.track.Track
 import retrofit2.Response
@@ -18,4 +19,10 @@ interface MusicService {
         @Query("client_id") clientId:String,
         @Query("namesearch") name:String,
     ):Response<Artists>
+
+    @GET("albums")
+    suspend fun getAlbumsResponse(
+        @Query("client_id") clientId:String,
+        @Query("namesearch") name:String,
+    ):Response<Albums>
 }

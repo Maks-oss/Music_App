@@ -37,6 +37,7 @@ fun TrackDetailScreen(
     musicViewModelStates: MusicViewModel.MusicViewModelStates
 ) {
     val mediaPlayer = MediaPlayer.create(LocalContext.current, Uri.parse(track.audio))
+
     Column(
         Modifier
             .padding(8.dp)
@@ -46,6 +47,7 @@ fun TrackDetailScreen(
         DisplayTrack(track, mediaPlayer, musicViewModelStates)
         Spacer(modifier = Modifier.padding(8.dp))
         DisplayMusicInfo(track.musicinfo?.tags)
+
     }
 }
 
@@ -73,6 +75,9 @@ fun DisplayTrack(
                 )
                 trackCountDownTimer.start()
             }
+            OutlinedButton(onClick = { /*TODO*/ },border = BorderStroke(2.dp,MaterialTheme.colors.primary),modifier = Modifier.padding(8.dp)) {
+                Text(text = "Download track")
+            }
         }
 
     }
@@ -95,18 +100,18 @@ fun DisplayMusicInfo(tags: Tags?) {
         }
     }
     /** For test purposes */
-//    Surface(
-//        elevation = 8.dp,
-//        modifier = Modifier.fillMaxWidth(),
-//        shape = MaterialTheme.shapes.medium
-//    ) {
-//        Column(Modifier.padding(8.dp)) {
-//            Text(text = "Music Genres:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-//            DisplayTags(tags = listOf("Rock","Hip-Hop"), color = Color.Red)
-//            Text(text = "Music instruments:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-//            DisplayTags(tags = listOf("Guitar","Bass"), color = Color.Blue)
-//        }
-//    }
+    Surface(
+        elevation = 8.dp,
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.medium
+    ) {
+        Column(Modifier.padding(8.dp)) {
+            Text(text = "Music Genres:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            DisplayTags(tags = listOf("Rock","Hip-Hop"), color = Color.Red)
+            Text(text = "Music instruments:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            DisplayTags(tags = listOf("Guitar","Bass"), color = Color.Blue)
+        }
+    }
 }
 
 @Composable
@@ -122,9 +127,9 @@ private fun TrackInfo(track: TrackResult) {
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-
         Text(
             text = buildString {
+
                 append(track.artist_name)
                 append(" -\n")
                 append(track.name)

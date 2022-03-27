@@ -8,9 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavController
+import com.maks.musicapp.data.music.albums.AlbumResult
+import com.maks.musicapp.data.music.artist.ArtistResult
 import com.maks.musicapp.data.music.track.TrackResult
 import com.maks.musicapp.ui.composeutils.MusicTabs
 import com.maks.musicapp.ui.composeutils.MusicTextField
+import com.maks.musicapp.ui.lists.AlbumsList
 import com.maks.musicapp.ui.lists.ArtistsList
 import com.maks.musicapp.ui.lists.TracksList
 import com.maks.musicapp.utils.Routes
@@ -30,8 +33,9 @@ fun MainScreen(musicViewModel: MusicViewModel, navController: NavController) {
     val tabState by musicViewModelStates.tabState
     val isTextFieldVisible by musicViewModelStates.textFieldVisibility
 
+
     val scope = rememberCoroutineScope()
-    val tabsList = listOf(TabRoutes.TracksTab, TabRoutes.ArtistsTab)
+    val tabsList = listOf(TabRoutes.TracksTab, TabRoutes.ArtistsTab, TabRoutes.AlbumsTab)
 
     Column {
 
@@ -45,21 +49,26 @@ fun MainScreen(musicViewModel: MusicViewModel, navController: NavController) {
                 val job = scope.async {
                     musicViewModelStates.setSearchNameValue(it)
                     delay(1000)
-                    musicViewModel.findTracksByName()
-                    musicViewModel.findArtistsByName()
+                    musicViewModel.apply {
+                        findTracksByName()
+                        findArtistsByName()
+                        findAlbumsByName()
+                    }
                 }
-                musicViewModelStates.setCurrentJobValue(
-                    job
-                )
+                musicViewModelStates.setCurrentJobValue(job)
             }
         })
 
         DisplayList(tabState, musicViewModel,
             listScrollAction = { scrollState ->
                 musicViewModelStates.setTextFieldVisibilityValue(scrollState.firstVisibleItemIndex == 0)
-            }, cardClickAction = { trackResult->
+            }, trackItemClickAction = { trackResult ->
                 musicViewModel.trackDetail = trackResult
                 navController.navigate(Routes.TrackDetailsScreenRoute.route)
+            }, artistItemClickAction = { artistResult ->
+                musicViewModel.artistDetail = artistResult
+            }, albumItemClickAction = { albumResult ->
+                musicViewModel.albumDetail = albumResult
             })
     }
 
@@ -70,17 +79,26 @@ fun MainScreen(musicViewModel: MusicViewModel, navController: NavController) {
 private fun DisplayList(
     tabState: Int,
     musicViewModel: MusicViewModel,
-    listScrollAction: (LazyListState) -> Unit, cardClickAction: (TrackResult) -> Unit
+    listScrollAction: (LazyListState) -> Unit,
+    trackItemClickAction: (TrackResult) -> Unit,
+    artistItemClickAction: (ArtistResult) -> Unit,
+    albumItemClickAction: (AlbumResult) -> Unit,
 ) {
     when (tabState) {
         TabRowConstants.TRACK_TAB_INDEX -> TracksList(
             musicViewModel,
             listScrollAction = listScrollAction,
-            cardClickAction = cardClickAction
+            trackListItemClickAction = trackItemClickAction
         )
         TabRowConstants.ARTIST_TAB_INDEX -> ArtistsList(
             musicViewModel,
-            listScrollAction = listScrollAction
+            listScrollAction = listScrollAction,
+            artistListItemClickAction = artistItemClickAction
+        )
+        TabRowConstants.ALBUM_TAB_INDEX -> AlbumsList(
+            musicViewModel,
+            listScrollAction = listScrollAction,
+            albumListItemClickAction = albumItemClickAction
         )
     }
 }

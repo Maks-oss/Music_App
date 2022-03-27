@@ -11,13 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.maks.musicapp.R
-import com.maks.musicapp.data.music.track.TrackResult
+import com.maks.musicapp.data.music.albums.AlbumResult
 import com.maks.musicapp.ui.animation.DisplayShimmer
 import com.maks.musicapp.utils.Resource
 import com.maks.musicapp.viewmodels.MusicViewModel
@@ -26,51 +23,48 @@ import com.skydoves.landscapist.glide.GlideImage
 
 @ExperimentalFoundationApi
 @Composable
-fun TracksList(
+fun AlbumsList(
     musicViewModel: MusicViewModel,
     listScrollAction: (LazyListState) -> Unit,
-    trackListItemClickAction: (TrackResult) -> Unit
+    albumListItemClickAction: (AlbumResult) -> Unit
 ) {
-    val tracks by musicViewModel.trackListLiveData.observeAsState()
+    val albums by musicViewModel.albumsListLiveData.observeAsState()
     val isLoading by musicViewModel.musicViewModelStates.isLoading
     val scrollState = rememberLazyListState()
     listScrollAction(scrollState)
     DisplayShimmer(isLoading)
-    DisplayTrackList(tracks, scrollState, trackListItemClickAction)
+    DisplayAlbumsList(albums, scrollState,albumListItemClickAction)
 
 }
 
 @ExperimentalFoundationApi
 @Composable
-fun DisplayTrackList(
-    tracks: Resource<List<TrackResult>>?,
+fun DisplayAlbumsList(
+    artists: Resource<List<AlbumResult>>?,
     scrollState: LazyListState,
-    trackListItemClickAction: (TrackResult) -> Unit
+    albumListItemClickAction: (AlbumResult) -> Unit
 ) {
-    tracks?.value?.let { trackList ->
+    artists?.value?.let { trackList ->
         LazyVerticalGrid(cells = GridCells.Fixed(2), state = scrollState) {
             items(trackList) {
-                TracksListItem(trackResult = it, trackListItemClickAction = trackListItemClickAction)
+                AlbumsListItem(albumResult = it,albumListItemClickAction)
             }
         }
     }
 }
 
 @Composable
-fun TracksListItem(trackResult: TrackResult, trackListItemClickAction: (TrackResult) -> Unit) {
-    Card(modifier = Modifier
-        .padding(8.dp)
-        .clickable(onClick = { trackListItemClickAction(trackResult) }), elevation = 8.dp
-    ) {
+fun AlbumsListItem(albumResult: AlbumResult,albumListItemClickAction: (AlbumResult) -> Unit) {
+    Card(modifier = Modifier.padding(8.dp).clickable { albumListItemClickAction(albumResult) }, elevation = 8.dp) {
         Column {
             GlideImage(
-                imageModel = trackResult.image,
+                imageModel = albumResult.image,
                 contentScale = ContentScale.Crop,
                 circularReveal = CircularReveal(),
-                placeHolder = ImageBitmap.imageResource(R.drawable.music_background)
+//                placeHolder = ImageBitmap.imageResource(R.drawable.music_background),
             )
             Text(
-                text = "${trackResult.artist_name} - ${trackResult.name}",
+                text = albumResult.name,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(8.dp)
             )
@@ -78,4 +72,3 @@ fun TracksListItem(trackResult: TrackResult, trackListItemClickAction: (TrackRes
     }
 
 }
-

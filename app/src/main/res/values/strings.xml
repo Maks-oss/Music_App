@@ -2,4 +2,6 @@
     <string name="app_name">Music App</string>
     <string name="artists">Artists</string>
     <string name="tracks">Tracks</string>
+    <string name="albums">Albums</string>
+    <string name="empty_request">Nothing was found by your request!</string>
 </resources>
