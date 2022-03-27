@@ -85,15 +85,17 @@ class MainActivity : ComponentActivity() {
         resource: Resource<List<T>>,
         showSnackBar: (String) -> Unit
     ) {
-        when (resource.state) {
-            State.LOADING -> musicViewModelStates.setIsLoadingValue(true)
-            State.SUCCESS -> {
-                musicViewModelStates.setIsLoadingValue(false)
-                if (resource.value.isNullOrEmpty() && resource.tabIndex == musicViewModelStates.tabState.value) {
-                    showSnackBar(getString(R.string.empty_request))
+        if (resource.tabIndex == musicViewModelStates.tabState.value) {
+            when (resource.state) {
+                State.LOADING -> musicViewModelStates.setIsLoadingValue(true)
+                State.SUCCESS -> {
+                    musicViewModelStates.setIsLoadingValue(false)
+                    if (resource.value.isNullOrEmpty()) {
+                        showSnackBar(getString(R.string.empty_request))
+                    }
                 }
+                State.ERROR -> musicViewModelStates.setIsLoadingValue(false)
             }
-            State.ERROR -> musicViewModelStates.setIsLoadingValue(false)
         }
     }
 

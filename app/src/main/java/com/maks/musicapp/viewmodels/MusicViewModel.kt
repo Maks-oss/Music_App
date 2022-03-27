@@ -45,7 +45,6 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
         val isTrackPlaying = mutableStateOf(false)
         val trackMinutes = mutableStateOf(0F)
 
-
         fun setIsTrackPlayingValue(value: Boolean) {
             isTrackPlaying.value = value
         }
@@ -77,7 +76,7 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
 
 
     fun findTracksByName() {
-        _trackListLiveData.value = Resource.loading(null)
+        _trackListLiveData.value = Resource.loading(TabRowConstants.TRACK_TAB_INDEX)
         viewModelScope.launch {
             delay(1000)
             _trackListLiveData.postValue(
@@ -91,7 +90,7 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
     }
 
     fun findArtistsByName() {
-        _artistListLiveData.value = Resource.loading(null)
+        _artistListLiveData.value = Resource.loading(TabRowConstants.ARTIST_TAB_INDEX)
         viewModelScope.launch {
             delay(1000)
             _artistListLiveData.postValue(
@@ -105,7 +104,7 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
     }
 
     fun findAlbumsByName() {
-        _albumsListLiveData.value = Resource.loading(null)
+        _albumsListLiveData.value = Resource.loading(TabRowConstants.ALBUM_TAB_INDEX)
         viewModelScope.launch {
             delay(1000)
             _albumsListLiveData.postValue(

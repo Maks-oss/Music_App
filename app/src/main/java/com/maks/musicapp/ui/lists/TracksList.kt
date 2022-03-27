@@ -13,9 +13,13 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.maks.musicapp.R
 import com.maks.musicapp.data.music.track.TrackResult
 import com.maks.musicapp.ui.animation.DisplayShimmer
@@ -50,7 +54,10 @@ fun DisplayTrackList(
     tracks?.value?.let { trackList ->
         LazyVerticalGrid(cells = GridCells.Fixed(2), state = scrollState) {
             items(trackList) {
-                TracksListItem(trackResult = it, trackListItemClickAction = trackListItemClickAction)
+                TracksListItem(
+                    trackResult = it,
+                    trackListItemClickAction = trackListItemClickAction
+                )
             }
         }
     }
@@ -58,16 +65,18 @@ fun DisplayTrackList(
 
 @Composable
 fun TracksListItem(trackResult: TrackResult, trackListItemClickAction: (TrackResult) -> Unit) {
-    Card(modifier = Modifier
-        .padding(8.dp)
-        .clickable(onClick = { trackListItemClickAction(trackResult) }), elevation = 8.dp
+    Card(
+        modifier = Modifier
+            .padding(8.dp)
+            .clickable(onClick = { trackListItemClickAction(trackResult) }), elevation = 8.dp
     ) {
         Column {
             GlideImage(
                 imageModel = trackResult.image,
                 contentScale = ContentScale.Crop,
                 circularReveal = CircularReveal(),
-                placeHolder = ImageBitmap.imageResource(R.drawable.music_background)
+                placeHolder = ImageBitmap.imageResource(R.drawable.music_logo),
+
             )
             Text(
                 text = "${trackResult.artist_name} - ${trackResult.name}",

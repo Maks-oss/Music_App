@@ -8,7 +8,9 @@ class Resource<T> private constructor(
 ) {
     companion object {
         fun <T> success(value: T?, tabIndex: Int) = Resource(State.SUCCESS, value, tabIndex, null)
-        fun <T> loading(value: T?) = Resource(State.LOADING, value, null, null)
+        fun <T> loading( tabIndex: Int,value: T? = null) =
+            Resource(State.LOADING, value, tabIndex, null)
+
         fun <T> error(value: T?, message: String?) = Resource(State.ERROR, value, null, message)
     }
 }
