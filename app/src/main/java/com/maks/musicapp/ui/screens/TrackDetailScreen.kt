@@ -2,6 +2,7 @@ package com.maks.musicapp.ui.screens
 
 import android.media.MediaPlayer
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -22,9 +23,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.maks.musicapp.R
 import com.maks.musicapp.data.music.track.Tags
 import com.maks.musicapp.data.music.track.TrackResult
+import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.TrackCountDownTimer
 import com.maks.musicapp.utils.toMinutes
 import com.maks.musicapp.viewmodels.MusicViewModel
@@ -34,20 +37,29 @@ import com.skydoves.landscapist.glide.GlideImage
 @Composable
 fun TrackDetailScreen(
     track: TrackResult,
-    musicViewModelStates: MusicViewModel.MusicViewModelStates
+    musicViewModelStates: MusicViewModel.MusicViewModelStates,
+    navController: NavController
 ) {
     val mediaPlayer = MediaPlayer.create(LocalContext.current, Uri.parse(track.audio))
-
+    val trackCountDownTimer = TrackCountDownTimer(
+        mediaPlayer.duration.toLong(),
+        musicViewModelStates = musicViewModelStates,
+        mediaPlayer = mediaPlayer
+    )
+    BackHandler {
+        navController.navigate(Routes.MainScreenRoute.route)
+        musicViewModelStates.setTrackMinutesValue(0f)
+        trackCountDownTimer.cancel()
+    }
     Column(
         Modifier
             .padding(8.dp)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        DisplayTrack(track, mediaPlayer, musicViewModelStates)
+        DisplayTrack(track, mediaPlayer, trackCountDownTimer, musicViewModelStates)
         Spacer(modifier = Modifier.padding(8.dp))
         DisplayMusicInfo(track.musicinfo?.tags)
-
     }
 }
 
@@ -55,8 +67,10 @@ fun TrackDetailScreen(
 fun DisplayTrack(
     track: TrackResult,
     mediaPlayer: MediaPlayer,
+    trackCountDownTimer: TrackCountDownTimer,
     musicViewModelStates: MusicViewModel.MusicViewModelStates
 ) {
+
     Surface(elevation = 8.dp, shape = MaterialTheme.shapes.medium) {
         Column {
             TrackInfo(track)
@@ -67,15 +81,13 @@ fun DisplayTrack(
                     mediaPlayer.start()
                 }
                 musicViewModelStates.setIsTrackPlayingValue(!musicViewModelStates.isTrackPlaying.value)
-                val trackCountDownTimer = TrackCountDownTimer(
-                    mediaPlayer.duration.toLong(),
-                    minutes = musicViewModelStates.trackMinutes,
-                    mediaPlayer = mediaPlayer,
-                    isPlaying = musicViewModelStates.isTrackPlaying
-                )
                 trackCountDownTimer.start()
             }
-            OutlinedButton(onClick = { /*TODO*/ },border = BorderStroke(2.dp,MaterialTheme.colors.primary),modifier = Modifier.padding(8.dp)) {
+            OutlinedButton(
+                onClick = { /*TODO*/ },
+                border = BorderStroke(2.dp, MaterialTheme.colors.primary),
+                modifier = Modifier.padding(8.dp)
+            ) {
                 Text(text = "Download track")
             }
         }
@@ -107,9 +119,9 @@ fun DisplayMusicInfo(tags: Tags?) {
     ) {
         Column(Modifier.padding(8.dp)) {
             Text(text = "Music Genres:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            DisplayTags(tags = listOf("Rock","Hip-Hop"), color = Color.Red)
+            DisplayTags(tags = listOf("Rock", "Hip-Hop"), color = Color.Red)
             Text(text = "Music instruments:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            DisplayTags(tags = listOf("Guitar","Bass"), color = Color.Blue)
+            DisplayTags(tags = listOf("Guitar", "Bass"), color = Color.Blue)
         }
     }
 }
@@ -129,7 +141,6 @@ private fun TrackInfo(track: TrackResult) {
     ) {
         Text(
             text = buildString {
-
                 append(track.artist_name)
                 append(" -\n")
                 append(track.name)

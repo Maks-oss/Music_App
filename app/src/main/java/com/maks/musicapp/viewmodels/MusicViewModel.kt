@@ -83,7 +83,7 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
                 Resource.success(
                     musicRepository.getTracksByName(
                         musicViewModelStates.searchName.value
-                    ),TabRowConstants.TRACK_TAB_INDEX
+                    ), TabRowConstants.TRACK_TAB_INDEX
                 )
             )
         }
@@ -97,7 +97,7 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
                 Resource.success(
                     musicRepository.getArtistsByName(
                         musicViewModelStates.searchName.value
-                    ),TabRowConstants.ARTIST_TAB_INDEX
+                    ), TabRowConstants.ARTIST_TAB_INDEX
                 )
             )
         }
@@ -111,7 +111,7 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
                 Resource.success(
                     musicRepository.getAlbumsByName(
                         musicViewModelStates.searchName.value
-                    ),TabRowConstants.ALBUM_TAB_INDEX
+                    ), TabRowConstants.ALBUM_TAB_INDEX
                 )
             )
         }

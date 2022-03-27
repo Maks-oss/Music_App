@@ -2,19 +2,18 @@ package com.maks.musicapp.utils
 
 import android.media.MediaPlayer
 import android.os.CountDownTimer
-import androidx.compose.runtime.MutableState
+import com.maks.musicapp.viewmodels.MusicViewModel
 
 class TrackCountDownTimer(
     millis: Long, countDown: Long = 100,
-    private val minutes: MutableState<Float>,
+    private val musicViewModelStates: MusicViewModel.MusicViewModelStates,
     private val mediaPlayer: MediaPlayer,
-    private val isPlaying: MutableState<Boolean>
 ) : CountDownTimer(millis, countDown) {
 
     override fun onTick(millisUntilFinished: Long) {
-        minutes.value = mediaPlayer.currentPosition.toFloat()
+        musicViewModelStates.setTrackMinutesValue(mediaPlayer.currentPosition.toFloat())
         if (mediaPlayer.currentPosition == mediaPlayer.duration) {
-            isPlaying.value = false
+            musicViewModelStates.setIsTrackPlayingValue(false)
         }
     }
 

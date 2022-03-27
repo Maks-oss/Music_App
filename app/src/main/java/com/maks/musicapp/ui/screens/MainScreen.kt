@@ -33,7 +33,6 @@ fun MainScreen(musicViewModel: MusicViewModel, navController: NavController) {
     val tabState by musicViewModelStates.tabState
     val isTextFieldVisible by musicViewModelStates.textFieldVisibility
 
-
     val scope = rememberCoroutineScope()
     val tabsList = listOf(TabRoutes.TracksTab, TabRoutes.ArtistsTab, TabRoutes.AlbumsTab)
 

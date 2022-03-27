@@ -23,6 +23,7 @@ import coil.request.ImageRequest
 import com.maks.musicapp.R
 import com.maks.musicapp.data.music.track.TrackResult
 import com.maks.musicapp.ui.animation.DisplayShimmer
+import com.maks.musicapp.utils.AppConstants
 import com.maks.musicapp.utils.Resource
 import com.maks.musicapp.viewmodels.MusicViewModel
 import com.skydoves.landscapist.CircularReveal
@@ -72,7 +73,7 @@ fun TracksListItem(trackResult: TrackResult, trackListItemClickAction: (TrackRes
     ) {
         Column {
             GlideImage(
-                imageModel = trackResult.image,
+                imageModel = trackResult.image?:AppConstants.DEFAULT_IMAGE,
                 contentScale = ContentScale.Crop,
                 circularReveal = CircularReveal(),
                 placeHolder = ImageBitmap.imageResource(R.drawable.music_logo),

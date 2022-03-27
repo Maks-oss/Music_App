@@ -12,7 +12,7 @@ data class TrackResult(
     val audiodownload_allowed: Boolean,
     val duration: Int,
     val id: String,
-    val image: String,
+    val image: String?,
     val license_ccurl: String,
     val musicinfo: Musicinfo?,
     val name: String,
