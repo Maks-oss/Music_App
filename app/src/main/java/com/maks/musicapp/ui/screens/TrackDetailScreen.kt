@@ -27,6 +27,7 @@ import androidx.navigation.NavController
 import com.maks.musicapp.R
 import com.maks.musicapp.data.music.track.Tags
 import com.maks.musicapp.data.music.track.TrackResult
+import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.TrackCountDownTimer
 import com.maks.musicapp.utils.toMinutes
@@ -51,15 +52,12 @@ fun TrackDetailScreen(
         musicViewModelStates.setTrackMinutesValue(0f)
         trackCountDownTimer.cancel()
     }
-    Column(
-        Modifier
+
+    Surface(
+        elevation = 8.dp, shape = MaterialTheme.shapes.medium, modifier = Modifier
             .padding(8.dp)
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
     ) {
         DisplayTrack(track, mediaPlayer, trackCountDownTimer, musicViewModelStates)
-        Spacer(modifier = Modifier.padding(8.dp))
-        DisplayMusicInfo(track.musicinfo?.tags)
     }
 }
 
@@ -71,58 +69,39 @@ fun DisplayTrack(
     musicViewModelStates: MusicViewModel.MusicViewModelStates
 ) {
 
-    Surface(elevation = 8.dp, shape = MaterialTheme.shapes.medium) {
-        Column {
-            TrackInfo(track)
-            AudioPlayer(mediaPlayer = mediaPlayer, musicViewModelStates = musicViewModelStates) {
-                if (musicViewModelStates.isTrackPlaying.value) {
-                    mediaPlayer.pause()
-                } else {
-                    mediaPlayer.start()
-                }
-                musicViewModelStates.setIsTrackPlayingValue(!musicViewModelStates.isTrackPlaying.value)
-                trackCountDownTimer.start()
+    Column(Modifier.verticalScroll(rememberScrollState())) {
+        TrackInfo(track)
+        AudioPlayer(mediaPlayer = mediaPlayer, musicViewModelStates = musicViewModelStates) {
+            if (musicViewModelStates.isTrackPlaying.value) {
+                mediaPlayer.pause()
+            } else {
+                mediaPlayer.start()
             }
-            OutlinedButton(
-                onClick = { /*TODO*/ },
-                border = BorderStroke(2.dp, MaterialTheme.colors.primary),
-                modifier = Modifier.padding(8.dp)
-            ) {
-                Text(text = "Download track")
-            }
+            musicViewModelStates.setIsTrackPlayingValue(!musicViewModelStates.isTrackPlaying.value)
+            trackCountDownTimer.start()
         }
 
+        Spacer(modifier = Modifier.padding(8.dp))
+        DisplayMusicInfo(track.musicinfo?.tags)
+
     }
+
 }
 
 @Composable
 fun DisplayMusicInfo(tags: Tags?) {
     tags?.let { tag ->
-        Surface(
-            elevation = 8.dp,
-            modifier = Modifier.fillMaxWidth(),
-            shape = MaterialTheme.shapes.medium
-        ) {
-            Column(Modifier.padding(8.dp)) {
-                Text(text = "Music Genres:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                DisplayTags(tags = tag.genres, color = Color.Red)
-                Text(text = "Music instruments:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                DisplayTags(tags = tag.instruments, color = Color.Blue)
-            }
-        }
+        Text(text = "Music Genres:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        DisplayTags(tags = tag.genres, color = Color.Red)
+        Text(text = "Music instruments:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        DisplayTags(tags = tag.instruments, color = Color.Blue)
     }
     /** For test purposes */
-    Surface(
-        elevation = 8.dp,
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium
-    ) {
-        Column(Modifier.padding(8.dp)) {
-            Text(text = "Music Genres:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            DisplayTags(tags = listOf("Rock", "Hip-Hop"), color = Color.Red)
-            Text(text = "Music instruments:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            DisplayTags(tags = listOf("Guitar", "Bass"), color = Color.Blue)
-        }
+    Column(Modifier.padding(8.dp)) {
+        Text(text = "Music Genres:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        DisplayTags(tags = listOf("Rock", "Hip-Hop"), color = Color.Red)
+        Text(text = "Music instruments:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        DisplayTags(tags = listOf("Guitar", "Bass"), color = Color.Blue)
     }
 }
 
@@ -132,12 +111,12 @@ private fun TrackInfo(track: TrackResult) {
         imageModel = track.image,
         contentScale = ContentScale.Crop,
         circularReveal = CircularReveal(),
-        placeHolder = ImageBitmap.imageResource(R.drawable.music_background)
+        placeHolder = ImageBitmap.imageResource(R.drawable.music_logo)
     )
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(8.dp),horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = buildString {
@@ -149,9 +128,7 @@ private fun TrackInfo(track: TrackResult) {
         )
         Text(
             text = track.releasedate,
-            style = MaterialTheme.typography.body1,
-            textAlign = TextAlign.End,
-            modifier = Modifier.fillMaxWidth(),
+            style = MaterialTheme.typography.body1
         )
     }
 }
@@ -180,7 +157,6 @@ private fun AudioPlayer(
                     mediaPlayer.seekTo(it.toInt())
                 })
         }
-
         Row {
             Text(text = musicViewModelStates.trackMinutes.value.toMinutes())
             Text(
@@ -189,6 +165,10 @@ private fun AudioPlayer(
                 modifier = Modifier.fillMaxWidth()
             )
         }
+        Spacer(modifier = Modifier.padding(8.dp))
+        CustomOutlinedButton(text = "Download Track",onClick = {
+
+        })
     }
 }
 

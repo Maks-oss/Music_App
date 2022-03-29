@@ -12,6 +12,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.maks.musicapp.ui.screens.ArtistDetailScreen
 import com.maks.musicapp.ui.screens.MainScreen
 import com.maks.musicapp.ui.screens.TrackDetailScreen
 import com.maks.musicapp.ui.theme.MusicAppTheme
@@ -63,6 +64,11 @@ class MainActivity : ComponentActivity() {
                     track = musicViewModel.trackDetail,
                     musicViewModel.musicViewModelStates,
                     navController
+                )
+            }
+            composable(Routes.ArtistDetailsScreenRoute.route) {
+                ArtistDetailScreen(
+                    musicViewModel.artistDetail,
                 )
 
             }

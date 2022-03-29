@@ -66,6 +66,8 @@ fun MainScreen(musicViewModel: MusicViewModel, navController: NavController) {
                 navController.navigate(Routes.TrackDetailsScreenRoute.route)
             }, artistItemClickAction = { artistResult ->
                 musicViewModel.artistDetail = artistResult
+                navController.navigate(Routes.ArtistDetailsScreenRoute.route)
+
             }, albumItemClickAction = { albumResult ->
                 musicViewModel.albumDetail = albumResult
             })
