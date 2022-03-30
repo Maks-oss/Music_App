@@ -62,14 +62,14 @@ fun MainScreen(musicViewModel: MusicViewModel, navController: NavController) {
             listScrollAction = { scrollState ->
                 musicViewModelStates.setTextFieldVisibilityValue(scrollState.firstVisibleItemIndex == 0)
             }, trackItemClickAction = { trackResult ->
-                musicViewModel.trackDetail = trackResult
+                musicViewModel.currentTrack = trackResult
                 navController.navigate(Routes.TrackDetailsScreenRoute.route)
             }, artistItemClickAction = { artistResult ->
-                musicViewModel.artistDetail = artistResult
+                musicViewModel.currentArtist = artistResult
                 navController.navigate(Routes.ArtistDetailsScreenRoute.route)
 
             }, albumItemClickAction = { albumResult ->
-                musicViewModel.albumDetail = albumResult
+                musicViewModel.currentAlbum = albumResult
             })
     }
 
@@ -87,7 +87,8 @@ private fun DisplayList(
 ) {
     when (tabState) {
         TabRowConstants.TRACK_TAB_INDEX -> TracksList(
-            musicViewModel,
+            isLoading = musicViewModel.musicViewModelStates.isLoading.value,
+            tracksLiveData = musicViewModel.trackListLiveData,
             listScrollAction = listScrollAction,
             trackListItemClickAction = trackItemClickAction
         )

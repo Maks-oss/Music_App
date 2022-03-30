@@ -33,6 +33,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MusicAppTheme {
                 AppNavigator()
+//                TracksBottomSheetLayout()
             }
 
         }
@@ -61,14 +62,16 @@ class MainActivity : ComponentActivity() {
             }
             composable(Routes.TrackDetailsScreenRoute.route) {
                 TrackDetailScreen(
-                    track = musicViewModel.trackDetail,
+                    track = musicViewModel.currentTrack,
                     musicViewModel.musicViewModelStates,
                     navController
                 )
             }
             composable(Routes.ArtistDetailsScreenRoute.route) {
                 ArtistDetailScreen(
-                    musicViewModel.artistDetail,
+                    artistResult = musicViewModel.currentArtist,
+                    navController = navController,
+                    musicViewModel = musicViewModel
                 )
 
             }

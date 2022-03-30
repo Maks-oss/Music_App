@@ -11,6 +11,7 @@ import com.maks.musicapp.data.music.track.TrackResult
 import com.maks.musicapp.repository.MusicRepository
 import com.maks.musicapp.utils.Resource
 import com.maks.musicapp.utils.TabRowConstants
+import com.maks.musicapp.utils.toTrackResult
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -25,15 +26,19 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
         MutableLiveData()
     val artistListLiveData: LiveData<Resource<List<ArtistResult>>> = _artistListLiveData
 
+    private val _artistTracksListLiveData: MutableLiveData<Resource<List<TrackResult>>> =
+        MutableLiveData()
+    val artistTracksListLiveData: LiveData<Resource<List<TrackResult>>> = _artistTracksListLiveData
+
     private val _albumsListLiveData: MutableLiveData<Resource<List<AlbumResult>>> =
         MutableLiveData()
     val albumsListLiveData: LiveData<Resource<List<AlbumResult>>> = _albumsListLiveData
 
     val musicViewModelStates = MusicViewModelStates()
 
-    var trackDetail: TrackResult by Delegates.notNull()
-    var artistDetail: ArtistResult by Delegates.notNull()
-    var albumDetail: AlbumResult by Delegates.notNull()
+    var currentTrack: TrackResult by Delegates.notNull()
+    var currentArtist: ArtistResult by Delegates.notNull()
+    var currentAlbum: AlbumResult by Delegates.notNull()
 
     class MusicViewModelStates {
         val isLoading = mutableStateOf(false)
@@ -112,6 +117,20 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
                     musicRepository.getAlbumsByName(
                         musicViewModelStates.searchName.value
                     ), TabRowConstants.ALBUM_TAB_INDEX
+                )
+            )
+        }
+    }
+
+    fun findArtistsTracks() {
+        _artistTracksListLiveData.value = Resource.loading(null)
+        viewModelScope.launch {
+            delay(1000)
+            _artistTracksListLiveData.postValue(
+                Resource.success(
+                    musicRepository.getArtistTracks(
+                        currentArtist.id
+                    )?.map { it.toTrackResult() }, null
                 )
             )
         }

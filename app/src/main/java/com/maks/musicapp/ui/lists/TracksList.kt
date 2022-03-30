@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -18,6 +19,7 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.maks.musicapp.R
@@ -32,12 +34,12 @@ import com.skydoves.landscapist.glide.GlideImage
 @ExperimentalFoundationApi
 @Composable
 fun TracksList(
-    musicViewModel: MusicViewModel,
+    isLoading:Boolean,
+    tracksLiveData: LiveData<Resource<List<TrackResult>>>,
     listScrollAction: (LazyListState) -> Unit,
     trackListItemClickAction: (TrackResult) -> Unit
 ) {
-    val tracks by musicViewModel.trackListLiveData.observeAsState()
-    val isLoading by musicViewModel.musicViewModelStates.isLoading
+    val tracks by tracksLiveData.observeAsState()
     val scrollState = rememberLazyListState()
     listScrollAction(scrollState)
     DisplayShimmer(isLoading)

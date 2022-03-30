@@ -1,13 +1,13 @@
 package com.maks.musicapp.ui.screens
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -19,14 +19,49 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.maks.musicapp.R
 import com.maks.musicapp.data.music.artist.ArtistResult
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
+import com.maks.musicapp.ui.composeutils.TrackBottomSheetLayout
+import com.maks.musicapp.utils.Routes
+import com.maks.musicapp.viewmodels.MusicViewModel
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
+import kotlinx.coroutines.launch
+
+@ExperimentalFoundationApi
+@ExperimentalMaterialApi
+@Composable
+fun ArtistDetailScreen(
+    musicViewModel: MusicViewModel,
+    navController: NavController,
+    artistResult: ArtistResult,
+) {
+    val bottomSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+    )
+    val coroutineScope = rememberCoroutineScope()
+    TrackBottomSheetLayout(
+        musicViewModel = musicViewModel,
+        bottomSheetState = bottomSheetState,
+        trackListItemClickAction = { trackResult ->
+            musicViewModel.currentTrack = trackResult
+            navController.navigate(Routes.TrackDetailsScreenRoute.route)
+        }
+    ) {
+        DisplayArtistDetail(artistResult, showTracksAction = {
+            musicViewModel.findArtistsTracks()
+            coroutineScope.launch {
+                bottomSheetState.show()
+            }
+        })
+    }
+
+}
 
 @Composable
-fun ArtistDetailScreen(artistResult: ArtistResult) {
+private fun DisplayArtistDetail(artistResult: ArtistResult, showTracksAction: () -> Unit) {
     Surface(
         elevation = 8.dp,
         shape = MaterialTheme.shapes.medium,
@@ -55,17 +90,9 @@ fun ArtistDetailScreen(artistResult: ArtistResult) {
                 UrlText(url = artistResult.website)
             }
             Spacer(modifier = Modifier.padding(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                CustomOutlinedButton(text = "Show Tracks", onClick = {
 
-                })
-                CustomOutlinedButton(text = "Show Albums", onClick = {
+            CustomOutlinedButton(text = "Show Album Tracks", onClick = showTracksAction)
 
-                })
-            }
         }
     }
 }
