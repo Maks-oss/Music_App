@@ -7,4 +7,5 @@ object TabRowConstants {
 }
 object AppConstants{
     const val DEFAULT_IMAGE="https://www.cjoint.com/doc/20_12/JLFrj6Sanqu_image-not-found.png"
+    const val URL_KEY="url"
 }

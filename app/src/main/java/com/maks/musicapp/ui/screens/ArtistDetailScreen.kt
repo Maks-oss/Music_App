@@ -1,6 +1,8 @@
 package com.maks.musicapp.ui.screens
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -31,6 +33,7 @@ import com.maks.musicapp.viewmodels.MusicViewModel
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
 import kotlinx.coroutines.launch
+import java.util.*
 
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
@@ -82,15 +85,19 @@ private fun DisplayArtistDetail(artistResult: ArtistResult, showTracksAction: ()
                 placeHolder = ImageBitmap.imageResource(R.drawable.music_logo)
             )
             Row(
-                modifier = Modifier.padding(8.dp).fillMaxWidth(),
-//                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = artistResult.name,
                     style = MaterialTheme.typography.body1,
                     fontWeight = FontWeight.Bold
                 )
-                UrlText(url = artistResult.website)
+                if (artistResult.website.isNotEmpty()) {
+                    UrlText(url = artistResult.website)
+                }
             }
             Spacer(modifier = Modifier.padding(8.dp))
 
@@ -102,15 +109,11 @@ private fun DisplayArtistDetail(artistResult: ArtistResult, showTracksAction: ()
 
 @Composable
 private fun UrlText(url: String) {
-    val value = "Website"
-    val annotatedString = buildAnnotatedString(value, url)
-    val uriHandler = LocalUriHandler.current
+
+    val annotatedString = buildAnnotatedString("Website", url)
+    val uriHandler= LocalUriHandler.current
     Text(text = annotatedString, modifier = Modifier.clickable {
-        annotatedString
-            .getStringAnnotations("URL", 0, value.length - 1)
-            .firstOrNull()?.let { stringAnnotation ->
-                uriHandler.openUri(stringAnnotation.item)
-            }
+        uriHandler.openUri(url)
     })
 }
 
@@ -123,12 +126,13 @@ private fun buildAnnotatedString(
         style = SpanStyle(
             color = Color(0xFF2097F7),
             textDecoration = TextDecoration.Underline
-        ), 0, value.length - 1
-
+        ), 0, value.length
     )
+
     addStringAnnotation(
         tag = "URL",
         annotation = url,
-        0, value.length - 1
+        0, value.length
     )
+    append(value)
 }

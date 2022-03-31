@@ -1,21 +1,26 @@
 package com.maks.musicapp
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.maks.musicapp.ui.screens.ArtistDetailScreen
 import com.maks.musicapp.ui.screens.MainScreen
 import com.maks.musicapp.ui.screens.TrackDetailScreen
 import com.maks.musicapp.ui.theme.MusicAppTheme
+import com.maks.musicapp.utils.AppConstants
 import com.maks.musicapp.utils.Resource
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.State
@@ -75,6 +80,7 @@ class MainActivity : ComponentActivity() {
                 )
 
             }
+
         }
     }
 

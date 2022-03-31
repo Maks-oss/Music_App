@@ -10,8 +10,7 @@ import com.maks.musicapp.R
 
 sealed class Routes(val route: String) {
     object MainScreenRoute : Routes("MainScreen")
-    object WebViewScreenRoute : Routes("WebViewScreen")
-    object LoginScreenRoute : Routes("LoginScreenRoute")
+
     object TrackDetailsScreenRoute : Routes("TrackDetailsScreenRoute")
     object ArtistDetailsScreenRoute : Routes("ArtistDetailsScreenRoute")
 }
