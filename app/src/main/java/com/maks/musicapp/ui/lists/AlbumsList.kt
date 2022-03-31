@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.maks.musicapp.data.music.albums.AlbumResult
 import com.maks.musicapp.ui.animation.DisplayShimmer
+import com.maks.musicapp.utils.AppConstants
 import com.maks.musicapp.utils.Resource
 import com.maks.musicapp.viewmodels.MusicViewModel
 import com.skydoves.landscapist.CircularReveal
@@ -58,7 +59,9 @@ fun AlbumsListItem(albumResult: AlbumResult,albumListItemClickAction: (AlbumResu
     Card(modifier = Modifier.padding(8.dp).clickable { albumListItemClickAction(albumResult) }, elevation = 8.dp) {
         Column {
             GlideImage(
-                imageModel = albumResult.image,
+                imageModel = albumResult.image.ifEmpty {
+                    AppConstants.DEFAULT_IMAGE
+                },
                 contentScale = ContentScale.Crop,
                 circularReveal = CircularReveal(),
 //                placeHolder = ImageBitmap.imageResource(R.drawable.music_background),

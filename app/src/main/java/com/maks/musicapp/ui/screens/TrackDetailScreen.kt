@@ -28,6 +28,7 @@ import com.maks.musicapp.R
 import com.maks.musicapp.data.music.track.Tags
 import com.maks.musicapp.data.music.track.TrackResult
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
+import com.maks.musicapp.utils.AppConstants
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.TrackCountDownTimer
 import com.maks.musicapp.utils.toMinutes
@@ -108,7 +109,9 @@ fun DisplayMusicInfo(tags: Tags?) {
 @Composable
 private fun TrackInfo(track: TrackResult) {
     GlideImage(
-        imageModel = track.image,
+        imageModel = track.image?.ifEmpty {
+            AppConstants.DEFAULT_IMAGE
+        },
         contentScale = ContentScale.Crop,
         circularReveal = CircularReveal(),
         placeHolder = ImageBitmap.imageResource(R.drawable.music_logo)

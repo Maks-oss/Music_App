@@ -55,7 +55,9 @@ fun ArtistsListItem(artistResult: ArtistResult,artistListItemClickAction:(Artist
     Card(modifier = Modifier.padding(8.dp).clickable { artistListItemClickAction(artistResult) }, elevation = 8.dp) {
         Column {
             GlideImage(
-                imageModel = artistResult.image?:AppConstants.DEFAULT_IMAGE,
+                imageModel = artistResult.image?.ifEmpty {
+                    AppConstants.DEFAULT_IMAGE
+                },
                 contentScale = ContentScale.Crop,
                 circularReveal = CircularReveal(),
 //                placeHolder = ImageBitmap.imageResource(R.drawable.music_background),

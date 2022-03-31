@@ -1,5 +1,6 @@
 package com.maks.musicapp.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -24,6 +25,7 @@ import com.maks.musicapp.R
 import com.maks.musicapp.data.music.artist.ArtistResult
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
 import com.maks.musicapp.ui.composeutils.TrackBottomSheetLayout
+import com.maks.musicapp.utils.AppConstants
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.viewmodels.MusicViewModel
 import com.skydoves.landscapist.CircularReveal
@@ -69,29 +71,30 @@ private fun DisplayArtistDetail(artistResult: ArtistResult, showTracksAction: ()
     ) {
         Column(
             Modifier
-                .padding(8.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             GlideImage(
-                imageModel = artistResult.image,
+                imageModel = artistResult.image?.ifEmpty {
+                    AppConstants.DEFAULT_IMAGE
+                },
                 contentScale = ContentScale.Crop,
                 circularReveal = CircularReveal(),
                 placeHolder = ImageBitmap.imageResource(R.drawable.music_logo)
             )
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.padding(8.dp).fillMaxWidth(),
+//                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = artistResult.name,
-                    style = MaterialTheme.typography.h5,
+                    style = MaterialTheme.typography.body1,
                     fontWeight = FontWeight.Bold
                 )
                 UrlText(url = artistResult.website)
             }
             Spacer(modifier = Modifier.padding(8.dp))
 
-            CustomOutlinedButton(text = "Show Album Tracks", onClick = showTracksAction)
+            CustomOutlinedButton(modifier = Modifier.padding(8.dp),text = "Show Album Tracks", onClick = showTracksAction)
 
         }
     }
