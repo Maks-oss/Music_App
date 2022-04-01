@@ -1,16 +1,14 @@
 package com.maks.musicapp.ui.screens
 
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -25,28 +23,32 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.maks.musicapp.R
 import com.maks.musicapp.data.music.artist.ArtistResult
+import com.maks.musicapp.data.music.track.TrackResult
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
 import com.maks.musicapp.ui.composeutils.TrackBottomSheetLayout
 import com.maks.musicapp.utils.AppConstants
+import com.maks.musicapp.utils.Resource
 import com.maks.musicapp.utils.Routes
+import com.maks.musicapp.utils.State
 import com.maks.musicapp.viewmodels.MusicViewModel
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
-import kotlinx.coroutines.launch
-import java.util.*
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
 fun ArtistDetailScreen(
     musicViewModel: MusicViewModel,
     navController: NavController,
+    snackbarHostState: SnackbarHostState,
     artistResult: ArtistResult,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
     )
-    val coroutineScope = rememberCoroutineScope()
+    val artistTracks by musicViewModel.artistTracksListLiveData.observeAsState()
+    var isButtonClicked by remember { mutableStateOf(false) }
     TrackBottomSheetLayout(
         musicViewModel = musicViewModel,
         bottomSheetState = bottomSheetState,
@@ -55,14 +57,54 @@ fun ArtistDetailScreen(
             navController.navigate(Routes.TrackDetailsScreenRoute.route)
         }
     ) {
+
         DisplayArtistDetail(artistResult, showTracksAction = {
             musicViewModel.findArtistsTracks()
-            coroutineScope.launch {
-                bottomSheetState.show()
-            }
+            isButtonClicked = true
         })
-    }
 
+    }
+    ProcessArtistTracksState(
+        artistTracks,
+        bottomSheetState,
+        snackbarHostState,
+        isButtonClicked,
+        musicViewModel.musicViewModelStates
+    )
+
+
+}
+
+@ExperimentalMaterialApi
+@Composable
+private fun ProcessArtistTracksState(
+    artistTracks: Resource<List<TrackResult>>?,
+    bottomSheetState: ModalBottomSheetState,
+    snackbarHostState: SnackbarHostState,
+    isButtonClicked: Boolean,
+    musicViewModelStates: MusicViewModel.MusicViewModelStates
+) {
+    if (isButtonClicked) {
+        LaunchedEffect(artistTracks) {
+            when (artistTracks?.state) {
+                State.LOADING -> {
+                    bottomSheetState.show()
+                    musicViewModelStates.setIsLoadingValue(true)
+                }
+                State.SUCCESS -> {
+                    musicViewModelStates.setIsLoadingValue(false)
+                    if (artistTracks.value.isNullOrEmpty()) {
+                        bottomSheetState.hide()
+                        snackbarHostState.showSnackbar("Artist has no tracks")
+                    }
+                }
+                State.ERROR -> {
+                    musicViewModelStates.setIsLoadingValue(false)
+                    snackbarHostState.showSnackbar("Something went wrong")
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -100,8 +142,11 @@ private fun DisplayArtistDetail(artistResult: ArtistResult, showTracksAction: ()
                 }
             }
             Spacer(modifier = Modifier.padding(8.dp))
-
-            CustomOutlinedButton(modifier = Modifier.padding(8.dp),text = "Show Album Tracks", onClick = showTracksAction)
+            CustomOutlinedButton(
+                modifier = Modifier.padding(8.dp),
+                text = "Show Album Tracks",
+                onClick = showTracksAction
+            )
 
         }
     }
@@ -111,7 +156,7 @@ private fun DisplayArtistDetail(artistResult: ArtistResult, showTracksAction: ()
 private fun UrlText(url: String) {
 
     val annotatedString = buildAnnotatedString("Website", url)
-    val uriHandler= LocalUriHandler.current
+    val uriHandler = LocalUriHandler.current
     Text(text = annotatedString, modifier = Modifier.clickable {
         uriHandler.openUri(url)
     })

@@ -73,11 +73,15 @@ class MainActivity : ComponentActivity() {
                 )
             }
             composable(Routes.ArtistDetailsScreenRoute.route) {
-                ArtistDetailScreen(
-                    artistResult = musicViewModel.currentArtist,
-                    navController = navController,
-                    musicViewModel = musicViewModel
-                )
+                Scaffold(scaffoldState = scaffoldState) {
+
+                    ArtistDetailScreen(
+                        artistResult = musicViewModel.currentArtist,
+                        navController = navController,
+                        snackbarHostState = scaffoldState.snackbarHostState,
+                        musicViewModel = musicViewModel
+                    )
+                }
 
             }
 

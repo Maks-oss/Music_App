@@ -1,5 +1,6 @@
 package com.maks.musicapp.repository
 
+import android.util.Log
 import com.maks.musicapp.BuildConfig
 import com.maks.musicapp.data.music.albums.AlbumResult
 import com.maks.musicapp.data.music.artist.ArtistResult
@@ -21,6 +22,6 @@ class MusicRepositoryImpl(private val musicService: MusicService) : MusicReposit
 
     override suspend fun getArtistTracks(id: String): List<ArtistTracksResult>? =
         musicService.getArtistTracksResponse(BuildConfig.clientId, id)
-            .body()?.results?.first()?.tracks
+            .body()?.results?.firstOrNull()?.tracks.also { Log.d("TAG", "getArtistTracks: $it") }
 
 }
