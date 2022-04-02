@@ -32,7 +32,7 @@ import com.maks.musicapp.utils.AppConstants
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.TrackCountDownTimer
 import com.maks.musicapp.utils.toMinutes
-import com.maks.musicapp.viewmodels.MusicViewModel
+import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
 

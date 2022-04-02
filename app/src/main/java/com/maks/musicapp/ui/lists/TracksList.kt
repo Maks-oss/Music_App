@@ -8,53 +8,44 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.LiveData
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.maks.musicapp.R
 import com.maks.musicapp.data.music.track.TrackResult
+import com.maks.musicapp.ui.states.TracksUiState
 import com.maks.musicapp.ui.animation.DisplayShimmer
 import com.maks.musicapp.utils.AppConstants
-import com.maks.musicapp.utils.Resource
-import com.maks.musicapp.viewmodels.MusicViewModel
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
 
 @ExperimentalFoundationApi
 @Composable
 fun TracksList(
-    isLoading:Boolean,
-    tracksLiveData: LiveData<Resource<List<TrackResult>>>,
+//    isLoading:Boolean,
+    tracksUiState: TracksUiState,
     listScrollAction: (LazyListState) -> Unit,
     trackListItemClickAction: (TrackResult) -> Unit
 ) {
-    val tracks by tracksLiveData.observeAsState()
+//    val tracks by tracksLiveData.observeAsState()
     val scrollState = rememberLazyListState()
     listScrollAction(scrollState)
-    DisplayShimmer(isLoading)
-    DisplayTrackList(tracks, scrollState, trackListItemClickAction)
+    DisplayShimmer(tracksUiState.isLoading)
+    DisplayTrackList(tracksUiState.tracksResult, scrollState, trackListItemClickAction)
 
 }
 
 @ExperimentalFoundationApi
 @Composable
 fun DisplayTrackList(
-    tracks: Resource<List<TrackResult>>?,
+    tracks: List<TrackResult>?,
     scrollState: LazyListState,
     trackListItemClickAction: (TrackResult) -> Unit
 ) {
-    tracks?.value?.let { trackList ->
+    tracks?.let { trackList ->
         LazyVerticalGrid(cells = GridCells.Fixed(2), state = scrollState) {
             items(trackList) {
                 TracksListItem(

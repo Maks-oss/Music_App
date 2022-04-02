@@ -2,7 +2,7 @@ package com.maks.musicapp.utils
 
 import android.media.MediaPlayer
 import android.os.CountDownTimer
-import com.maks.musicapp.viewmodels.MusicViewModel
+import com.maks.musicapp.ui.viewmodels.MusicViewModel
 
 class TrackCountDownTimer(
     millis: Long, countDown: Long = 100,

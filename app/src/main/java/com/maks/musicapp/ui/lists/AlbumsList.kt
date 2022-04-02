@@ -8,8 +8,6 @@ import androidx.compose.foundation.lazy.*
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -18,37 +16,36 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.maks.musicapp.R
 import com.maks.musicapp.data.music.albums.AlbumResult
+import com.maks.musicapp.ui.states.AlbumsUiState
 import com.maks.musicapp.ui.animation.DisplayShimmer
 import com.maks.musicapp.utils.AppConstants
-import com.maks.musicapp.utils.Resource
-import com.maks.musicapp.viewmodels.MusicViewModel
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
 
 @ExperimentalFoundationApi
 @Composable
 fun AlbumsList(
-    musicViewModel: MusicViewModel,
+    albumsUiState: AlbumsUiState,
     listScrollAction: (LazyListState) -> Unit,
     albumListItemClickAction: (AlbumResult) -> Unit
 ) {
-    val albums by musicViewModel.albumsListLiveData.observeAsState()
-    val isLoading by musicViewModel.musicViewModelStates.isLoading
+//    val albums by musicViewModel.albumsListLiveData.observeAsState()
+//    val isLoading by musicViewModel.musicViewModelStates.isLoading
     val scrollState = rememberLazyListState()
     listScrollAction(scrollState)
-    DisplayShimmer(isLoading)
-    DisplayAlbumsList(albums, scrollState,albumListItemClickAction)
+    DisplayShimmer(albumsUiState.isLoading)
+    DisplayAlbumsList(albumsUiState.albumsResult, scrollState,albumListItemClickAction)
 
 }
 
 @ExperimentalFoundationApi
 @Composable
 fun DisplayAlbumsList(
-    artists: Resource<List<AlbumResult>>?,
+    artists: List<AlbumResult>?,
     scrollState: LazyListState,
     albumListItemClickAction: (AlbumResult) -> Unit
 ) {
-    artists?.value?.let { trackList ->
+    artists?.let { trackList ->
         LazyVerticalGrid(cells = GridCells.Fixed(2), state = scrollState) {
             items(trackList) {
                 AlbumsListItem(albumResult = it,albumListItemClickAction)

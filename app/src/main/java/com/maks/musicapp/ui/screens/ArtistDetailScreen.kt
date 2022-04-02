@@ -8,7 +8,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -23,14 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.maks.musicapp.R
 import com.maks.musicapp.data.music.artist.ArtistResult
-import com.maks.musicapp.data.music.track.TrackResult
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
 import com.maks.musicapp.ui.composeutils.TrackBottomSheetLayout
 import com.maks.musicapp.utils.AppConstants
-import com.maks.musicapp.utils.Resource
 import com.maks.musicapp.utils.Routes
-import com.maks.musicapp.utils.State
-import com.maks.musicapp.viewmodels.MusicViewModel
+import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -47,7 +43,7 @@ fun ArtistDetailScreen(
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
     )
-    val artistTracks by musicViewModel.artistTracksListLiveData.observeAsState()
+    val artistTracks = musicViewModel.artistTracksUiState.tracksResult
     var isButtonClicked by remember { mutableStateOf(false) }
     TrackBottomSheetLayout(
         musicViewModel = musicViewModel,
@@ -64,48 +60,17 @@ fun ArtistDetailScreen(
         })
 
     }
-    ProcessArtistTracksState(
-        artistTracks,
-        bottomSheetState,
-        snackbarHostState,
-        isButtonClicked,
-        musicViewModel.musicViewModelStates
-    )
+//    ProcessArtistTracksState(
+//        artistTracks,
+//        bottomSheetState,
+//        snackbarHostState,
+//        isButtonClicked,
+//        musicViewModel.musicViewModelStates
+//    )
 
 
 }
 
-@ExperimentalMaterialApi
-@Composable
-private fun ProcessArtistTracksState(
-    artistTracks: Resource<List<TrackResult>>?,
-    bottomSheetState: ModalBottomSheetState,
-    snackbarHostState: SnackbarHostState,
-    isButtonClicked: Boolean,
-    musicViewModelStates: MusicViewModel.MusicViewModelStates
-) {
-    if (isButtonClicked) {
-        LaunchedEffect(artistTracks) {
-            when (artistTracks?.state) {
-                State.LOADING -> {
-                    bottomSheetState.show()
-                    musicViewModelStates.setIsLoadingValue(true)
-                }
-                State.SUCCESS -> {
-                    musicViewModelStates.setIsLoadingValue(false)
-                    if (artistTracks.value.isNullOrEmpty()) {
-                        bottomSheetState.hide()
-                        snackbarHostState.showSnackbar("Artist has no tracks")
-                    }
-                }
-                State.ERROR -> {
-                    musicViewModelStates.setIsLoadingValue(false)
-                    snackbarHostState.showSnackbar("Something went wrong")
-                }
-            }
-        }
-    }
-}
 
 @Composable
 private fun DisplayArtistDetail(artistResult: ArtistResult, showTracksAction: () -> Unit) {

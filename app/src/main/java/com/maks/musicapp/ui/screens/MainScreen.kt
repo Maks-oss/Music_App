@@ -4,6 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -16,17 +17,24 @@ import com.maks.musicapp.ui.composeutils.MusicTextField
 import com.maks.musicapp.ui.lists.AlbumsList
 import com.maks.musicapp.ui.lists.ArtistsList
 import com.maks.musicapp.ui.lists.TracksList
+import com.maks.musicapp.ui.states.ProcessAlbumsUiState
+import com.maks.musicapp.ui.states.ProcessArtistsUiState
+import com.maks.musicapp.ui.states.ProcessTracksUiState
+import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.TabRoutes
 import com.maks.musicapp.utils.TabRowConstants
-import com.maks.musicapp.viewmodels.MusicViewModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @Composable
-fun MainScreen(musicViewModel: MusicViewModel, navController: NavController) {
+fun MainScreen(
+    musicViewModel: MusicViewModel,
+    navController: NavController,
+    snackbarHostState: SnackbarHostState
+) {
     val musicViewModelStates = musicViewModel.musicViewModelStates
     val textValue by musicViewModelStates.searchName
     val currentJob by musicViewModelStates.currentJob
@@ -67,10 +75,14 @@ fun MainScreen(musicViewModel: MusicViewModel, navController: NavController) {
             }, artistItemClickAction = { artistResult ->
                 musicViewModel.currentArtist = artistResult
                 navController.navigate(Routes.ArtistDetailsScreenRoute.route)
-
             }, albumItemClickAction = { albumResult ->
                 musicViewModel.currentAlbum = albumResult
             })
+        ProcessListUiStates(
+            musicViewModel = musicViewModel,
+            snackbarHostState = snackbarHostState,
+            tabIndex = tabState
+        )
     }
 
 }
@@ -87,21 +99,48 @@ private fun DisplayList(
 ) {
     when (tabState) {
         TabRowConstants.TRACK_TAB_INDEX -> TracksList(
-            isLoading = musicViewModel.musicViewModelStates.isLoading.value,
-            tracksLiveData = musicViewModel.trackListLiveData,
+            tracksUiState = musicViewModel.tracksUiState,
             listScrollAction = listScrollAction,
             trackListItemClickAction = trackItemClickAction
         )
         TabRowConstants.ARTIST_TAB_INDEX -> ArtistsList(
-            musicViewModel,
+            artistsUiState = musicViewModel.artistsUiState,
             listScrollAction = listScrollAction,
             artistListItemClickAction = artistItemClickAction
         )
         TabRowConstants.ALBUM_TAB_INDEX -> AlbumsList(
-            musicViewModel,
+            albumsUiState = musicViewModel.albumsUiState,
             listScrollAction = listScrollAction,
             albumListItemClickAction = albumItemClickAction
         )
     }
 }
+
+@Composable
+private fun ProcessListUiStates(
+    musicViewModel: MusicViewModel,
+    snackbarHostState: SnackbarHostState,
+    tabIndex: Int
+) {
+    when (tabIndex) {
+        TabRowConstants.TRACK_TAB_INDEX -> ProcessTracksUiState(
+            tracksUiState = musicViewModel.tracksUiState,
+            snackbarHostState = snackbarHostState,
+            messageShown = { musicViewModel.tracksMessageDisplayed() }
+        )
+        TabRowConstants.ARTIST_TAB_INDEX -> ProcessArtistsUiState(
+            artistsUiState = musicViewModel.artistsUiState,
+            snackbarHostState = snackbarHostState,
+            messageShown = { musicViewModel.artistsMessageDisplayed() }
+        )
+        TabRowConstants.ALBUM_TAB_INDEX -> ProcessAlbumsUiState(
+            albumsUiState = musicViewModel.albumsUiState,
+            snackbarHostState = snackbarHostState,
+            messageShown = { musicViewModel.albumsMessageDisplayed() }
+        )
+    }
+
+
+}
+
 
