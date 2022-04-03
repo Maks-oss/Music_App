@@ -1,10 +1,10 @@
 package com.maks.musicapp.ui.states
 
-import androidx.annotation.StringRes
-import com.maks.musicapp.data.music.track.TrackResult
+import com.maks.musicapp.data.domain.Track
+import com.maks.musicapp.data.dto.tracks.TrackResult
 
 data class TracksUiState(
     val isLoading: Boolean = false,
     val message: String? = null,
-    val tracksResult: List<TrackResult>? = null
+    val tracksResult: List<Track>? = null
 )

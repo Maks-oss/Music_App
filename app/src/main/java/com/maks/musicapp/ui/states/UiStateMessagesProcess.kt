@@ -10,7 +10,7 @@ import com.maks.musicapp.R
 fun ProcessTracksUiStateMessages(
     tracksUiState: TracksUiState,
     snackbarHostState: SnackbarHostState,
-    messageShown: suspend () -> Unit
+    messageShown: () -> Unit
 ) {
     val errorMessage = tracksUiState.message
     val okActionLabel = stringResource(id = R.string.ok)

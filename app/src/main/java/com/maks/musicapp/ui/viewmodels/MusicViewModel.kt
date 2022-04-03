@@ -5,28 +5,30 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.maks.musicapp.data.music.albums.AlbumResult
-import com.maks.musicapp.data.music.artist.ArtistResult
-import com.maks.musicapp.data.music.track.TrackResult
+import com.maks.musicapp.data.domain.Album
+import com.maks.musicapp.data.domain.Artist
+import com.maks.musicapp.data.domain.Track
+import com.maks.musicapp.mappers.MusicMapper
 import com.maks.musicapp.repository.MusicRepository
 import com.maks.musicapp.ui.states.AlbumsUiState
 import com.maks.musicapp.ui.states.ArtistsUiState
 import com.maks.musicapp.ui.states.TracksUiState
 import com.maks.musicapp.utils.AppConstants
-import com.maks.musicapp.utils.toTrackResult
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 
-class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel() {
+class MusicViewModel(
+    private val musicRepository: MusicRepository,
+    private val musicMapper: MusicMapper
+) : ViewModel() {
 
     var tracksUiState by mutableStateOf(TracksUiState())
         private set
 
     var artistsUiState by mutableStateOf(ArtistsUiState())
         private set
-
 
     var artistTracksUiState by mutableStateOf(TracksUiState())
         private set
@@ -37,9 +39,9 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
     var musicViewModelStates by mutableStateOf(MusicViewModelStates())
         private set
 
-    var currentTrack: TrackResult by Delegates.notNull()
-    var currentArtist: ArtistResult by Delegates.notNull()
-    var currentAlbum: AlbumResult by Delegates.notNull()
+    var currentTrack: Track by Delegates.notNull()
+    var currentArtist: Artist by Delegates.notNull()
+    var currentAlbum: Album by Delegates.notNull()
 
     fun findTracksByName() {
 
@@ -47,10 +49,10 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
         viewModelScope.launch {
             delay(1000)
             tracksUiState = try {
-                val tracks = musicRepository.getTracksByName(
+                val tracksResult = musicRepository.getTracksByName(
                     musicViewModelStates.searchInput
                 )
-                if (tracks.isNullOrEmpty()) {
+                if (tracksResult.isNullOrEmpty()) {
                     tracksUiState.copy(
                         isLoading = false,
                         tracksResult = null,
@@ -59,7 +61,7 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
                 } else {
                     tracksUiState.copy(
                         isLoading = false,
-                        tracksResult = tracks,
+                        tracksResult = musicMapper.toTrackList(tracksResult),
                     )
                 }
 
@@ -90,7 +92,7 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
                 } else {
                     artistsUiState.copy(
                         isLoading = false,
-                        artistsResult = artistsResult
+                        artistsResult = musicMapper.toArtistList(artistsResult)
                     )
                 }
             } catch (exc: Exception) {
@@ -121,7 +123,7 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
                 } else {
                     albumsUiState.copy(
                         isLoading = false,
-                        albumsResult = albumsResult,
+                        albumsResult = musicMapper.toAlbumList(albumsResult),
                     )
                 }
             } catch (exc: Exception) {
@@ -141,10 +143,10 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
         viewModelScope.launch {
             delay(1000)
             artistTracksUiState = try {
-                val artistTracks = musicRepository.getArtistTracks(
+                val artistTracksResult = musicRepository.getArtistTracks(
                     currentArtist.id
                 )
-                if (artistTracks.isNullOrEmpty()) {
+                if (artistTracksResult.isNullOrEmpty()) {
                     artistTracksUiState.copy(
                         isLoading = false,
                         tracksResult = null,
@@ -153,7 +155,10 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
                 } else {
                     artistTracksUiState.copy(
                         isLoading = false,
-                        tracksResult = artistTracks.map { it.toTrackResult() }
+                        tracksResult = musicMapper.toArtistTracksList(
+                            currentArtist,
+                            artistTracksResult
+                        )
                     )
                 }
             } catch (exc: Exception) {

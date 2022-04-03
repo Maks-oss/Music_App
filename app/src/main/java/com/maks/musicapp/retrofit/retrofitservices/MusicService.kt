@@ -1,9 +1,9 @@
 package com.maks.musicapp.retrofit.retrofitservices
 
-import com.maks.musicapp.data.music.albums.Albums
-import com.maks.musicapp.data.music.artist.Artists
-import com.maks.musicapp.data.music.artist.tracks.ArtistTracks
-import com.maks.musicapp.data.music.track.Track
+import com.maks.musicapp.data.dto.albums.Albums
+import com.maks.musicapp.data.dto.artists.Artists
+import com.maks.musicapp.data.dto.artists.tracks.ArtistTracks
+import com.maks.musicapp.data.dto.tracks.Track
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

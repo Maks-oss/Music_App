@@ -15,8 +15,8 @@ import com.maks.musicapp.ui.screens.ArtistDetailScreen
 import com.maks.musicapp.ui.screens.MainScreen
 import com.maks.musicapp.ui.screens.TrackDetailScreen
 import com.maks.musicapp.ui.theme.MusicAppTheme
-import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
+import com.maks.musicapp.utils.Routes
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 @ExperimentalMaterialApi
@@ -29,7 +29,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             MusicAppTheme {
                 AppNavigator()
-//                TracksBottomSheetLayout()
             }
 
         }
@@ -45,24 +44,26 @@ class MainActivity : ComponentActivity() {
 
 
         NavHost(navController = navController, startDestination = Routes.MainScreenRoute.route) {
-
             composable(Routes.MainScreenRoute.route) {
                 Scaffold(scaffoldState = scaffoldState) {
-                    MainScreen(musicViewModel, navController,scaffoldState.snackbarHostState)
+                    MainScreen(
+                        musicViewModel = musicViewModel,
+                        navController = navController,
+                        snackbarHostState = scaffoldState.snackbarHostState
+                    )
                 }
             }
             composable(Routes.TrackDetailsScreenRoute.route) {
                 TrackDetailScreen(
                     track = musicViewModel.currentTrack,
-                    musicViewModel,
-                    navController
+                    musicViewModel = musicViewModel,
+                    navController = navController
                 )
             }
             composable(Routes.ArtistDetailsScreenRoute.route) {
                 Scaffold(scaffoldState = scaffoldState) {
-
                     ArtistDetailScreen(
-                        artistResult = musicViewModel.currentArtist,
+                        artist = musicViewModel.currentArtist,
                         navController = navController,
                         snackbarHostState = scaffoldState.snackbarHostState,
                         musicViewModel = musicViewModel

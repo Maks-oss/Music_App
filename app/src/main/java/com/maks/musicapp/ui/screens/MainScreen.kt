@@ -8,9 +8,12 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavController
-import com.maks.musicapp.data.music.albums.AlbumResult
-import com.maks.musicapp.data.music.artist.ArtistResult
-import com.maks.musicapp.data.music.track.TrackResult
+import com.maks.musicapp.data.domain.Album
+import com.maks.musicapp.data.domain.Artist
+import com.maks.musicapp.data.domain.Track
+import com.maks.musicapp.data.dto.albums.AlbumResult
+import com.maks.musicapp.data.dto.artists.ArtistResult
+import com.maks.musicapp.data.dto.tracks.TrackResult
 import com.maks.musicapp.ui.composeutils.MusicTabs
 import com.maks.musicapp.ui.composeutils.MusicTextField
 import com.maks.musicapp.ui.lists.AlbumsList
@@ -87,9 +90,9 @@ private fun DisplayList(
     tabState: Int,
     musicViewModel: MusicViewModel,
     listScrollAction: (LazyListState) -> Unit,
-    trackItemClickAction: (TrackResult) -> Unit,
-    artistItemClickAction: (ArtistResult) -> Unit,
-    albumItemClickAction: (AlbumResult) -> Unit,
+    trackItemClickAction: (Track) -> Unit,
+    artistItemClickAction: (Artist) -> Unit,
+    albumItemClickAction: (Album) -> Unit,
 ) {
     when (tabState) {
         TabRowConstants.TRACK_TAB_INDEX -> TracksList(

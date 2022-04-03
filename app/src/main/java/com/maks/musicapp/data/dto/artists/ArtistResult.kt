@@ -1,4 +1,4 @@
-package com.maks.musicapp.data.music.artist
+package com.maks.musicapp.data.dto.artists
 
 data class ArtistResult(
     val id: String,

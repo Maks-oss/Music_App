@@ -1,7 +1,7 @@
 package com.maks.musicapp.utils
 
-import com.maks.musicapp.data.music.artist.tracks.ArtistTracksResult
-import com.maks.musicapp.data.music.track.TrackResult
+import com.maks.musicapp.data.dto.artists.tracks.ArtistTracksResult
+import com.maks.musicapp.data.dto.tracks.TrackResult
 import java.util.concurrent.TimeUnit
 
 fun Number.toMinutes(): String {

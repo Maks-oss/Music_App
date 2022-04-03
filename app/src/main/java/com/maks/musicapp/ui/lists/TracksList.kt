@@ -15,7 +15,8 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.maks.musicapp.R
-import com.maks.musicapp.data.music.track.TrackResult
+import com.maks.musicapp.data.domain.Track
+import com.maks.musicapp.data.dto.tracks.TrackResult
 import com.maks.musicapp.ui.states.TracksUiState
 import com.maks.musicapp.ui.animation.DisplayShimmer
 import com.maks.musicapp.utils.AppConstants
@@ -28,7 +29,7 @@ fun TracksList(
 //    isLoading:Boolean,
     tracksUiState: TracksUiState,
     listScrollAction: (LazyListState) -> Unit,
-    trackListItemClickAction: (TrackResult) -> Unit
+    trackListItemClickAction: (Track) -> Unit
 ) {
 //    val tracks by tracksLiveData.observeAsState()
     val scrollState = rememberLazyListState()
@@ -41,15 +42,15 @@ fun TracksList(
 @ExperimentalFoundationApi
 @Composable
 fun DisplayTrackList(
-    tracks: List<TrackResult>?,
+    tracks: List<Track>?,
     scrollState: LazyListState,
-    trackListItemClickAction: (TrackResult) -> Unit
+    trackListItemClickAction: (Track) -> Unit
 ) {
     tracks?.let { trackList ->
         LazyVerticalGrid(cells = GridCells.Fixed(2), state = scrollState) {
             items(trackList) {
                 TracksListItem(
-                    trackResult = it,
+                    track = it,
                     trackListItemClickAction = trackListItemClickAction
                 )
             }
@@ -58,22 +59,22 @@ fun DisplayTrackList(
 }
 
 @Composable
-fun TracksListItem(trackResult: TrackResult, trackListItemClickAction: (TrackResult) -> Unit) {
+fun TracksListItem(track: Track, trackListItemClickAction: (Track) -> Unit) {
     Card(
         modifier = Modifier
             .padding(8.dp)
-            .clickable(onClick = { trackListItemClickAction(trackResult) }), elevation = 8.dp
+            .clickable(onClick = { trackListItemClickAction(track) }), elevation = 8.dp
     ) {
         Column {
             GlideImage(
-                imageModel = trackResult.image?:AppConstants.DEFAULT_IMAGE,
+                imageModel = track.image?:AppConstants.DEFAULT_IMAGE,
                 contentScale = ContentScale.Crop,
                 circularReveal = CircularReveal(),
                 placeHolder = ImageBitmap.imageResource(R.drawable.music_logo),
 
             )
             Text(
-                text = "${trackResult.artist_name} - ${trackResult.name}",
+                text = "${track.artist_name} - ${track.name}",
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(8.dp)
             )

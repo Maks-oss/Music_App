@@ -1,4 +1,4 @@
-package com.maks.musicapp.data.music.artist.tracks
+package com.maks.musicapp.data.dto.artists.tracks
 
 data class ArtistTracksResult(
     val album_id: String,

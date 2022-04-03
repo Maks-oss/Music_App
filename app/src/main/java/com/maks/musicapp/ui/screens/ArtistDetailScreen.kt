@@ -1,6 +1,5 @@
 package com.maks.musicapp.ui.screens
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,7 +21,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.maks.musicapp.R
-import com.maks.musicapp.data.music.artist.ArtistResult
+import com.maks.musicapp.data.domain.Artist
+import com.maks.musicapp.data.dto.artists.ArtistResult
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
 import com.maks.musicapp.ui.composeutils.TrackBottomSheetLayout
 import com.maks.musicapp.ui.states.ProcessTracksUiStateMessages
@@ -33,7 +33,6 @@ import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
 import kotlinx.coroutines.launch
 
-@SuppressLint("CoroutineCreationDuringComposition")
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
@@ -41,7 +40,7 @@ fun ArtistDetailScreen(
     musicViewModel: MusicViewModel,
     navController: NavController,
     snackbarHostState: SnackbarHostState,
-    artistResult: ArtistResult,
+    artist: Artist,
 ) {
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
@@ -50,12 +49,12 @@ fun ArtistDetailScreen(
     TrackBottomSheetLayout(
         musicViewModel = musicViewModel,
         bottomSheetState = bottomSheetState,
-        trackListItemClickAction = { trackResult ->
-            musicViewModel.currentTrack = trackResult
+        trackListItemClickAction = { track ->
+            musicViewModel.currentTrack = track
             navController.navigate(Routes.TrackDetailsScreenRoute.route)
         }
     ) {
-        DisplayArtistDetail(artistResult, showTracksAction = {
+        DisplayArtistDetail(artist, showTracksAction = {
             musicViewModel.findArtistsTracks()
             coroutineScope.launch {
                 bottomSheetState.show()
@@ -67,7 +66,9 @@ fun ArtistDetailScreen(
         tracksUiState = musicViewModel.artistTracksUiState,
         snackbarHostState = snackbarHostState,
         messageShown = {
-            bottomSheetState.hide()
+            coroutineScope.launch {
+                bottomSheetState.hide()
+            }
             musicViewModel.artistTracksMessageDisplayed()
         }
     )
@@ -76,7 +77,7 @@ fun ArtistDetailScreen(
 
 
 @Composable
-private fun DisplayArtistDetail(artistResult: ArtistResult, showTracksAction: () -> Unit) {
+private fun DisplayArtistDetail(artist: Artist, showTracksAction: () -> Unit) {
     Surface(
         elevation = 8.dp,
         shape = MaterialTheme.shapes.medium,
@@ -87,7 +88,7 @@ private fun DisplayArtistDetail(artistResult: ArtistResult, showTracksAction: ()
                 .verticalScroll(rememberScrollState())
         ) {
             GlideImage(
-                imageModel = artistResult.image?.ifEmpty {
+                imageModel = artist.image?.ifEmpty {
                     AppConstants.DEFAULT_IMAGE
                 },
                 contentScale = ContentScale.Crop,
@@ -101,12 +102,12 @@ private fun DisplayArtistDetail(artistResult: ArtistResult, showTracksAction: ()
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = artistResult.name,
+                    text = artist.name,
                     style = MaterialTheme.typography.body1,
                     fontWeight = FontWeight.Bold
                 )
-                if (artistResult.website.isNotEmpty()) {
-                    UrlText(url = artistResult.website)
+                if (artist.website.isNotEmpty()) {
+                    UrlText(url = artist.website)
                 }
             }
             Spacer(modifier = Modifier.padding(8.dp))
@@ -123,7 +124,7 @@ private fun DisplayArtistDetail(artistResult: ArtistResult, showTracksAction: ()
 @Composable
 private fun UrlText(url: String) {
 
-    val annotatedString = buildAnnotatedString("Website", url)
+    val annotatedString = buildAnnotatedString(url)
     val uriHandler = LocalUriHandler.current
     Text(text = annotatedString, modifier = Modifier.clickable {
         uriHandler.openUri(url)
@@ -132,9 +133,9 @@ private fun UrlText(url: String) {
 
 @Composable
 private fun buildAnnotatedString(
-    value: String,
     url: String
 ) = buildAnnotatedString {
+    val value = "Website"
     addStyle(
         style = SpanStyle(
             color = Color(0xFF2097F7),

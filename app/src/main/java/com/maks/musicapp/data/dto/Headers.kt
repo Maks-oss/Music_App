@@ -1,4 +1,4 @@
-package com.maks.musicapp.data.music
+package com.maks.musicapp.data.dto
 
 data class Headers(
     val code: Int,

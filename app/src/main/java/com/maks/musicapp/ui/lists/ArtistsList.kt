@@ -15,7 +15,8 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.maks.musicapp.R
-import com.maks.musicapp.data.music.artist.ArtistResult
+import com.maks.musicapp.data.domain.Artist
+import com.maks.musicapp.data.dto.artists.ArtistResult
 import com.maks.musicapp.ui.states.ArtistsUiState
 import com.maks.musicapp.ui.animation.DisplayShimmer
 import com.maks.musicapp.utils.AppConstants
@@ -27,7 +28,7 @@ import com.skydoves.landscapist.glide.GlideImage
 fun ArtistsList(
     artistsUiState: ArtistsUiState,
     listScrollAction: (LazyListState) -> Unit,
-    artistListItemClickAction: (ArtistResult) -> Unit
+    artistListItemClickAction: (Artist) -> Unit
 ) {
 //    val artists by musicViewModel.artistListLiveData.observeAsState()
 //    val isLoading by musicViewModel.musicViewModelStates.isLoading
@@ -41,30 +42,30 @@ fun ArtistsList(
 @ExperimentalFoundationApi
 @Composable
 fun DisplayArtistsList(
-    artists: List<ArtistResult>?,
+    artists: List<Artist>?,
     scrollState: LazyListState,
-    artistListItemClickAction: (ArtistResult) -> Unit
+    artistListItemClickAction: (Artist) -> Unit
 ) {
-    artists?.let { trackList ->
+    artists?.let { artistList ->
         LazyVerticalGrid(cells = GridCells.Fixed(2), state = scrollState) {
-            items(trackList) {
-                ArtistsListItem(artistResult = it, artistListItemClickAction)
+            items(artistList) {
+                ArtistsListItem(artist = it, artistListItemClickAction)
             }
         }
     }
 }
 
 @Composable
-fun ArtistsListItem(artistResult: ArtistResult, artistListItemClickAction: (ArtistResult) -> Unit) {
+fun ArtistsListItem(artist: Artist, artistListItemClickAction: (Artist) -> Unit) {
     Card(
         modifier = Modifier
             .padding(8.dp)
-            .clickable { artistListItemClickAction(artistResult) },
+            .clickable { artistListItemClickAction(artist) },
         elevation = 8.dp
     ) {
         Column {
             GlideImage(
-                imageModel = artistResult.image?.ifEmpty {
+                imageModel = artist.image?.ifEmpty {
                     AppConstants.DEFAULT_IMAGE
                 },
                 contentScale = ContentScale.Crop,
@@ -72,7 +73,7 @@ fun ArtistsListItem(artistResult: ArtistResult, artistListItemClickAction: (Arti
                 placeHolder = ImageBitmap.imageResource(id = R.drawable.music_logo)
             )
             Text(
-                text = artistResult.name,
+                text = artist.name,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(8.dp)
             )

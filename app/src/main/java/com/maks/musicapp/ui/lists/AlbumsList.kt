@@ -15,7 +15,8 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.maks.musicapp.R
-import com.maks.musicapp.data.music.albums.AlbumResult
+import com.maks.musicapp.data.domain.Album
+import com.maks.musicapp.data.dto.albums.AlbumResult
 import com.maks.musicapp.ui.states.AlbumsUiState
 import com.maks.musicapp.ui.animation.DisplayShimmer
 import com.maks.musicapp.utils.AppConstants
@@ -27,7 +28,7 @@ import com.skydoves.landscapist.glide.GlideImage
 fun AlbumsList(
     albumsUiState: AlbumsUiState,
     listScrollAction: (LazyListState) -> Unit,
-    albumListItemClickAction: (AlbumResult) -> Unit
+    albumListItemClickAction: (Album) -> Unit
 ) {
 //    val albums by musicViewModel.albumsListLiveData.observeAsState()
 //    val isLoading by musicViewModel.musicViewModelStates.isLoading
@@ -41,25 +42,25 @@ fun AlbumsList(
 @ExperimentalFoundationApi
 @Composable
 fun DisplayAlbumsList(
-    artists: List<AlbumResult>?,
+    albums: List<Album>?,
     scrollState: LazyListState,
-    albumListItemClickAction: (AlbumResult) -> Unit
+    albumListItemClickAction: (Album) -> Unit
 ) {
-    artists?.let { trackList ->
+    albums?.let { albumList ->
         LazyVerticalGrid(cells = GridCells.Fixed(2), state = scrollState) {
-            items(trackList) {
-                AlbumsListItem(albumResult = it,albumListItemClickAction)
+            items(albumList) {
+                AlbumsListItem(album = it,albumListItemClickAction)
             }
         }
     }
 }
 
 @Composable
-fun AlbumsListItem(albumResult: AlbumResult,albumListItemClickAction: (AlbumResult) -> Unit) {
-    Card(modifier = Modifier.padding(8.dp).clickable { albumListItemClickAction(albumResult) }, elevation = 8.dp) {
+fun AlbumsListItem(album: Album, albumListItemClickAction: (Album) -> Unit) {
+    Card(modifier = Modifier.padding(8.dp).clickable { albumListItemClickAction(album) }, elevation = 8.dp) {
         Column {
             GlideImage(
-                imageModel = albumResult.image.ifEmpty {
+                imageModel = album.image.ifEmpty {
                     AppConstants.DEFAULT_IMAGE
                 },
                 contentScale = ContentScale.Crop,
@@ -67,7 +68,7 @@ fun AlbumsListItem(albumResult: AlbumResult,albumListItemClickAction: (AlbumResu
                 placeHolder = ImageBitmap.imageResource(R.drawable.music_logo),
             )
             Text(
-                text = albumResult.name,
+                text = album.name,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(8.dp)
             )

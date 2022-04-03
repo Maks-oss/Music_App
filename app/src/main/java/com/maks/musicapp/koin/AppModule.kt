@@ -1,5 +1,6 @@
 package com.maks.musicapp.koin
 
+import com.maks.musicapp.mappers.MusicMapper
 import com.maks.musicapp.repository.*
 import com.maks.musicapp.retrofit.RetrofitClient
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
@@ -17,5 +18,5 @@ val repositoryModule = module {
     single<MusicRepository> { MusicRepositoryImpl(get()) }
 }
 val viewModelModule = module {
-    viewModel { MusicViewModel(get()) }
+    viewModel { MusicViewModel(get(), MusicMapper()) }
 }

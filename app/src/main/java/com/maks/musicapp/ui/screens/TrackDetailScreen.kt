@@ -25,11 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.maks.musicapp.R
-import com.maks.musicapp.data.music.track.Tags
-import com.maks.musicapp.data.music.track.TrackResult
+import com.maks.musicapp.data.domain.Track
+import com.maks.musicapp.data.dto.tracks.Tags
+import com.maks.musicapp.data.dto.tracks.TrackResult
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
-import com.maks.musicapp.ui.viewmodels.MusicViewModelStates
 import com.maks.musicapp.utils.AppConstants
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.TrackCountDownTimer
@@ -39,7 +39,7 @@ import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
 fun TrackDetailScreen(
-    track: TrackResult,
+    track: Track,
     musicViewModel: MusicViewModel,
     navController: NavController
 ) {
@@ -65,7 +65,7 @@ fun TrackDetailScreen(
 
 @Composable
 fun DisplayTrack(
-    track: TrackResult,
+    track: Track,
     mediaPlayer: MediaPlayer,
     trackCountDownTimer: TrackCountDownTimer,
     musicViewModel: MusicViewModel,
@@ -108,7 +108,7 @@ fun DisplayMusicInfo(tags: Tags?) {
 }
 
 @Composable
-private fun TrackInfo(track: TrackResult) {
+private fun TrackInfo(track: Track) {
     GlideImage(
         imageModel = track.image?.ifEmpty {
             AppConstants.DEFAULT_IMAGE
