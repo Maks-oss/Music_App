@@ -93,16 +93,16 @@ fun DisplayTrack(
 @Composable
 fun DisplayMusicInfo(tags: Tags?) {
     tags?.let { tag ->
-        Text(text = "Music Genres:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Text(text = "Music Genres:", style = MaterialTheme.typography.body2)
         DisplayTags(tags = tag.genres, color = Color.Red)
-        Text(text = "Music instruments:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Text(text = "Music instruments:", style = MaterialTheme.typography.body2)
         DisplayTags(tags = tag.instruments, color = Color.Blue)
     }
     /** For test purposes */
     Column(Modifier.padding(8.dp)) {
-        Text(text = "Music Genres:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Text(text = "Music Genres:", style = MaterialTheme.typography.body2)
         DisplayTags(tags = listOf("Rock", "Hip-Hop"), color = Color.Red)
-        Text(text = "Music instruments:", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        Text(text = "Music instruments:", style = MaterialTheme.typography.body2)
         DisplayTags(tags = listOf("Guitar", "Bass"), color = Color.Blue)
     }
 }
@@ -128,11 +128,10 @@ private fun TrackInfo(track: Track) {
                 append(" -\n")
                 append(track.name)
             },
-            style = MaterialTheme.typography.body1, fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.body2
         )
         Text(
-            text = track.releasedate,
-            style = MaterialTheme.typography.body1
+            text = track.releasedate
         )
     }
 }
@@ -198,7 +197,7 @@ private fun DisplayTags(tags: List<String>, color: Color) {
                         }
                     },
                 textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.body1
+                style = MaterialTheme.typography.body2
             )
 
         }

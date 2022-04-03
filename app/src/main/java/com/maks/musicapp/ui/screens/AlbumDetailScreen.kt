@@ -86,7 +86,7 @@ private fun DisplayAlbumDetail(album: Album, showTracksClickAction: () -> Unit) 
                     .padding(8.dp)
                     .fillMaxWidth()
             ) {
-                Text(text = album.name, fontWeight = FontWeight.Bold)
+                Text(text = album.name, style = MaterialTheme.typography.body2)
                 Text(text = album.releasedate)
             }
             CustomOutlinedButton(

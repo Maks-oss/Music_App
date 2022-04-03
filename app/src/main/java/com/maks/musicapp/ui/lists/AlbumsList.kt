@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.*
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -68,7 +69,7 @@ fun AlbumsListItem(album: Album, albumListItemClickAction: (Album) -> Unit) {
             )
             Text(
                 text = album.name,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.body1,
                 modifier = Modifier.padding(8.dp)
             )
         }

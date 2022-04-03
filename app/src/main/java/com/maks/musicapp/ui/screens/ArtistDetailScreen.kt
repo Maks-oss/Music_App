@@ -104,8 +104,7 @@ private fun DisplayArtistDetail(artist: Artist, showTracksAction: () -> Unit) {
 
                 Text(
                     text = artist.name,
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.body2,
                 )
                 if (artist.website.isNotEmpty()) {
                     UrlText(url = artist.website)
