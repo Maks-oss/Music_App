@@ -27,7 +27,7 @@ fun TrackBottomSheetLayout(
         sheetContent = {
             Box(Modifier.defaultMinSize(minHeight = 1.dp)) {
                 TracksList(
-                    tracksUiState = musicViewModel.tracksUiState,
+                    tracksUiState = musicViewModel.artistTracksUiState,
                     listScrollAction = { },
                     trackListItemClickAction = trackListItemClickAction
                 )

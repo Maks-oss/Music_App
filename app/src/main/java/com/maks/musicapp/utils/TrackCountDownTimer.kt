@@ -6,14 +6,15 @@ import com.maks.musicapp.ui.viewmodels.MusicViewModel
 
 class TrackCountDownTimer(
     millis: Long, countDown: Long = 100,
-    private val musicViewModelStates: MusicViewModel.MusicViewModelStates,
+    private val musicViewModel: MusicViewModel,
     private val mediaPlayer: MediaPlayer,
 ) : CountDownTimer(millis, countDown) {
 
     override fun onTick(millisUntilFinished: Long) {
-        musicViewModelStates.setTrackMinutesValue(mediaPlayer.currentPosition.toFloat())
+
+        musicViewModel.setTrackMinutesValue(mediaPlayer.currentPosition.toFloat())
         if (mediaPlayer.currentPosition == mediaPlayer.duration) {
-            musicViewModelStates.setIsTrackPlayingValue(false)
+            musicViewModel.setIsTrackPlayingValue(false)
         }
     }
 

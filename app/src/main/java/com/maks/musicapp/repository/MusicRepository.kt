@@ -4,7 +4,6 @@ import com.maks.musicapp.data.music.albums.AlbumResult
 import com.maks.musicapp.data.music.artist.ArtistResult
 import com.maks.musicapp.data.music.artist.tracks.ArtistTracksResult
 import com.maks.musicapp.data.music.track.TrackResult
-import com.maks.musicapp.utils.Result
 
 interface MusicRepository {
     suspend fun getTracksByName(name: String): List<TrackResult>?

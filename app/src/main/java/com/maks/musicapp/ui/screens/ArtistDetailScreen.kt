@@ -7,7 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -24,11 +25,13 @@ import com.maks.musicapp.R
 import com.maks.musicapp.data.music.artist.ArtistResult
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
 import com.maks.musicapp.ui.composeutils.TrackBottomSheetLayout
+import com.maks.musicapp.ui.states.ProcessTracksUiStateMessages
+import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.utils.AppConstants
 import com.maks.musicapp.utils.Routes
-import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
+import kotlinx.coroutines.launch
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @ExperimentalFoundationApi
@@ -43,8 +46,7 @@ fun ArtistDetailScreen(
     val bottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
     )
-    val artistTracks = musicViewModel.artistTracksUiState.tracksResult
-    var isButtonClicked by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
     TrackBottomSheetLayout(
         musicViewModel = musicViewModel,
         bottomSheetState = bottomSheetState,
@@ -53,21 +55,22 @@ fun ArtistDetailScreen(
             navController.navigate(Routes.TrackDetailsScreenRoute.route)
         }
     ) {
-
         DisplayArtistDetail(artistResult, showTracksAction = {
             musicViewModel.findArtistsTracks()
-            isButtonClicked = true
+            coroutineScope.launch {
+                bottomSheetState.show()
+            }
         })
-
     }
-//    ProcessArtistTracksState(
-//        artistTracks,
-//        bottomSheetState,
-//        snackbarHostState,
-//        isButtonClicked,
-//        musicViewModel.musicViewModelStates
-//    )
 
+    ProcessTracksUiStateMessages(
+        tracksUiState = musicViewModel.artistTracksUiState,
+        snackbarHostState = snackbarHostState,
+        messageShown = {
+            bottomSheetState.hide()
+            musicViewModel.artistTracksMessageDisplayed()
+        }
+    )
 
 }
 

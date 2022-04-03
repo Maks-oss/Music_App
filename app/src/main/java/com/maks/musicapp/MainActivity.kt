@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
             composable(Routes.TrackDetailsScreenRoute.route) {
                 TrackDetailScreen(
                     track = musicViewModel.currentTrack,
-                    musicViewModel.musicViewModelStates,
+                    musicViewModel,
                     navController
                 )
             }

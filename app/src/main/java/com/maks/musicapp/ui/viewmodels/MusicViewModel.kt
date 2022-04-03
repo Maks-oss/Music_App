@@ -21,75 +21,25 @@ import kotlin.properties.Delegates
 
 class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel() {
 
-    //    private val _trackListLiveData: MutableLiveData<Resource<List<TrackResult>>> = MutableLiveData()
-//    val trackListLiveData: LiveData<Resource<List<TrackResult>>> = _trackListLiveData
     var tracksUiState by mutableStateOf(TracksUiState())
         private set
 
-    //    private val _artistListLiveData: MutableLiveData<Resource<List<ArtistResult>>> =
-//        MutableLiveData()
-//    val artistListLiveData: LiveData<Resource<List<ArtistResult>>> = _artistListLiveData
     var artistsUiState by mutableStateOf(ArtistsUiState())
         private set
 
-    //    private val _artistTracksListLiveData: MutableLiveData<Resource<List<TrackResult>>> =
-//        MutableLiveData()
-//    val artistTracksListLiveData: LiveData<Resource<List<TrackResult>>> = _artistTracksListLiveData
+
     var artistTracksUiState by mutableStateOf(TracksUiState())
         private set
-
-//    private val _albumsListLiveData: MutableLiveData<Resource<List<AlbumResult>>> =
-//        MutableLiveData()
-//    val albumsListLiveData: LiveData<Resource<List<AlbumResult>>> = _albumsListLiveData
 
     var albumsUiState by mutableStateOf(AlbumsUiState())
         private set
 
-    val musicViewModelStates = MusicViewModelStates()
+    var musicViewModelStates by mutableStateOf(MusicViewModelStates())
+        private set
 
     var currentTrack: TrackResult by Delegates.notNull()
     var currentArtist: ArtistResult by Delegates.notNull()
     var currentAlbum: AlbumResult by Delegates.notNull()
-
-    class MusicViewModelStates {
-        val isLoading = mutableStateOf(false)
-        val searchName = mutableStateOf("")
-        val currentJob = mutableStateOf<Job?>(null)
-        val tabState = mutableStateOf(0)
-        val textFieldVisibility = mutableStateOf(true)
-
-        val isTrackPlaying = mutableStateOf(false)
-        val trackMinutes = mutableStateOf(0F)
-
-        fun setIsTrackPlayingValue(value: Boolean) {
-            isTrackPlaying.value = value
-        }
-
-        fun setTrackMinutesValue(value: Float) {
-            trackMinutes.value = value
-        }
-
-        fun setIsLoadingValue(value: Boolean) {
-            isLoading.value = value
-        }
-
-        fun setCurrentJobValue(value: Job?) {
-            currentJob.value = value
-        }
-
-        fun setTabStateValue(value: Int) {
-            tabState.value = value
-        }
-
-        fun setSearchNameValue(value: String) {
-            searchName.value = value
-        }
-
-        fun setTextFieldVisibilityValue(value: Boolean) {
-            textFieldVisibility.value = value
-        }
-    }
-
 
     fun findTracksByName() {
 
@@ -98,7 +48,7 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
             delay(1000)
             tracksUiState = try {
                 val tracks = musicRepository.getTracksByName(
-                    musicViewModelStates.searchName.value
+                    musicViewModelStates.searchInput
                 )
                 if (tracks.isNullOrEmpty()) {
                     tracksUiState.copy(
@@ -129,7 +79,7 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
             delay(1000)
             artistsUiState = try {
                 val artistsResult = musicRepository.getArtistsByName(
-                    musicViewModelStates.searchName.value
+                    musicViewModelStates.searchInput
                 )
                 if (artistsResult.isNullOrEmpty()) {
                     artistsUiState.copy(
@@ -160,7 +110,7 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
             delay(1000)
             albumsUiState = try {
                 val albumsResult = musicRepository.getAlbumsByName(
-                    musicViewModelStates.searchName.value
+                    musicViewModelStates.searchInput
                 )
                 if (albumsResult.isNullOrEmpty()) {
                     albumsUiState.copy(
@@ -228,6 +178,34 @@ class MusicViewModel(private val musicRepository: MusicRepository) : ViewModel()
 
     fun albumsMessageDisplayed() {
         albumsUiState = albumsUiState.copy(message = null)
+    }
+
+    fun artistTracksMessageDisplayed() {
+        artistTracksUiState = artistTracksUiState.copy(message = null)
+    }
+
+    fun setIsTrackPlayingValue(value: Boolean) {
+        musicViewModelStates = musicViewModelStates.copy(isTrackPlaying = value)
+    }
+
+    fun setTrackMinutesValue(value: Float) {
+        musicViewModelStates = musicViewModelStates.copy(trackMinutes = value)
+    }
+
+    fun setCurrentJobValue(value: Job?) {
+        musicViewModelStates = musicViewModelStates.copy(currentJob = value)
+    }
+
+    fun setTabStateValue(value: Int) {
+        musicViewModelStates = musicViewModelStates.copy(tabState = value)
+    }
+
+    fun setSearchInputValue(value: String) {
+        musicViewModelStates = musicViewModelStates.copy(searchInput = value)
+    }
+
+    fun setTextFieldVisibilityValue(value: Boolean) {
+        musicViewModelStates = musicViewModelStates.copy(textFieldVisibility = value)
     }
 
 

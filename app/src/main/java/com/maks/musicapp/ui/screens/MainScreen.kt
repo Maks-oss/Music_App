@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavController
 import com.maks.musicapp.data.music.albums.AlbumResult
@@ -17,9 +16,9 @@ import com.maks.musicapp.ui.composeutils.MusicTextField
 import com.maks.musicapp.ui.lists.AlbumsList
 import com.maks.musicapp.ui.lists.ArtistsList
 import com.maks.musicapp.ui.lists.TracksList
-import com.maks.musicapp.ui.states.ProcessAlbumsUiState
-import com.maks.musicapp.ui.states.ProcessArtistsUiState
-import com.maks.musicapp.ui.states.ProcessTracksUiState
+import com.maks.musicapp.ui.states.ProcessAlbumsUiStateMessages
+import com.maks.musicapp.ui.states.ProcessArtistsUiStateMessages
+import com.maks.musicapp.ui.states.ProcessTracksUiStateMessages
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.TabRoutes
@@ -36,25 +35,20 @@ fun MainScreen(
     snackbarHostState: SnackbarHostState
 ) {
     val musicViewModelStates = musicViewModel.musicViewModelStates
-    val textValue by musicViewModelStates.searchName
-    val currentJob by musicViewModelStates.currentJob
-    val tabState by musicViewModelStates.tabState
-    val isTextFieldVisible by musicViewModelStates.textFieldVisibility
 
     val scope = rememberCoroutineScope()
     val tabsList = listOf(TabRoutes.TracksTab, TabRoutes.ArtistsTab, TabRoutes.AlbumsTab)
 
     Column {
-
-        MusicTabs(tabIndex = tabState, tabsList = tabsList, tabAction = {
-            musicViewModelStates.setTabStateValue(it)
+        MusicTabs(tabIndex = musicViewModelStates.tabState, tabsList = tabsList, tabAction = {
+            musicViewModel.setTabStateValue(it)
         })
-        MusicTextField(textValue = textValue, isVisible = isTextFieldVisible, onValueChange = {
-            musicViewModelStates.setSearchNameValue(it)
-            currentJob?.cancel()
+        MusicTextField(textValue = musicViewModelStates.searchInput, isVisible = musicViewModelStates.textFieldVisibility, onValueChange = {
+            musicViewModel.setSearchInputValue(it)
+            musicViewModelStates.currentJob?.cancel()
             if (it.isNotEmpty()) {
                 val job = scope.async {
-                    musicViewModelStates.setSearchNameValue(it)
+                    musicViewModel.setSearchInputValue(it)
                     delay(1000)
                     musicViewModel.apply {
                         findTracksByName()
@@ -62,13 +56,13 @@ fun MainScreen(
                         findAlbumsByName()
                     }
                 }
-                musicViewModelStates.setCurrentJobValue(job)
+                musicViewModel.setCurrentJobValue(job)
             }
         })
 
-        DisplayList(tabState, musicViewModel,
+        DisplayList(musicViewModelStates.tabState, musicViewModel,
             listScrollAction = { scrollState ->
-                musicViewModelStates.setTextFieldVisibilityValue(scrollState.firstVisibleItemIndex == 0)
+                musicViewModel.setTextFieldVisibilityValue(scrollState.firstVisibleItemIndex == 0)
             }, trackItemClickAction = { trackResult ->
                 musicViewModel.currentTrack = trackResult
                 navController.navigate(Routes.TrackDetailsScreenRoute.route)
@@ -78,10 +72,10 @@ fun MainScreen(
             }, albumItemClickAction = { albumResult ->
                 musicViewModel.currentAlbum = albumResult
             })
-        ProcessListUiStates(
+        ProcessListUiStateMessages(
             musicViewModel = musicViewModel,
             snackbarHostState = snackbarHostState,
-            tabIndex = tabState
+            tabIndex = musicViewModelStates.tabState
         )
     }
 
@@ -117,23 +111,23 @@ private fun DisplayList(
 }
 
 @Composable
-private fun ProcessListUiStates(
+private fun ProcessListUiStateMessages(
     musicViewModel: MusicViewModel,
     snackbarHostState: SnackbarHostState,
     tabIndex: Int
 ) {
     when (tabIndex) {
-        TabRowConstants.TRACK_TAB_INDEX -> ProcessTracksUiState(
+        TabRowConstants.TRACK_TAB_INDEX -> ProcessTracksUiStateMessages(
             tracksUiState = musicViewModel.tracksUiState,
             snackbarHostState = snackbarHostState,
             messageShown = { musicViewModel.tracksMessageDisplayed() }
         )
-        TabRowConstants.ARTIST_TAB_INDEX -> ProcessArtistsUiState(
+        TabRowConstants.ARTIST_TAB_INDEX -> ProcessArtistsUiStateMessages(
             artistsUiState = musicViewModel.artistsUiState,
             snackbarHostState = snackbarHostState,
             messageShown = { musicViewModel.artistsMessageDisplayed() }
         )
-        TabRowConstants.ALBUM_TAB_INDEX -> ProcessAlbumsUiState(
+        TabRowConstants.ALBUM_TAB_INDEX -> ProcessAlbumsUiStateMessages(
             albumsUiState = musicViewModel.albumsUiState,
             snackbarHostState = snackbarHostState,
             messageShown = { musicViewModel.albumsMessageDisplayed() }

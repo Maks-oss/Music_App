@@ -28,29 +28,30 @@ import com.maks.musicapp.R
 import com.maks.musicapp.data.music.track.Tags
 import com.maks.musicapp.data.music.track.TrackResult
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
+import com.maks.musicapp.ui.viewmodels.MusicViewModel
+import com.maks.musicapp.ui.viewmodels.MusicViewModelStates
 import com.maks.musicapp.utils.AppConstants
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.TrackCountDownTimer
 import com.maks.musicapp.utils.toMinutes
-import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
 fun TrackDetailScreen(
     track: TrackResult,
-    musicViewModelStates: MusicViewModel.MusicViewModelStates,
+    musicViewModel: MusicViewModel,
     navController: NavController
 ) {
     val mediaPlayer = MediaPlayer.create(LocalContext.current, Uri.parse(track.audio))
     val trackCountDownTimer = TrackCountDownTimer(
         mediaPlayer.duration.toLong(),
-        musicViewModelStates = musicViewModelStates,
+        musicViewModel = musicViewModel,
         mediaPlayer = mediaPlayer
     )
     BackHandler {
         navController.navigate(Routes.MainScreenRoute.route)
-        musicViewModelStates.setTrackMinutesValue(0f)
+        musicViewModel.setTrackMinutesValue(0f)
         trackCountDownTimer.cancel()
     }
 
@@ -58,7 +59,7 @@ fun TrackDetailScreen(
         elevation = 8.dp, shape = MaterialTheme.shapes.medium, modifier = Modifier
             .padding(8.dp)
     ) {
-        DisplayTrack(track, mediaPlayer, trackCountDownTimer, musicViewModelStates)
+        DisplayTrack(track, mediaPlayer, trackCountDownTimer, musicViewModel)
     }
 }
 
@@ -67,18 +68,18 @@ fun DisplayTrack(
     track: TrackResult,
     mediaPlayer: MediaPlayer,
     trackCountDownTimer: TrackCountDownTimer,
-    musicViewModelStates: MusicViewModel.MusicViewModelStates
+    musicViewModel: MusicViewModel,
 ) {
-
+    val musicViewModelStates = musicViewModel.musicViewModelStates
     Column(Modifier.verticalScroll(rememberScrollState())) {
         TrackInfo(track)
-        AudioPlayer(mediaPlayer = mediaPlayer, musicViewModelStates = musicViewModelStates) {
-            if (musicViewModelStates.isTrackPlaying.value) {
+        AudioPlayer(mediaPlayer = mediaPlayer, musicViewModel = musicViewModel) {
+            if (musicViewModelStates.isTrackPlaying) {
                 mediaPlayer.pause()
             } else {
                 mediaPlayer.start()
             }
-            musicViewModelStates.setIsTrackPlayingValue(!musicViewModelStates.isTrackPlaying.value)
+            musicViewModel.setIsTrackPlayingValue(!musicViewModelStates.isTrackPlaying)
             trackCountDownTimer.start()
         }
 
@@ -119,7 +120,7 @@ private fun TrackInfo(track: TrackResult) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),horizontalArrangement = Arrangement.SpaceBetween
+            .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = buildString {
@@ -139,29 +140,30 @@ private fun TrackInfo(track: TrackResult) {
 @Composable
 private fun AudioPlayer(
     mediaPlayer: MediaPlayer,
-    musicViewModelStates: MusicViewModel.MusicViewModelStates,
+    musicViewModel: MusicViewModel,
     audioPlayerAction: () -> Unit
 ) {
+    val musicViewModelStates = musicViewModel.musicViewModelStates
     Column(modifier = Modifier.padding(8.dp)) {
         Row {
             Icon(
-                imageVector = if (musicViewModelStates.isTrackPlaying.value) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                imageVector = if (musicViewModelStates.isTrackPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .clickable(onClick = audioPlayerAction),
                 contentDescription = ""
             )
             Slider(
-                value = musicViewModelStates.trackMinutes.value,
+                value = musicViewModelStates.trackMinutes,
                 modifier = Modifier.padding(horizontal = 8.dp),
                 valueRange = 0f..mediaPlayer.duration.toFloat(),
                 onValueChange = {
-                    musicViewModelStates.setTrackMinutesValue(it)
+                    musicViewModel.setTrackMinutesValue(it)
                     mediaPlayer.seekTo(it.toInt())
                 })
         }
         Row {
-            Text(text = musicViewModelStates.trackMinutes.value.toMinutes())
+            Text(text = musicViewModelStates.trackMinutes.toMinutes())
             Text(
                 text = mediaPlayer.duration.toMinutes(),
                 textAlign = TextAlign.End,
@@ -169,7 +171,7 @@ private fun AudioPlayer(
             )
         }
         Spacer(modifier = Modifier.padding(8.dp))
-        CustomOutlinedButton(text = "Download Track",onClick = {
+        CustomOutlinedButton(text = "Download Track", onClick = {
 
         })
     }
