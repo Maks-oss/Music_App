@@ -30,8 +30,7 @@ fun AlbumsList(
     listScrollAction: (LazyListState) -> Unit,
     albumListItemClickAction: (Album) -> Unit
 ) {
-//    val albums by musicViewModel.albumsListLiveData.observeAsState()
-//    val isLoading by musicViewModel.musicViewModelStates.isLoading
+
     val scrollState = rememberLazyListState()
     listScrollAction(scrollState)
     DisplayShimmer(albumsUiState.isLoading)

@@ -33,6 +33,9 @@ class MusicViewModel(
     var artistTracksUiState by mutableStateOf(TracksUiState())
         private set
 
+    var albumTracksUiState by mutableStateOf(TracksUiState())
+        private set
+
     var albumsUiState by mutableStateOf(AlbumsUiState())
         private set
 
@@ -172,6 +175,36 @@ class MusicViewModel(
         }
     }
 
+    fun findAlbumsTracks() {
+
+        albumTracksUiState =
+            albumTracksUiState.copy(isLoading = true, tracksResult = null, message = null)
+        viewModelScope.launch {
+            delay(1000)
+            albumTracksUiState = try {
+                val albumTracksResult = musicRepository.getAlbumTracks(
+                    currentAlbum.id
+                )
+
+                albumTracksUiState.copy(
+                    isLoading = false,
+                    tracksResult = musicMapper.toAlbumTracksList(
+                        currentAlbum,
+                        albumTracksResult!!
+                    )
+                )
+
+            } catch (exc: Exception) {
+                albumTracksUiState.copy(
+                    isLoading = false,
+                    tracksResult = null,
+                    message = exc.localizedMessage
+                )
+            }
+
+        }
+    }
+
 
     fun tracksMessageDisplayed() {
         tracksUiState = tracksUiState.copy(message = null)
@@ -187,6 +220,10 @@ class MusicViewModel(
 
     fun artistTracksMessageDisplayed() {
         artistTracksUiState = artistTracksUiState.copy(message = null)
+    }
+
+    fun albumTracksMessageDisplayed() {
+        albumTracksUiState = albumTracksUiState.copy(message = null)
     }
 
     fun setIsTrackPlayingValue(value: Boolean) {

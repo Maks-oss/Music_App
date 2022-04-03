@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import com.maks.musicapp.data.domain.Track
 import com.maks.musicapp.data.dto.tracks.TrackResult
 import com.maks.musicapp.ui.lists.TracksList
+import com.maks.musicapp.ui.states.TracksUiState
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 
 
@@ -17,7 +18,7 @@ import com.maks.musicapp.ui.viewmodels.MusicViewModel
 @ExperimentalMaterialApi
 @Composable
 fun TrackBottomSheetLayout(
-    musicViewModel: MusicViewModel,
+    tracksUiState: TracksUiState,
     bottomSheetState: ModalBottomSheetState,
     trackListItemClickAction: (Track) -> Unit,
     content: @Composable () -> Unit
@@ -28,7 +29,7 @@ fun TrackBottomSheetLayout(
         sheetContent = {
             Box(Modifier.defaultMinSize(minHeight = 1.dp)) {
                 TracksList(
-                    tracksUiState = musicViewModel.artistTracksUiState,
+                    tracksUiState = tracksUiState,
                     listScrollAction = { },
                     trackListItemClickAction = trackListItemClickAction
                 )
@@ -38,3 +39,4 @@ fun TrackBottomSheetLayout(
         content = content
     )
 }
+

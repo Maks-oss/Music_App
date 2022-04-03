@@ -1,6 +1,7 @@
 package com.maks.musicapp.repository
 
 import com.maks.musicapp.data.dto.albums.AlbumResult
+import com.maks.musicapp.data.dto.albums.tracks.AlbumTracksResult
 import com.maks.musicapp.data.dto.artists.ArtistResult
 import com.maks.musicapp.data.dto.artists.tracks.ArtistTracksResult
 import com.maks.musicapp.data.dto.tracks.TrackResult
@@ -13,4 +14,6 @@ interface MusicRepository {
     suspend fun getAlbumsByName(name: String): List<AlbumResult>?
 
     suspend fun getArtistTracks(id: String): List<ArtistTracksResult>?
+
+    suspend fun getAlbumTracks(id: String): List<AlbumTracksResult>?
 }

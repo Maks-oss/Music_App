@@ -4,6 +4,7 @@ import com.maks.musicapp.data.domain.Album
 import com.maks.musicapp.data.domain.Artist
 import com.maks.musicapp.data.domain.Track
 import com.maks.musicapp.data.dto.albums.AlbumResult
+import com.maks.musicapp.data.dto.albums.tracks.AlbumTracksResult
 import com.maks.musicapp.data.dto.artists.ArtistResult
 import com.maks.musicapp.data.dto.artists.tracks.ArtistTracksResult
 import com.maks.musicapp.data.dto.tracks.TrackResult
@@ -60,6 +61,28 @@ class MusicMapper {
                 musicinfo = null,
                 name = result.name,
                 releasedate = result.releasedate
+            )
+        }
+    }
+
+    fun toAlbumTracksList(
+        album: Album,
+        albumTracksResult: List<AlbumTracksResult>
+    ): List<Track> {
+        return albumTracksResult.map { result ->
+            Track(
+                album_id = album.id,
+                album_name = album.name,
+                artist_id = album.artist_id,
+                artist_name = album.artist_name,
+                audio = result.audio,
+                duration = result.duration.toInt(),
+                audiodownload = result.audiodownload,
+                id = result.id,
+                image = album.image,
+                musicinfo = null,
+                name = result.name,
+                releasedate = album.releasedate
             )
         }
     }

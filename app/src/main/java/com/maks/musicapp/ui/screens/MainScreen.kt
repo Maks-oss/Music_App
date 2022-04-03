@@ -74,6 +74,7 @@ fun MainScreen(
                 navController.navigate(Routes.ArtistDetailsScreenRoute.route)
             }, albumItemClickAction = { albumResult ->
                 musicViewModel.currentAlbum = albumResult
+                navController.navigate(Routes.AlbumDetailsScreenRoute.route)
             })
         ProcessListUiStateMessages(
             musicViewModel = musicViewModel,

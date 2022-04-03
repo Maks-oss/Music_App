@@ -47,7 +47,7 @@ fun ArtistDetailScreen(
     )
     val coroutineScope = rememberCoroutineScope()
     TrackBottomSheetLayout(
-        musicViewModel = musicViewModel,
+        tracksUiState = musicViewModel.artistTracksUiState,
         bottomSheetState = bottomSheetState,
         trackListItemClickAction = { track ->
             musicViewModel.currentTrack = track
@@ -101,6 +101,7 @@ private fun DisplayArtistDetail(artist: Artist, showTracksAction: () -> Unit) {
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+
                 Text(
                     text = artist.name,
                     style = MaterialTheme.typography.body1,

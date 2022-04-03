@@ -1,6 +1,7 @@
 package com.maks.musicapp.retrofit.retrofitservices
 
 import com.maks.musicapp.data.dto.albums.Albums
+import com.maks.musicapp.data.dto.albums.tracks.AlbumTracks
 import com.maks.musicapp.data.dto.artists.Artists
 import com.maks.musicapp.data.dto.artists.tracks.ArtistTracks
 import com.maks.musicapp.data.dto.tracks.Track
@@ -32,4 +33,10 @@ interface MusicService {
         @Query("client_id") clientId:String,
         @Query("id") id:String,
     ):Response<ArtistTracks>
+
+    @GET("albums/tracks")
+    suspend fun getAlbumsTracksResponse(
+        @Query("client_id") clientId:String,
+        @Query("id") id:String,
+    ):Response<AlbumTracks>
 }
