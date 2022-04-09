@@ -99,12 +99,12 @@ fun DisplayMusicInfo(tags: Tags?) {
         DisplayTags(tags = tag.instruments, color = Color.Blue)
     }
     /** For test purposes */
-    Column(Modifier.padding(8.dp)) {
+    /*Column(Modifier.padding(8.dp)) {
         Text(text = "Music Genres:", style = MaterialTheme.typography.body2)
         DisplayTags(tags = listOf("Rock", "Hip-Hop"), color = Color.Red)
         Text(text = "Music instruments:", style = MaterialTheme.typography.body2)
         DisplayTags(tags = listOf("Guitar", "Bass"), color = Color.Blue)
-    }
+    }*/
 }
 
 @Composable

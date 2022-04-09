@@ -13,5 +13,4 @@ val PrimaryDarkColor = Color(0xffc97b63)
 val SecondaryColor = Color(0xffff9800)
 val SecondaryLightColor = Color(0xffffc947)
 val SecondaryDarkColor = Color(0xffc66900)
-val PrimaryTextColor = Color.Black
-val SecondaryTextColor = Color.Black
+

@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.maks.musicapp.ui.composeutils.MusicTopAppBar
 import com.maks.musicapp.ui.screens.AlbumDetailScreen
 import com.maks.musicapp.ui.screens.ArtistDetailScreen
 import com.maks.musicapp.ui.screens.MainScreen
@@ -45,7 +46,7 @@ class MainActivity : ComponentActivity() {
 
         NavHost(navController = navController, startDestination = Routes.MainScreenRoute.route) {
             composable(Routes.MainScreenRoute.route) {
-                Scaffold(scaffoldState = scaffoldState) {
+                Scaffold(scaffoldState = scaffoldState,topBar = { MusicTopAppBar()}) {
                     MainScreen(
                         musicViewModel = musicViewModel,
                         navController = navController,
