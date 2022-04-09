@@ -1,5 +1,6 @@
 package com.maks.musicapp
 
+import android.app.DownloadManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,7 +28,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
             MusicAppTheme {
                 AppNavigator()
@@ -55,11 +55,15 @@ class MainActivity : ComponentActivity() {
                 }
             }
             composable(Routes.TrackDetailsScreenRoute.route) {
-                TrackDetailScreen(
-                    track = musicViewModel.currentTrack,
-                    musicViewModel = musicViewModel,
-                    navController = navController
-                )
+                Scaffold(scaffoldState = scaffoldState) {
+                    TrackDetailScreen(
+                        track = musicViewModel.currentTrack,
+                        musicViewModel = musicViewModel,
+                        navController = navController,
+                        snackbarHostState = scaffoldState.snackbarHostState
+                    )
+                }
+
             }
             composable(Routes.ArtistDetailsScreenRoute.route) {
                 Scaffold(scaffoldState = scaffoldState) {

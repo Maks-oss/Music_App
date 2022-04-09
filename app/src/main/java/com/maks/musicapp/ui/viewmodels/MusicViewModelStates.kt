@@ -9,5 +9,6 @@ data class MusicViewModelStates(
     val tabState:Int = 0,
     val textFieldVisibility:Boolean = true,
     val isTrackPlaying:Boolean = false,
-    val trackMinutes:Float = 0F
+    val trackMinutes:Float = 0F,
+    val onBackPressed:Boolean = false,
 )

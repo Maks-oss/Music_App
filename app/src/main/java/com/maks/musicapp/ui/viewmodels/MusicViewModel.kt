@@ -234,6 +234,10 @@ class MusicViewModel(
         musicViewModelStates = musicViewModelStates.copy(trackMinutes = value)
     }
 
+    fun setOnBackPressed(value: Boolean) {
+        musicViewModelStates = musicViewModelStates.copy(onBackPressed = value)
+    }
+
     fun setCurrentJobValue(value: Job?) {
         musicViewModelStates = musicViewModelStates.copy(currentJob = value)
     }

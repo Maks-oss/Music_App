@@ -1,7 +1,13 @@
 package com.maks.musicapp.ui.screens
 
+import android.app.DownloadManager
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Environment
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -11,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,15 +26,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.maks.musicapp.R
 import com.maks.musicapp.data.domain.Track
 import com.maks.musicapp.data.dto.tracks.Tags
-import com.maks.musicapp.data.dto.tracks.TrackResult
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.utils.AppConstants
@@ -36,44 +40,70 @@ import com.maks.musicapp.utils.TrackCountDownTimer
 import com.maks.musicapp.utils.toMinutes
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
+import kotlinx.coroutines.launch
 
 @Composable
 fun TrackDetailScreen(
     track: Track,
     musicViewModel: MusicViewModel,
-    navController: NavController
+    navController: NavController,
+    snackbarHostState: SnackbarHostState
 ) {
     val mediaPlayer = MediaPlayer.create(LocalContext.current, Uri.parse(track.audio))
-    val trackCountDownTimer = TrackCountDownTimer(
-        mediaPlayer.duration.toLong(),
-        musicViewModel = musicViewModel,
-        mediaPlayer = mediaPlayer
-    )
     BackHandler {
         navController.navigate(Routes.MainScreenRoute.route)
         musicViewModel.setTrackMinutesValue(0f)
-        trackCountDownTimer.cancel()
+        musicViewModel.setOnBackPressed(true)
     }
 
     Surface(
         elevation = 8.dp, shape = MaterialTheme.shapes.medium, modifier = Modifier
             .padding(8.dp)
     ) {
-        DisplayTrack(track, mediaPlayer, trackCountDownTimer, musicViewModel)
+        DisplayTrackDetail(
+            track,
+            mediaPlayer,
+            musicViewModel,
+            snackbarHostState
+        )
     }
 }
 
 @Composable
-fun DisplayTrack(
+fun DisplayTrackDetail(
     track: Track,
     mediaPlayer: MediaPlayer,
-    trackCountDownTimer: TrackCountDownTimer,
     musicViewModel: MusicViewModel,
+    snackbarHostState: SnackbarHostState
 ) {
     val musicViewModelStates = musicViewModel.musicViewModelStates
+    val localContext = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val trackCountDownTimer = TrackCountDownTimer(
+        mediaPlayer.duration.toLong(),
+        musicViewModel = musicViewModel,
+        mediaPlayer = mediaPlayer
+    )
+    if (musicViewModel.musicViewModelStates.onBackPressed){
+        trackCountDownTimer.cancel()
+    }
     Column(Modifier.verticalScroll(rememberScrollState())) {
         TrackInfo(track)
-        AudioPlayer(mediaPlayer = mediaPlayer, musicViewModel = musicViewModel) {
+        AudioPlayer(mediaPlayer = mediaPlayer, musicViewModel = musicViewModel, downloadTrack = {
+            val downloadManager = DownloadManager.Request(Uri.parse(track.audio)).apply {
+                setDestinationInExternalPublicDir(
+                    Environment.DIRECTORY_DOWNLOADS,
+                    track.name.plus(".mp4")
+                )
+                setTitle(track.name)
+                setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            }
+            startTrackDownload(localContext, downloadManager, showMessage = { message ->
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(message,actionLabel = localContext.getString(R.string.ok))
+                }
+            })
+        }, audioPlayerAction = {
             if (musicViewModelStates.isTrackPlaying) {
                 mediaPlayer.pause()
             } else {
@@ -81,7 +111,7 @@ fun DisplayTrack(
             }
             musicViewModel.setIsTrackPlayingValue(!musicViewModelStates.isTrackPlaying)
             trackCountDownTimer.start()
-        }
+        })
 
         Spacer(modifier = Modifier.padding(8.dp))
         DisplayMusicInfo(track.musicinfo?.tags)
@@ -89,6 +119,26 @@ fun DisplayTrack(
     }
 
 }
+
+private fun startTrackDownload(
+    localContext: Context,
+    downloadManager: DownloadManager.Request,
+    showMessage: (String) -> Unit
+) {
+    val manager: DownloadManager =
+        localContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+    manager.enqueue(downloadManager)
+    val broadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            showMessage("Download Completed!")
+        }
+    }
+    localContext.registerReceiver(
+        broadcastReceiver,
+        IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+    )
+}
+
 
 @Composable
 fun DisplayMusicInfo(tags: Tags?) {
@@ -120,7 +170,8 @@ private fun TrackInfo(track: Track) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp), horizontalArrangement = Arrangement.SpaceBetween
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = buildString {
@@ -140,7 +191,8 @@ private fun TrackInfo(track: Track) {
 private fun AudioPlayer(
     mediaPlayer: MediaPlayer,
     musicViewModel: MusicViewModel,
-    audioPlayerAction: () -> Unit
+    audioPlayerAction: () -> Unit,
+    downloadTrack: () -> Unit
 ) {
     val musicViewModelStates = musicViewModel.musicViewModelStates
     Column(modifier = Modifier.padding(8.dp)) {
@@ -170,9 +222,7 @@ private fun AudioPlayer(
             )
         }
         Spacer(modifier = Modifier.padding(8.dp))
-        CustomOutlinedButton(text = "Download Track", onClick = {
-
-        })
+        CustomOutlinedButton(text = "Download Track", onClick = downloadTrack)
     }
 }
 
