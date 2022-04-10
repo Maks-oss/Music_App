@@ -1,10 +1,8 @@
 package com.maks.musicapp.ui.screens
 
 import android.app.DownloadManager
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Environment
@@ -40,14 +38,12 @@ import com.maks.musicapp.utils.TrackCountDownTimer
 import com.maks.musicapp.utils.toMinutes
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
-import kotlinx.coroutines.launch
 
 @Composable
 fun TrackDetailScreen(
     track: Track,
     musicViewModel: MusicViewModel,
     navController: NavController,
-    snackbarHostState: SnackbarHostState
 ) {
     val mediaPlayer = MediaPlayer.create(LocalContext.current, Uri.parse(track.audio))
     BackHandler {
@@ -63,8 +59,7 @@ fun TrackDetailScreen(
         DisplayTrackDetail(
             track,
             mediaPlayer,
-            musicViewModel,
-            snackbarHostState
+            musicViewModel
         )
     }
 }
@@ -74,7 +69,6 @@ fun DisplayTrackDetail(
     track: Track,
     mediaPlayer: MediaPlayer,
     musicViewModel: MusicViewModel,
-    snackbarHostState: SnackbarHostState
 ) {
     val musicViewModelStates = musicViewModel.musicViewModelStates
     val localContext = LocalContext.current
@@ -84,7 +78,7 @@ fun DisplayTrackDetail(
         musicViewModel = musicViewModel,
         mediaPlayer = mediaPlayer
     )
-    if (musicViewModel.musicViewModelStates.onBackPressed){
+    if (musicViewModel.musicViewModelStates.onBackPressed) {
         trackCountDownTimer.cancel()
     }
     Column(Modifier.verticalScroll(rememberScrollState())) {
@@ -98,11 +92,7 @@ fun DisplayTrackDetail(
                 setTitle(track.name)
                 setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             }
-            startTrackDownload(localContext, downloadManager, showMessage = { message ->
-                coroutineScope.launch {
-                    snackbarHostState.showSnackbar(message,actionLabel = localContext.getString(R.string.ok))
-                }
-            })
+            startTrackDownload(localContext, downloadManager)
         }, audioPlayerAction = {
             if (musicViewModelStates.isTrackPlaying) {
                 mediaPlayer.pause()
@@ -123,20 +113,10 @@ fun DisplayTrackDetail(
 private fun startTrackDownload(
     localContext: Context,
     downloadManager: DownloadManager.Request,
-    showMessage: (String) -> Unit
 ) {
     val manager: DownloadManager =
         localContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
     manager.enqueue(downloadManager)
-    val broadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            showMessage("Download Completed!")
-        }
-    }
-    localContext.registerReceiver(
-        broadcastReceiver,
-        IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
-    )
 }
 
 

@@ -4,5 +4,7 @@
     <string name="tracks">Tracks</string>
     <string name="albums">Albums</string>
     <string name="empty_result">Nothing was found by your request!</string>
+    <string name="track_download_success">Download Completed!</string>
+    <string name="track_download_cancel">Download Cancelled!</string>
     <string name="ok">OK</string>
 </resources>
