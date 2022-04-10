@@ -24,7 +24,6 @@ import com.maks.musicapp.ui.screens.MainScreen
 import com.maks.musicapp.ui.screens.TrackDetailScreen
 import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
-import com.maks.musicapp.utils.ACTION_DOWNLOAD_CANCELLED
 import com.maks.musicapp.utils.AppConstants
 import com.maks.musicapp.utils.Routes
 import kotlinx.coroutines.CoroutineScope

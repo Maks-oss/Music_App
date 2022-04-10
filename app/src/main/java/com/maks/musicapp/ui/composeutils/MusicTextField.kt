@@ -35,7 +35,7 @@ fun MusicTextField(textValue: String, isVisible: Boolean, onValueChange: (String
                 .border(
                     1.dp,
                     Color.Black, CircleShape
-                ),
+                ), maxLines = 1,
             leadingIcon = {
                 Icon(Icons.Filled.Search, "")
             }, label = {

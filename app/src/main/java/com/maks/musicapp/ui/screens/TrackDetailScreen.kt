@@ -2,7 +2,6 @@ package com.maks.musicapp.ui.screens
 
 import android.app.DownloadManager
 import android.content.Context
-import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Environment
@@ -15,7 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -72,7 +70,6 @@ fun DisplayTrackDetail(
 ) {
     val musicViewModelStates = musicViewModel.musicViewModelStates
     val localContext = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
     val trackCountDownTimer = TrackCountDownTimer(
         mediaPlayer.duration.toLong(),
         musicViewModel = musicViewModel,
@@ -154,17 +151,26 @@ private fun TrackInfo(track: Track) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = buildString {
-                append(track.artist_name)
-                append(" -\n")
-                append(track.name)
-            },
+            text = buildTrackNameString(track),
             style = MaterialTheme.typography.body2
         )
         Text(
             text = track.releasedate
         )
     }
+}
+
+private fun buildTrackNameString(track: Track): String {
+    val trackNameLines = "${track.artist_name} - ${track.name}".split(" ")
+    return StringBuilder().apply {
+        trackNameLines.forEachIndexed { index, string ->
+            if (index % 3 == 0 && index != 0) {
+                append("\n$string")
+            } else {
+                append("$string ")
+            }
+        }
+    }.toString()
 }
 
 @Composable
