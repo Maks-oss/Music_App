@@ -7,6 +7,7 @@ import android.database.CursorIndexOutOfBoundsException
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
@@ -26,6 +27,7 @@ import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.utils.AppConstants
 import com.maks.musicapp.utils.Routes
+import com.maks.musicapp.utils.showMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -44,16 +46,15 @@ class MainActivity : ComponentActivity() {
 
         }
     }
+    fun register(){
 
+    }
     private fun registerTrackDownloadBroadcastReceiver(
         snackbarHostState: SnackbarHostState,
-        coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     ) {
 
         val trackDownloadSuccessBroadCast = TrackDownloadBroadCast(showMessage = { message ->
-            coroutineScope.launch {
-                snackbarHostState.showSnackbar(message, getString(R.string.ok))
-            }
+            snackbarHostState.showMessage(message)
         })
         registerReceiver(
             trackDownloadSuccessBroadCast,
@@ -86,6 +87,7 @@ class MainActivity : ComponentActivity() {
                         track = musicViewModel.currentTrack,
                         musicViewModel = musicViewModel,
                         navController = navController,
+                        snackbarHostState = scaffoldState.snackbarHostState
                     )
                 }
 

@@ -4,7 +4,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -28,11 +30,11 @@ import com.skydoves.landscapist.glide.GlideImage
 @Composable
 fun AlbumsList(
     albumsUiState: AlbumsUiState,
-    listScrollAction: (LazyListState) -> Unit,
+    listScrollAction: (LazyGridState) -> Unit,
     albumListItemClickAction: (Album) -> Unit
 ) {
 
-    val scrollState = rememberLazyListState()
+    val scrollState = rememberLazyGridState()
     listScrollAction(scrollState)
     DisplayShimmer(albumsUiState.isLoading)
     DisplayAlbumsList(albumsUiState.albumsResult, scrollState,albumListItemClickAction)
@@ -43,11 +45,11 @@ fun AlbumsList(
 @Composable
 fun DisplayAlbumsList(
     albums: List<Album>?,
-    scrollState: LazyListState,
+    scrollState: LazyGridState,
     albumListItemClickAction: (Album) -> Unit
 ) {
     albums?.let { albumList ->
-        LazyVerticalGrid(cells = GridCells.Fixed(2), state = scrollState) {
+        LazyVerticalGrid(columns = GridCells.Fixed(2), state = scrollState) {
             items(albumList) {
                 AlbumsListItem(album = it,albumListItemClickAction)
             }

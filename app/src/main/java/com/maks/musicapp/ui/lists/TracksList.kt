@@ -4,7 +4,8 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -29,11 +30,11 @@ import com.skydoves.landscapist.glide.GlideImage
 fun TracksList(
 //    isLoading:Boolean,
     tracksUiState: TracksUiState,
-    listScrollAction: (LazyListState) -> Unit,
+    listScrollAction: (LazyGridState) -> Unit,
     trackListItemClickAction: (Track) -> Unit
 ) {
 //    val tracks by tracksLiveData.observeAsState()
-    val scrollState = rememberLazyListState()
+    val scrollState = rememberLazyGridState()
     listScrollAction(scrollState)
     DisplayShimmer(tracksUiState.isLoading)
     DisplayTrackList(tracksUiState.tracksResult, scrollState, trackListItemClickAction)
@@ -44,11 +45,11 @@ fun TracksList(
 @Composable
 fun DisplayTrackList(
     tracks: List<Track>?,
-    scrollState: LazyListState,
+    scrollState: LazyGridState,
     trackListItemClickAction: (Track) -> Unit
 ) {
     tracks?.let { trackList ->
-        LazyVerticalGrid(cells = GridCells.Fixed(2), state = scrollState) {
+        LazyVerticalGrid(columns = GridCells.Fixed(2), state = scrollState) {
             items(trackList) {
                 TracksListItem(
                     track = it,

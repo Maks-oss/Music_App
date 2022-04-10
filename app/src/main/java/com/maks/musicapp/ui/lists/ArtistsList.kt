@@ -4,7 +4,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -28,12 +30,12 @@ import com.skydoves.landscapist.glide.GlideImage
 @Composable
 fun ArtistsList(
     artistsUiState: ArtistsUiState,
-    listScrollAction: (LazyListState) -> Unit,
+    listScrollAction: (LazyGridState) -> Unit,
     artistListItemClickAction: (Artist) -> Unit
 ) {
 //    val artists by musicViewModel.artistListLiveData.observeAsState()
 //    val isLoading by musicViewModel.musicViewModelStates.isLoading
-    val scrollState = rememberLazyListState()
+    val scrollState = rememberLazyGridState()
     listScrollAction(scrollState)
     DisplayShimmer(artistsUiState.isLoading)
     DisplayArtistsList(artistsUiState.artistsResult, scrollState, artistListItemClickAction)
@@ -44,11 +46,11 @@ fun ArtistsList(
 @Composable
 fun DisplayArtistsList(
     artists: List<Artist>?,
-    scrollState: LazyListState,
+    scrollState: LazyGridState,
     artistListItemClickAction: (Artist) -> Unit
 ) {
     artists?.let { artistList ->
-        LazyVerticalGrid(cells = GridCells.Fixed(2), state = scrollState) {
+        LazyVerticalGrid(columns = GridCells.Fixed(2), state = scrollState) {
             items(artistList) {
                 ArtistsListItem(artist = it, artistListItemClickAction)
             }

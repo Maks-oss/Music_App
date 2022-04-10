@@ -3,6 +3,7 @@ package com.maks.musicapp.ui.screens
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -90,7 +91,7 @@ fun MainScreen(
 private fun DisplayList(
     tabState: Int,
     musicViewModel: MusicViewModel,
-    listScrollAction: (LazyListState) -> Unit,
+    listScrollAction: (LazyGridState) -> Unit,
     trackItemClickAction: (Track) -> Unit,
     artistItemClickAction: (Artist) -> Unit,
     albumItemClickAction: (Album) -> Unit,

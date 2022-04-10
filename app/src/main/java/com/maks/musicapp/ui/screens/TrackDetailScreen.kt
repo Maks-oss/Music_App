@@ -1,10 +1,10 @@
 package com.maks.musicapp.ui.screens
 
-import android.app.DownloadManager
-import android.content.Context
+import android.Manifest
+import android.annotation.SuppressLint
 import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Environment
+import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -25,15 +25,16 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import com.maks.musicapp.R
 import com.maks.musicapp.data.domain.Track
 import com.maks.musicapp.data.dto.tracks.Tags
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
-import com.maks.musicapp.utils.AppConstants
-import com.maks.musicapp.utils.Routes
-import com.maks.musicapp.utils.TrackCountDownTimer
-import com.maks.musicapp.utils.toMinutes
+import com.maks.musicapp.utils.*
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -42,6 +43,7 @@ fun TrackDetailScreen(
     track: Track,
     musicViewModel: MusicViewModel,
     navController: NavController,
+    snackbarHostState: SnackbarHostState
 ) {
     val mediaPlayer = MediaPlayer.create(LocalContext.current, Uri.parse(track.audio))
     BackHandler {
@@ -57,7 +59,8 @@ fun TrackDetailScreen(
         DisplayTrackDetail(
             track,
             mediaPlayer,
-            musicViewModel
+            musicViewModel,
+            snackbarHostState
         )
     }
 }
@@ -67,6 +70,7 @@ fun DisplayTrackDetail(
     track: Track,
     mediaPlayer: MediaPlayer,
     musicViewModel: MusicViewModel,
+    snackbarHostState: SnackbarHostState
 ) {
     val musicViewModelStates = musicViewModel.musicViewModelStates
     val localContext = LocalContext.current
@@ -81,15 +85,7 @@ fun DisplayTrackDetail(
     Column(Modifier.verticalScroll(rememberScrollState())) {
         TrackInfo(track)
         AudioPlayer(mediaPlayer = mediaPlayer, musicViewModel = musicViewModel, downloadTrack = {
-            val downloadManager = DownloadManager.Request(Uri.parse(track.audio)).apply {
-                setDestinationInExternalPublicDir(
-                    Environment.DIRECTORY_DOWNLOADS,
-                    track.name.plus(".mp4")
-                )
-                setTitle(track.name)
-                setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-            }
-            startTrackDownload(localContext, downloadManager)
+            localContext.downloadTrack(track)
         }, audioPlayerAction = {
             if (musicViewModelStates.isTrackPlaying) {
                 mediaPlayer.pause()
@@ -98,24 +94,14 @@ fun DisplayTrackDetail(
             }
             musicViewModel.setIsTrackPlayingValue(!musicViewModelStates.isTrackPlaying)
             trackCountDownTimer.start()
+        }, showPermissionMessage = { message ->
+            snackbarHostState.showMessage(message)
         })
-
         Spacer(modifier = Modifier.padding(8.dp))
         DisplayMusicInfo(track.musicinfo?.tags)
-
     }
 
 }
-
-private fun startTrackDownload(
-    localContext: Context,
-    downloadManager: DownloadManager.Request,
-) {
-    val manager: DownloadManager =
-        localContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-    manager.enqueue(downloadManager)
-}
-
 
 @Composable
 fun DisplayMusicInfo(tags: Tags?) {
@@ -151,7 +137,7 @@ private fun TrackInfo(track: Track) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = buildTrackNameString(track),
+            text = track.getTrackTitle(),
             style = MaterialTheme.typography.body2
         )
         Text(
@@ -160,25 +146,14 @@ private fun TrackInfo(track: Track) {
     }
 }
 
-private fun buildTrackNameString(track: Track): String {
-    val trackNameLines = "${track.artist_name} - ${track.name}".split(" ")
-    return StringBuilder().apply {
-        trackNameLines.forEachIndexed { index, string ->
-            if (index % 3 == 0 && index != 0) {
-                append("\n$string")
-            } else {
-                append("$string ")
-            }
-        }
-    }.toString()
-}
-
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun AudioPlayer(
     mediaPlayer: MediaPlayer,
     musicViewModel: MusicViewModel,
     audioPlayerAction: () -> Unit,
-    downloadTrack: () -> Unit
+    downloadTrack: () -> Unit,
+    showPermissionMessage: (String) -> Unit
 ) {
     val musicViewModelStates = musicViewModel.musicViewModelStates
     Column(modifier = Modifier.padding(8.dp)) {
@@ -208,8 +183,32 @@ private fun AudioPlayer(
             )
         }
         Spacer(modifier = Modifier.padding(8.dp))
-        CustomOutlinedButton(text = "Download Track", onClick = downloadTrack)
+        DownloadTrackButton(
+            downloadTrack = downloadTrack,
+            showPermissionMessage = showPermissionMessage
+        )
     }
+}
+
+@SuppressLint("InlinedApi")
+@ExperimentalPermissionsApi
+@Composable
+fun DownloadTrackButton(downloadTrack: () -> Unit, showPermissionMessage: (String) -> Unit) {
+    val filePermissionState = rememberPermissionState(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
+    CustomOutlinedButton(text = "Download Track") {
+        if (filePermissionState.status.isGranted) {
+            downloadTrack()
+        } else {
+            if (!filePermissionState.status.shouldShowRationale) {
+                showPermissionMessage("In order to download track, please give access to external storage")
+            }
+            filePermissionState.launchPermissionRequest()
+        }
+    }
+
+
 }
 
 
