@@ -1,10 +1,8 @@
 package com.maks.musicapp.ui.screens
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -13,7 +11,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,13 +20,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
+import com.google.accompanist.permissions.*
 import com.maks.musicapp.R
 import com.maks.musicapp.data.domain.Track
 import com.maks.musicapp.data.dto.tracks.Tags
@@ -190,25 +186,37 @@ private fun AudioPlayer(
     }
 }
 
-@SuppressLint("InlinedApi")
 @ExperimentalPermissionsApi
 @Composable
 fun DownloadTrackButton(downloadTrack: () -> Unit, showPermissionMessage: (String) -> Unit) {
     val filePermissionState = rememberPermissionState(
         Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
-    CustomOutlinedButton(text = "Download Track") {
-        if (filePermissionState.status.isGranted) {
-            downloadTrack()
-        } else {
-            if (!filePermissionState.status.shouldShowRationale) {
-                showPermissionMessage("In order to download track, please give access to external storage")
-            }
-            filePermissionState.launchPermissionRequest()
-        }
+    var isPermissionDialogShown by remember { mutableStateOf(false) }
+    val permissionMessage = stringResource(R.string.external_storage_permission_message)
+    CustomOutlinedButton(text = "Download Track", onClick = {
+        showPermissionDialog(filePermissionState, showPermissionMessage, permissionMessage)
+        isPermissionDialogShown = true
+    })
+
+    if (filePermissionState.status.isGranted && isPermissionDialogShown) {
+        downloadTrack()
     }
+}
 
 
+@OptIn(ExperimentalPermissionsApi::class)
+private fun showPermissionDialog(
+    filePermissionState: PermissionState,
+    showPermissionMessage: (String) -> Unit,
+    permissionMessage: String
+) {
+    if (!filePermissionState.status.isGranted) {
+        if (!filePermissionState.status.shouldShowRationale) {
+            showPermissionMessage(permissionMessage)
+        }
+        filePermissionState.launchPermissionRequest()
+    }
 }
 
 
