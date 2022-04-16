@@ -1,13 +1,12 @@
 package com.maks.musicapp
 
 import android.app.DownloadManager
-import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
-import android.database.CursorIndexOutOfBoundsException
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
@@ -17,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.maks.musicapp.services.MusicForegroundService
 import com.maks.musicapp.ui.broadcastreceivers.TrackDownloadBroadCast
 import com.maks.musicapp.ui.composeutils.MusicTopAppBar
 import com.maks.musicapp.ui.screens.AlbumDetailScreen
@@ -25,18 +25,14 @@ import com.maks.musicapp.ui.screens.MainScreen
 import com.maks.musicapp.ui.screens.TrackDetailScreen
 import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
-import com.maks.musicapp.utils.AppConstants
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.showMessage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 class MainActivity : ComponentActivity() {
-
+    private var trackDownloadBroadCast: TrackDownloadBroadCast? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -46,18 +42,21 @@ class MainActivity : ComponentActivity() {
 
         }
     }
-    fun register(){
 
+    override fun onStop() {
+        super.onStop()
+        trackDownloadBroadCast?.let { broadCast ->
+            unregisterReceiver(broadCast)
+        }
     }
+
     private fun registerTrackDownloadBroadcastReceiver(
         snackbarHostState: SnackbarHostState,
     ) {
-
-        val trackDownloadSuccessBroadCast = TrackDownloadBroadCast(showMessage = { message ->
+        trackDownloadBroadCast = TrackDownloadBroadCast(showMessage = { message ->
             snackbarHostState.showMessage(message)
         })
-        registerReceiver(
-            trackDownloadSuccessBroadCast,
+        registerReceiver(trackDownloadBroadCast,
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
     }
@@ -87,7 +86,14 @@ class MainActivity : ComponentActivity() {
                         track = musicViewModel.currentTrack,
                         musicViewModel = musicViewModel,
                         navController = navController,
-                        snackbarHostState = scaffoldState.snackbarHostState
+                        snackbarHostState = scaffoldState.snackbarHostState,
+                        startService = {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                startForegroundService(Intent(this@MainActivity,MusicForegroundService::class.java).apply {
+                                    putExtra("track",it)
+                                })
+                            }
+                        }
                     )
                 }
 

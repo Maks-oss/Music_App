@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/notification_artist_name_expanded"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toRightOf="@id/notification_track_image_expanded"
+        android:text="Track title"
+        style="@style/TextAppearance.Compat.Notification.Title"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:id="@+id/notification_track_image_expanded"
+        android:src="@drawable/music_logo"
+        />
+    <ProgressBar
+        android:layout_width="match_parent"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:id="@+id/notification_track_slider"
+        android:layout_toRightOf="@id/notification_track_image_expanded"
+        android:layout_below="@id/notification_artist_name_expanded"
+        android:layout_height="wrap_content"/>
+
+    <ImageButton
+        android:id="@+id/notification_play_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/notification_track_start"
+        android:layout_toLeftOf="@id/notification_track_end"
+        android:layout_below="@id/notification_track_slider"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_media_play" />
+
+    <TextView
+        android:id="@+id/notification_track_start"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/notification_track_slider"
+        android:layout_toRightOf="@id/notification_track_image_expanded"
+        android:text="0:00" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="0:00"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:id="@+id/notification_track_end"
+        android:layout_below="@+id/notification_track_slider"
+        android:layout_alignParentEnd="true"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

@@ -1,9 +1,12 @@
 package com.maks.musicapp.ui.screens
 
 import android.Manifest
+import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Build
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -19,15 +22,19 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.*
 import com.maks.musicapp.R
 import com.maks.musicapp.data.domain.Track
 import com.maks.musicapp.data.dto.tracks.Tags
+import com.maks.musicapp.services.MusicForegroundService
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.utils.*
@@ -39,13 +46,13 @@ fun TrackDetailScreen(
     track: Track,
     musicViewModel: MusicViewModel,
     navController: NavController,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    startService:(Track)->Unit
 ) {
     val mediaPlayer = MediaPlayer.create(LocalContext.current, Uri.parse(track.audio))
     BackHandler {
         navController.navigate(Routes.MainScreenRoute.route)
-        musicViewModel.setTrackMinutesValue(0f)
-        musicViewModel.setOnBackPressed(true)
+        startService(track)
     }
 
     Surface(

@@ -1,6 +1,7 @@
 package com.maks.musicapp.data.domain
 
 import com.maks.musicapp.data.dto.tracks.Musicinfo
+import java.io.Serializable
 
 data class Track(
     val album_id: String,
@@ -15,4 +16,4 @@ data class Track(
     val musicinfo: Musicinfo?,
     val name: String,
     val releasedate: String
-)
+): Serializable
