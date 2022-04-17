@@ -1,5 +1,6 @@
 package com.maks.musicapp.services
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.Intent
 import android.os.Build
@@ -14,7 +15,7 @@ import com.maks.musicapp.data.domain.Track
 import com.maks.musicapp.utils.RemoteViewsProcessor
 import com.maks.musicapp.utils.getTrackTitle
 
-
+@SuppressLint("Currently not supported")
 class MusicForegroundService : Service() {
     @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
     override fun onBind(intent: Intent?): IBinder? = null
@@ -28,10 +29,10 @@ class MusicForegroundService : Service() {
         ExperimentalFoundationApi::class
     )
     private fun startServiceCommand(intent: Intent?) {
-        val pendingIntent: PendingIntent =
-            Intent(this, MainActivity::class.java).let { notificationIntent ->
-                PendingIntent.getActivity(this, 0, notificationIntent, 0)
-            }
+//        val pendingIntent: PendingIntent =
+//            Intent(this, MainActivity::class.java).let { notificationIntent ->
+//                PendingIntent.getActivity(this, 0, notificationIntent, 0)
+//            }
         createNotificationChannel()
         val track = intent?.getSerializableExtra("track") as Track
         val remoteViewsProcessor = RemoteViewsProcessor(this).apply {

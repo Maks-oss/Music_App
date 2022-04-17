@@ -20,10 +20,13 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.*
 import com.maks.musicapp.R
@@ -42,16 +45,11 @@ import com.skydoves.landscapist.glide.GlideImage
 fun TrackDetailScreen(
     track: Track,
     trackViewModel: TrackViewModel,
-    navController: NavController,
     snackbarHostState: SnackbarHostState,
-    startService: (Track) -> Unit
 ) {
+    val lifecycleOwner = LocalLifecycleOwner.current
     initMusicPlayer(LocalContext.current,track, trackViewModel)
-//    BackHandler {
-//        navController.navigate(Routes.MainScreenRoute.route)
-        startService(track)
-//        trackViewModel.setOnBackPressed(true)
-//    }
+
     Surface(
         elevation = 8.dp, shape = MaterialTheme.shapes.medium, modifier = Modifier
             .padding(8.dp)
@@ -61,6 +59,17 @@ fun TrackDetailScreen(
             trackViewModel,
             snackbarHostState
         )
+    }
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP){
+                trackViewModel.stopTrack()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 }
 private fun initMusicPlayer(
@@ -77,6 +86,7 @@ private fun initMusicPlayer(
         }
     })
     trackViewModel.musicPlayer = musicPlayer
+
 }
 
 @Composable
@@ -86,10 +96,6 @@ fun DisplayTrackDetail(
     snackbarHostState: SnackbarHostState
 ) {
     val localContext = LocalContext.current
-    val trackViewModelState = trackViewModel.trackViewModelState
-    if (trackViewModelState.onBackPressed) {
-        trackViewModel.stopTrack()
-    }
     Column(Modifier.verticalScroll(rememberScrollState())) {
         TrackInfo(track)
         AudioPlayer(

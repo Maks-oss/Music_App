@@ -35,6 +35,7 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 @ExperimentalFoundationApi
 class MainActivity : ComponentActivity() {
     private var trackDownloadBroadCast: TrackDownloadBroadCast? = null
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -90,14 +91,7 @@ class MainActivity : ComponentActivity() {
                     TrackDetailScreen(
                         track = musicViewModel.currentTrack,
                         trackViewModel = trackViewModel,
-                        navController = navController,
                         snackbarHostState = scaffoldState.snackbarHostState,
-                        startService = {
-                            startForegroundService(
-                                Intent(this@MainActivity, MusicForegroundService::class.java).apply {
-                                    putExtra("track", it)
-                                })
-                        }
                     )
                 }
 

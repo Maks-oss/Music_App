@@ -37,12 +37,11 @@ class TrackViewModel : ViewModel() {
 
     fun stopTrack() {
         setTrackMinutesValue(0f)
+        setIsTrackPlayingValue(false)
         musicPlayer.pause()
     }
 
     fun trackDuration() = musicPlayer.duration()
 
-    fun setOnBackPressed(value: Boolean) {
-        trackViewModelState = trackViewModelState.copy(onBackPressed = value)
-    }
+
 }
