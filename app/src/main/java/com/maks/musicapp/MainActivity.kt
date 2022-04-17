@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
@@ -57,12 +58,14 @@ class MainActivity : ComponentActivity() {
         trackDownloadBroadCast = TrackDownloadBroadCast(showMessage = { message ->
             snackbarHostState.showMessage(message)
         })
-        registerReceiver(trackDownloadBroadCast,
+        registerReceiver(
+            trackDownloadBroadCast,
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @Composable
     fun AppNavigator() {
 
@@ -90,11 +93,10 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         snackbarHostState = scaffoldState.snackbarHostState,
                         startService = {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                startForegroundService(Intent(this@MainActivity,MusicForegroundService::class.java).apply {
-                                    putExtra("track",it)
+                            startForegroundService(
+                                Intent(this@MainActivity, MusicForegroundService::class.java).apply {
+                                    putExtra("track", it)
                                 })
-                            }
                         }
                     )
                 }

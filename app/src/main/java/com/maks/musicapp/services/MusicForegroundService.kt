@@ -22,7 +22,7 @@ class MusicForegroundService : Service() {
     @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         startServiceCommand(intent)
-        return START_STICKY
+        return START_STICKY_COMPATIBILITY
     }
     @OptIn(ExperimentalMaterialApi::class,
         ExperimentalFoundationApi::class
@@ -37,7 +37,6 @@ class MusicForegroundService : Service() {
         val remoteViewsProcessor = RemoteViewsProcessor(this).apply {
             setTrackTitle(track.getTrackTitle())
             setTrackImage(track.image!!)
-
         }
         val notificationBuilder = NotificationCompat.Builder(this, "1001")
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())

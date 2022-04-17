@@ -47,10 +47,11 @@ fun TrackDetailScreen(
     startService: (Track) -> Unit
 ) {
     initMusicPlayer(LocalContext.current,track, trackViewModel)
-    BackHandler {
-        navController.navigate(Routes.MainScreenRoute.route)
+//    BackHandler {
+//        navController.navigate(Routes.MainScreenRoute.route)
         startService(track)
-    }
+//        trackViewModel.setOnBackPressed(true)
+//    }
     Surface(
         elevation = 8.dp, shape = MaterialTheme.shapes.medium, modifier = Modifier
             .padding(8.dp)
