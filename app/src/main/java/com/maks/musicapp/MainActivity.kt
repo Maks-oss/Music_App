@@ -1,7 +1,6 @@
 package com.maks.musicapp
 
 import android.app.DownloadManager
-import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
@@ -9,16 +8,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.maks.musicapp.services.MusicForegroundService
 import com.maks.musicapp.ui.broadcastreceivers.TrackDownloadBroadCast
+import com.maks.musicapp.ui.composeutils.MusicModalDrawer
 import com.maks.musicapp.ui.composeutils.MusicTopAppBar
 import com.maks.musicapp.ui.screens.AlbumDetailScreen
 import com.maks.musicapp.ui.screens.ArtistDetailScreen
@@ -29,18 +26,21 @@ import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.ui.viewmodels.TrackViewModel
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.showMessage
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
 class MainActivity : ComponentActivity() {
     private var trackDownloadBroadCast: TrackDownloadBroadCast? = null
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MusicAppTheme {
                 AppNavigator()
+//                ModalDrawer()
             }
 
         }
@@ -73,18 +73,31 @@ class MainActivity : ComponentActivity() {
         val navController = rememberNavController()
         val musicViewModel = getViewModel<MusicViewModel>()
         val scaffoldState = rememberScaffoldState()
+        val coroutineScope = rememberCoroutineScope()
         val trackViewModel = getViewModel<TrackViewModel>()
+        val drawerState = rememberDrawerState(DrawerValue.Closed)
         registerTrackDownloadBroadcastReceiver(scaffoldState.snackbarHostState)
         NavHost(navController = navController, startDestination = Routes.MainScreenRoute.route) {
             composable(Routes.MainScreenRoute.route) {
-                Scaffold(scaffoldState = scaffoldState, topBar = { MusicTopAppBar() }) {
-                    MainScreen(
-                        musicViewModel = musicViewModel,
-                        navController = navController,
-                        snackbarHostState = scaffoldState.snackbarHostState
-                    )
+                MusicModalDrawer(drawerState = drawerState ) {
+                    Scaffold(scaffoldState = scaffoldState,
+                        topBar = {
+                            MusicTopAppBar(navigationIconClick = {
+                                coroutineScope.launch {
+                                    drawerState.open()
+                                }
+                            })
+                        }) {
+                        MainScreen(
+                            musicViewModel = musicViewModel,
+                            navController = navController,
+                            snackbarHostState = scaffoldState.snackbarHostState,
+                        )
+                    }
                 }
+
             }
+
 
             composable(Routes.TrackDetailsScreenRoute.route) {
                 Scaffold(scaffoldState = scaffoldState) {
