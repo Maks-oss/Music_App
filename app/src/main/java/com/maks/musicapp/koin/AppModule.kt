@@ -4,6 +4,7 @@ import com.maks.musicapp.mappers.MusicMapper
 import com.maks.musicapp.repository.*
 import com.maks.musicapp.retrofit.RetrofitClient
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
+import com.maks.musicapp.ui.viewmodels.TrackViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -19,4 +20,5 @@ val repositoryModule = module {
 }
 val viewModelModule = module {
     viewModel { MusicViewModel(get(), MusicMapper()) }
+    viewModel { TrackViewModel() }
 }

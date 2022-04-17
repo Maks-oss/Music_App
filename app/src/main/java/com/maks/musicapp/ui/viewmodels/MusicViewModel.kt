@@ -226,18 +226,6 @@ class MusicViewModel(
         albumTracksUiState = albumTracksUiState.copy(message = null)
     }
 
-    fun setIsTrackPlayingValue(value: Boolean) {
-        musicViewModelStates = musicViewModelStates.copy(isTrackPlaying = value)
-    }
-
-    fun setTrackMinutesValue(value: Float) {
-        musicViewModelStates = musicViewModelStates.copy(trackMinutes = value)
-    }
-
-    fun setOnBackPressed(value: Boolean) {
-        musicViewModelStates = musicViewModelStates.copy(onBackPressed = value)
-    }
-
     fun setCurrentJobValue(value: Job?) {
         musicViewModelStates = musicViewModelStates.copy(currentJob = value)
     }

@@ -37,6 +37,7 @@ class MusicForegroundService : Service() {
         val remoteViewsProcessor = RemoteViewsProcessor(this).apply {
             setTrackTitle(track.getTrackTitle())
             setTrackImage(track.image!!)
+
         }
         val notificationBuilder = NotificationCompat.Builder(this, "1001")
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())

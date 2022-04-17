@@ -1,12 +1,10 @@
 package com.maks.musicapp.ui.screens
 
 import android.Manifest
-import android.content.Intent
+import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Build
 import androidx.activity.compose.BackHandler
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -22,84 +20,88 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.*
 import com.maks.musicapp.R
 import com.maks.musicapp.data.domain.Track
 import com.maks.musicapp.data.dto.tracks.Tags
-import com.maks.musicapp.services.MusicForegroundService
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
-import com.maks.musicapp.ui.viewmodels.MusicViewModel
+import com.maks.musicapp.ui.viewmodels.TrackViewModel
+import com.maks.musicapp.ui.viewmodels.TrackViewModelState
 import com.maks.musicapp.utils.*
+import com.maks.musicapp.utils.player.MusicPlayer
+import com.maks.musicapp.utils.player.MusicPlayerImpl
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
 fun TrackDetailScreen(
     track: Track,
-    musicViewModel: MusicViewModel,
+    trackViewModel: TrackViewModel,
     navController: NavController,
     snackbarHostState: SnackbarHostState,
-    startService:(Track)->Unit
+    startService: (Track) -> Unit
 ) {
-    val mediaPlayer = MediaPlayer.create(LocalContext.current, Uri.parse(track.audio))
+    initMusicPlayer(LocalContext.current,track, trackViewModel)
     BackHandler {
         navController.navigate(Routes.MainScreenRoute.route)
         startService(track)
     }
-
     Surface(
         elevation = 8.dp, shape = MaterialTheme.shapes.medium, modifier = Modifier
             .padding(8.dp)
     ) {
         DisplayTrackDetail(
             track,
-            mediaPlayer,
-            musicViewModel,
+            trackViewModel,
             snackbarHostState
         )
     }
+}
+private fun initMusicPlayer(
+    context:Context,
+    track: Track,
+    trackViewModel: TrackViewModel
+) {
+    val mediaPlayer = MediaPlayer.create(context, Uri.parse(track.audio))
+    val musicPlayer: MusicPlayer = MusicPlayerImpl(mediaPlayer, onTick = {
+        trackViewModel.setTrackMinutesValue(mediaPlayer.currentPosition.toFloat())
+        if (mediaPlayer.currentPosition == mediaPlayer.duration) {
+            trackViewModel.setIsTrackPlayingValue(false)
+            trackViewModel.setTrackMinutesValue(0f)
+        }
+    })
+    trackViewModel.musicPlayer = musicPlayer
 }
 
 @Composable
 fun DisplayTrackDetail(
     track: Track,
-    mediaPlayer: MediaPlayer,
-    musicViewModel: MusicViewModel,
+    trackViewModel: TrackViewModel,
     snackbarHostState: SnackbarHostState
 ) {
-    val musicViewModelStates = musicViewModel.musicViewModelStates
     val localContext = LocalContext.current
-    val trackCountDownTimer = TrackCountDownTimer(
-        mediaPlayer.duration.toLong(),
-        musicViewModel = musicViewModel,
-        mediaPlayer = mediaPlayer
-    )
-    if (musicViewModel.musicViewModelStates.onBackPressed) {
-        trackCountDownTimer.cancel()
+    val trackViewModelState = trackViewModel.trackViewModelState
+    if (trackViewModelState.onBackPressed) {
+        trackViewModel.stopTrack()
     }
     Column(Modifier.verticalScroll(rememberScrollState())) {
         TrackInfo(track)
-        AudioPlayer(mediaPlayer = mediaPlayer, musicViewModel = musicViewModel, downloadTrack = {
-            localContext.downloadTrack(track)
-        }, audioPlayerAction = {
-            if (musicViewModelStates.isTrackPlaying) {
-                mediaPlayer.pause()
-            } else {
-                mediaPlayer.start()
-            }
-            musicViewModel.setIsTrackPlayingValue(!musicViewModelStates.isTrackPlaying)
-            trackCountDownTimer.start()
-        }, showPermissionMessage = { message ->
-            snackbarHostState.showMessage(message)
-        })
+        AudioPlayer(
+            trackViewModel = trackViewModel,
+            downloadTrack = {
+                localContext.downloadTrack(track)
+            },
+            audioPlayerAction = {
+                trackViewModel.playTrack()
+            },
+            showPermissionMessage = { message ->
+                snackbarHostState.showMessage(message)
+            })
         Spacer(modifier = Modifier.padding(8.dp))
         DisplayMusicInfo(track.musicinfo?.tags)
     }
@@ -152,35 +154,33 @@ private fun TrackInfo(track: Track) {
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun AudioPlayer(
-    mediaPlayer: MediaPlayer,
-    musicViewModel: MusicViewModel,
+    trackViewModel: TrackViewModel,
     audioPlayerAction: () -> Unit,
     downloadTrack: () -> Unit,
     showPermissionMessage: (String) -> Unit
 ) {
-    val musicViewModelStates = musicViewModel.musicViewModelStates
+    val trackViewModelState = trackViewModel.trackViewModelState
     Column(modifier = Modifier.padding(8.dp)) {
         Row {
             Icon(
-                imageVector = if (musicViewModelStates.isTrackPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
+                imageVector = if (trackViewModelState.isTrackPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .clickable(onClick = audioPlayerAction),
                 contentDescription = ""
             )
             Slider(
-                value = musicViewModelStates.trackMinutes,
+                value = trackViewModelState.trackMinutes,
                 modifier = Modifier.padding(horizontal = 8.dp),
-                valueRange = 0f..mediaPlayer.duration.toFloat(),
+                valueRange = 0f..trackViewModel.trackDuration(),
                 onValueChange = {
-                    musicViewModel.setTrackMinutesValue(it)
-                    mediaPlayer.seekTo(it.toInt())
+                    trackViewModel.seekTo(it)
                 })
         }
         Row {
-            Text(text = musicViewModelStates.trackMinutes.toMinutes())
+            Text(text = trackViewModelState.trackMinutes.toMinutes())
             Text(
-                text = mediaPlayer.duration.toMinutes(),
+                text = trackViewModel.trackDuration().toMinutes(),
                 textAlign = TextAlign.End,
                 modifier = Modifier.fillMaxWidth()
             )

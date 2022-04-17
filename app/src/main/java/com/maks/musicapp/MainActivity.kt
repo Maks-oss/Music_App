@@ -25,6 +25,7 @@ import com.maks.musicapp.ui.screens.MainScreen
 import com.maks.musicapp.ui.screens.TrackDetailScreen
 import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
+import com.maks.musicapp.ui.viewmodels.TrackViewModel
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.showMessage
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -68,6 +69,7 @@ class MainActivity : ComponentActivity() {
         val navController = rememberNavController()
         val musicViewModel = getViewModel<MusicViewModel>()
         val scaffoldState = rememberScaffoldState()
+        val trackViewModel = getViewModel<TrackViewModel>()
         registerTrackDownloadBroadcastReceiver(scaffoldState.snackbarHostState)
         NavHost(navController = navController, startDestination = Routes.MainScreenRoute.route) {
             composable(Routes.MainScreenRoute.route) {
@@ -84,7 +86,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(scaffoldState = scaffoldState) {
                     TrackDetailScreen(
                         track = musicViewModel.currentTrack,
-                        musicViewModel = musicViewModel,
+                        trackViewModel = trackViewModel,
                         navController = navController,
                         snackbarHostState = scaffoldState.snackbarHostState,
                         startService = {

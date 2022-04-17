@@ -7,8 +7,5 @@ data class MusicViewModelStates(
     val searchInput:String = "",
     val currentJob:Job? = null,
     val tabState:Int = 0,
-    val textFieldVisibility:Boolean = true,
-    val isTrackPlaying:Boolean = false,
-    val trackMinutes:Float = 0F,
-    val onBackPressed:Boolean = false,
+    val textFieldVisibility:Boolean = true
 )

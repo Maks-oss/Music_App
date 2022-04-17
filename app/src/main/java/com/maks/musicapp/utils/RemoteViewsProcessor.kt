@@ -16,8 +16,10 @@ class RemoteViewsProcessor(private val context: Context) {
         musicNotificationCollapsed.setTextViewText(R.id.notification_artist_name_collapsed, title)
     }
     fun setTrackImage(image:String){
-
         musicNotificationExpanded.setImageViewUri(R.id.notification_track_image_expanded, Uri.parse(image))
         musicNotificationCollapsed.setImageViewUri(R.id.notification_track_image_collapsed, Uri.parse(image))
+    }
+    fun setPlayClickButton(){
+
     }
 }
