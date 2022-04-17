@@ -242,5 +242,9 @@ class MusicViewModel(
         musicViewModelStates = musicViewModelStates.copy(textFieldVisibility = value)
     }
 
+    fun setSelectedModalDrawerItem(value: Int){
+        musicViewModelStates = musicViewModelStates.copy(selectedModalDrawerItem = value)
+    }
+
 
 }

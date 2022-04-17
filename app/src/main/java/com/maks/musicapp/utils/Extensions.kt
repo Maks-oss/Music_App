@@ -1,10 +1,19 @@
 package com.maks.musicapp.utils
 
+import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.primarySurface
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import com.maks.musicapp.data.domain.Track
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,11 +28,15 @@ fun Number.toMinutes(): String {
 
 }
 
-fun SnackbarHostState.showMessage(message: String,coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)){
+fun SnackbarHostState.showMessage(
+    message: String,
+    coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+) {
     coroutineScope.launch {
-        showSnackbar(message,"OK")
+        showSnackbar(message, "OK")
     }
 }
+
 fun Context.downloadTrack(
     track: Track
 ) {
@@ -39,7 +52,7 @@ fun Context.downloadTrack(
     manager.enqueue(downloadManagerRequest)
 }
 
-fun Track.getTrackTitle():String {
+fun Track.getTrackTitle(): String {
     val trackNameLines = "$artist_name - $name".split(" ")
     return StringBuilder().apply {
         trackNameLines.forEachIndexed { index, string ->
@@ -51,3 +64,11 @@ fun Track.getTrackTitle():String {
         }
     }.toString()
 }
+
+@SuppressLint("ComposableModifierFactory")
+@Composable
+fun Modifier.setBackground(selectedItem: Int, expectedItem: Int) =
+    background(
+        if (selectedItem == expectedItem) MaterialTheme.colors.primarySurface else MaterialTheme.colors.surface,
+        shape = RoundedCornerShape(8.dp)
+    )

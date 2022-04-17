@@ -5,7 +5,10 @@ object TabRowConstants {
     const val ARTIST_TAB_INDEX = 1
     const val ALBUM_TAB_INDEX = 2
 }
-
+object ModalDrawerConstants{
+    const val MAIN_INDEX = 0
+    const val FEEDS_INDEX = 1
+}
 object AppConstants {
     const val DEFAULT_IMAGE = "https://www.cjoint.com/doc/20_12/JLFrj6Sanqu_image-not-found.png"
     const val EMPTY_RESULT_MESSAGE = "Nothing was found by your request"

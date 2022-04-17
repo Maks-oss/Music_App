@@ -17,10 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.maks.musicapp.ui.broadcastreceivers.TrackDownloadBroadCast
 import com.maks.musicapp.ui.composeutils.MusicModalDrawer
 import com.maks.musicapp.ui.composeutils.MusicTopAppBar
-import com.maks.musicapp.ui.screens.AlbumDetailScreen
-import com.maks.musicapp.ui.screens.ArtistDetailScreen
-import com.maks.musicapp.ui.screens.MainScreen
-import com.maks.musicapp.ui.screens.TrackDetailScreen
+import com.maks.musicapp.ui.screens.*
 import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.ui.viewmodels.TrackViewModel
@@ -78,8 +75,9 @@ class MainActivity : ComponentActivity() {
         val drawerState = rememberDrawerState(DrawerValue.Closed)
         registerTrackDownloadBroadcastReceiver(scaffoldState.snackbarHostState)
         NavHost(navController = navController, startDestination = Routes.MainScreenRoute.route) {
+
             composable(Routes.MainScreenRoute.route) {
-                MusicModalDrawer(drawerState = drawerState ) {
+                MusicModalDrawer(drawerState = drawerState, navController = navController,musicViewModel = musicViewModel) {
                     Scaffold(scaffoldState = scaffoldState,
                         topBar = {
                             MusicTopAppBar(navigationIconClick = {
@@ -95,9 +93,21 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 }
-
             }
-
+            composable(Routes.FeedsScreenRoute.route) {
+                MusicModalDrawer(drawerState = drawerState, navController = navController,musicViewModel = musicViewModel) {
+                    Scaffold(scaffoldState = scaffoldState,
+                        topBar = {
+                            MusicTopAppBar(navigationIconClick = {
+                                coroutineScope.launch {
+                                    drawerState.open()
+                                }
+                            })
+                        }) {
+                        FeedsScreen()
+                    }
+                }
+            }
 
             composable(Routes.TrackDetailsScreenRoute.route) {
                 Scaffold(scaffoldState = scaffoldState) {
@@ -120,6 +130,7 @@ class MainActivity : ComponentActivity() {
                 }
 
             }
+
             composable(Routes.AlbumDetailsScreenRoute.route) {
                 Scaffold(scaffoldState = scaffoldState) {
                     AlbumDetailScreen(

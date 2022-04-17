@@ -7,5 +7,6 @@ data class MusicViewModelStates(
     val searchInput:String = "",
     val currentJob:Job? = null,
     val tabState:Int = 0,
-    val textFieldVisibility:Boolean = true
+    val textFieldVisibility:Boolean = true,
+    val selectedModalDrawerItem:Int = 0,
 )
