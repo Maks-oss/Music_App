@@ -16,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.maks.musicapp.R
+import com.maks.musicapp.ui.viewmodels.FeedsViewModel
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.utils.ModalDrawerConstants
 import com.maks.musicapp.utils.Routes
@@ -27,6 +28,7 @@ import kotlinx.coroutines.launch
 fun MusicModalDrawer(
     drawerState: DrawerState,
     musicViewModel: MusicViewModel,
+    feedsViewModel: FeedsViewModel,
     navController: NavController,
     content: @Composable () -> Unit
 ) {
@@ -75,6 +77,7 @@ fun MusicModalDrawer(
                         .clickable {
                             coroutineScope.launch {
                                 musicViewModel.setSelectedModalDrawerItem(ModalDrawerConstants.FEEDS_INDEX)
+                                feedsViewModel.applyFeeds()
                                 navController.navigate(Routes.FeedsScreenRoute.route)
                                 drawerState.close()
                             }

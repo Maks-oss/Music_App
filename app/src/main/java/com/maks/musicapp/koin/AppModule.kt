@@ -1,8 +1,10 @@
 package com.maks.musicapp.koin
 
+import com.maks.musicapp.mappers.FeedsMapper
 import com.maks.musicapp.mappers.MusicMapper
 import com.maks.musicapp.repository.*
 import com.maks.musicapp.retrofit.RetrofitClient
+import com.maks.musicapp.ui.viewmodels.FeedsViewModel
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.ui.viewmodels.TrackViewModel
 import org.koin.android.ext.koin.androidContext
@@ -17,8 +19,10 @@ val retrofitModule = module {
 val repositoryModule = module {
     single<DataStoreRepository> { DataStoreRepositoryImpl(androidContext()) }
     single<MusicRepository> { MusicRepositoryImpl(get()) }
+    single<FeedsRepository> { FeedsRepositoryImpl(get()) }
 }
 val viewModelModule = module {
     viewModel { MusicViewModel(get(), MusicMapper()) }
     viewModel { TrackViewModel() }
+    viewModel { FeedsViewModel(get(), FeedsMapper()) }
 }

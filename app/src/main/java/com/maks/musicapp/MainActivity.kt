@@ -25,6 +25,7 @@ import com.maks.musicapp.ui.composeutils.MusicModalDrawer
 import com.maks.musicapp.ui.composeutils.MusicTopAppBar
 import com.maks.musicapp.ui.screens.*
 import com.maks.musicapp.ui.theme.MusicAppTheme
+import com.maks.musicapp.ui.viewmodels.FeedsViewModel
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.ui.viewmodels.TrackViewModel
 import com.maks.musicapp.utils.Routes
@@ -75,10 +76,11 @@ class MainActivity : ComponentActivity() {
     fun AppNavigator() {
 
         val navController = rememberNavController()
-        val musicViewModel = getViewModel<MusicViewModel>()
         val scaffoldState = rememberScaffoldState()
         val coroutineScope = rememberCoroutineScope()
+        val musicViewModel = getViewModel<MusicViewModel>()
         val trackViewModel = getViewModel<TrackViewModel>()
+        val feedsViewModel = getViewModel<FeedsViewModel>()
         val drawerState = rememberDrawerState(DrawerValue.Closed)
         registerTrackDownloadBroadcastReceiver(scaffoldState.snackbarHostState)
 //        val springSpec = spring<IntOffset>(dampingRatio = Spring.DampingRatioMediumBouncy)
@@ -98,7 +100,8 @@ class MainActivity : ComponentActivity() {
                 MusicModalDrawer(
                     drawerState = drawerState,
                     navController = navController,
-                    musicViewModel = musicViewModel
+                    musicViewModel = musicViewModel,
+                    feedsViewModel = feedsViewModel
                 ) {
                     Scaffold(scaffoldState = scaffoldState,
                         topBar = {
@@ -128,7 +131,8 @@ class MainActivity : ComponentActivity() {
                 MusicModalDrawer(
                     drawerState = drawerState,
                     navController = navController,
-                    musicViewModel = musicViewModel
+                    musicViewModel = musicViewModel,
+                    feedsViewModel = feedsViewModel
                 ) {
                     Scaffold(scaffoldState = scaffoldState,
                         topBar = {
@@ -138,7 +142,7 @@ class MainActivity : ComponentActivity() {
                                 }
                             })
                         }) {
-                        FeedsScreen()
+                        FeedsScreen(feedsViewModel)
                     }
                 }
             }

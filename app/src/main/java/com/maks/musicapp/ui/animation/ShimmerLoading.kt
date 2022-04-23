@@ -4,6 +4,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.MaterialTheme
@@ -34,8 +35,20 @@ private fun ShimmerCard(brush: Brush) {
 
 @ExperimentalFoundationApi
 @Composable
-private fun ShimmerContent() {
+private fun ShimmerGridContent() {
     LazyVerticalGrid(columns = GridCells.Fixed(2)) {
+        repeat(50) {
+            item {
+                ShimmerAnimation()
+            }
+        }
+    }
+}
+
+@ExperimentalFoundationApi
+@Composable
+private fun ShimmerColumnContent() {
+    LazyColumn {
         repeat(50) {
             item {
                 ShimmerAnimation()
@@ -80,8 +93,12 @@ private fun ShimmerAnimation(
 
 @ExperimentalFoundationApi
 @Composable
-fun DisplayShimmer(isLoading: Boolean) {
+fun DisplayShimmer(isLoading: Boolean, isVertical: Boolean = true) {
     if (isLoading) {
-        ShimmerContent()
+        if (isVertical) {
+            ShimmerGridContent()
+        } else {
+            ShimmerColumnContent()
+        }
     }
 }
