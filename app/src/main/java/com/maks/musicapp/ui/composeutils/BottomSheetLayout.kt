@@ -8,17 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.maks.musicapp.data.domain.Track
-import com.maks.musicapp.data.dto.tracks.TrackResult
 import com.maks.musicapp.ui.lists.TracksList
-import com.maks.musicapp.ui.states.TracksUiState
-import com.maks.musicapp.ui.viewmodels.MusicViewModel
+import com.maks.musicapp.ui.states.UiState
 
 
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @Composable
 fun TrackBottomSheetLayout(
-    tracksUiState: TracksUiState,
+    tracksUiState: UiState<Track>,
     bottomSheetState: ModalBottomSheetState,
     trackListItemClickAction: (Track) -> Unit,
     content: @Composable () -> Unit

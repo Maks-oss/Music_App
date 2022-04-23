@@ -42,10 +42,10 @@ fun MusicModalDrawer(
                     .verticalScroll(rememberScrollState())
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.music_logo),
+                    painter = painterResource(id = R.drawable.music_theme),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp),
+                        .height(300.dp),
                     contentDescription = "",
                     contentScale = ContentScale.Crop
                 )
@@ -55,9 +55,9 @@ fun MusicModalDrawer(
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
-                            musicViewModel.setSelectedModalDrawerItem(ModalDrawerConstants.MAIN_INDEX)
-                            navController.navigate(Routes.MainScreenRoute.route)
                             coroutineScope.launch {
+                                musicViewModel.setSelectedModalDrawerItem(ModalDrawerConstants.MAIN_INDEX)
+                                navController.navigate(Routes.MainScreenRoute.route)
                                 drawerState.close()
                             }
                         }
@@ -73,9 +73,9 @@ fun MusicModalDrawer(
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
-                            musicViewModel.setSelectedModalDrawerItem(ModalDrawerConstants.FEEDS_INDEX)
-                            navController.navigate(Routes.FeedsScreenRoute.route)
                             coroutineScope.launch {
+                                musicViewModel.setSelectedModalDrawerItem(ModalDrawerConstants.FEEDS_INDEX)
+                                navController.navigate(Routes.FeedsScreenRoute.route)
                                 drawerState.close()
                             }
                         }

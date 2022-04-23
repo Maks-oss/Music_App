@@ -2,7 +2,6 @@ package com.maks.musicapp.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SnackbarHostState
@@ -12,17 +11,12 @@ import androidx.navigation.NavController
 import com.maks.musicapp.data.domain.Album
 import com.maks.musicapp.data.domain.Artist
 import com.maks.musicapp.data.domain.Track
-import com.maks.musicapp.data.dto.albums.AlbumResult
-import com.maks.musicapp.data.dto.artists.ArtistResult
-import com.maks.musicapp.data.dto.tracks.TrackResult
 import com.maks.musicapp.ui.composeutils.MusicTabs
 import com.maks.musicapp.ui.composeutils.MusicTextField
 import com.maks.musicapp.ui.lists.AlbumsList
 import com.maks.musicapp.ui.lists.ArtistsList
 import com.maks.musicapp.ui.lists.TracksList
-import com.maks.musicapp.ui.states.ProcessAlbumsUiStateMessages
-import com.maks.musicapp.ui.states.ProcessArtistsUiStateMessages
-import com.maks.musicapp.ui.states.ProcessTracksUiStateMessages
+import com.maks.musicapp.ui.states.ProcessUiStateMessages
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.TabRoutes
@@ -122,18 +116,18 @@ private fun ProcessListUiStateMessages(
     tabIndex: Int
 ) {
     when (tabIndex) {
-        TabRowConstants.TRACK_TAB_INDEX -> ProcessTracksUiStateMessages(
-            tracksUiState = musicViewModel.tracksUiState,
+        TabRowConstants.TRACK_TAB_INDEX -> ProcessUiStateMessages(
+            uiState = musicViewModel.tracksUiState,
             snackbarHostState = snackbarHostState,
             messageShown = { musicViewModel.tracksMessageDisplayed() }
         )
-        TabRowConstants.ARTIST_TAB_INDEX -> ProcessArtistsUiStateMessages(
-            artistsUiState = musicViewModel.artistsUiState,
+        TabRowConstants.ARTIST_TAB_INDEX -> ProcessUiStateMessages(
+            uiState = musicViewModel.artistsUiState,
             snackbarHostState = snackbarHostState,
             messageShown = { musicViewModel.artistsMessageDisplayed() }
         )
-        TabRowConstants.ALBUM_TAB_INDEX -> ProcessAlbumsUiStateMessages(
-            albumsUiState = musicViewModel.albumsUiState,
+        TabRowConstants.ALBUM_TAB_INDEX -> ProcessUiStateMessages(
+            uiState = musicViewModel.albumsUiState,
             snackbarHostState = snackbarHostState,
             messageShown = { musicViewModel.albumsMessageDisplayed() }
         )

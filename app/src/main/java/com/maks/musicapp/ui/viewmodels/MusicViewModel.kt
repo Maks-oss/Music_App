@@ -10,9 +10,7 @@ import com.maks.musicapp.data.domain.Artist
 import com.maks.musicapp.data.domain.Track
 import com.maks.musicapp.mappers.MusicMapper
 import com.maks.musicapp.repository.MusicRepository
-import com.maks.musicapp.ui.states.AlbumsUiState
-import com.maks.musicapp.ui.states.ArtistsUiState
-import com.maks.musicapp.ui.states.TracksUiState
+import com.maks.musicapp.ui.states.UiState
 import com.maks.musicapp.utils.AppConstants
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -24,19 +22,19 @@ class MusicViewModel(
     private val musicMapper: MusicMapper
 ) : ViewModel() {
 
-    var tracksUiState by mutableStateOf(TracksUiState())
+    var tracksUiState by mutableStateOf(UiState<Track>())
         private set
 
-    var artistsUiState by mutableStateOf(ArtistsUiState())
+    var artistsUiState by mutableStateOf(UiState<Artist>())
         private set
 
-    var artistTracksUiState by mutableStateOf(TracksUiState())
+    var artistTracksUiState by mutableStateOf(UiState<Track>())
         private set
 
-    var albumTracksUiState by mutableStateOf(TracksUiState())
+    var albumTracksUiState by mutableStateOf(UiState<Track>())
         private set
 
-    var albumsUiState by mutableStateOf(AlbumsUiState())
+    var albumsUiState by mutableStateOf(UiState<Album>())
         private set
 
     var musicViewModelStates by mutableStateOf(MusicViewModelStates())
@@ -48,7 +46,7 @@ class MusicViewModel(
 
     fun findTracksByName() {
 
-        tracksUiState = tracksUiState.copy(isLoading = true, tracksResult = null, message = null)
+        tracksUiState = tracksUiState.copy(isLoading = true, result = null, message = null)
         viewModelScope.launch {
             delay(1000)
             tracksUiState = try {
@@ -58,20 +56,20 @@ class MusicViewModel(
                 if (tracksResult.isNullOrEmpty()) {
                     tracksUiState.copy(
                         isLoading = false,
-                        tracksResult = null,
+                        result = null,
                         message = AppConstants.EMPTY_RESULT_MESSAGE
                     )
                 } else {
                     tracksUiState.copy(
                         isLoading = false,
-                        tracksResult = musicMapper.toTrackList(tracksResult),
+                        result = musicMapper.toTrackList(tracksResult),
                     )
                 }
 
             } catch (exc: Exception) {
                 tracksUiState.copy(
                     isLoading = false,
-                    tracksResult = null
+                    result = null
                 )
             }
 
@@ -79,7 +77,7 @@ class MusicViewModel(
     }
 
     fun findArtistsByName() {
-        artistsUiState = artistsUiState.copy(isLoading = true, artistsResult = null, message = null)
+        artistsUiState = artistsUiState.copy(isLoading = true, result = null, message = null)
         viewModelScope.launch {
             delay(1000)
             artistsUiState = try {
@@ -89,19 +87,19 @@ class MusicViewModel(
                 if (artistsResult.isNullOrEmpty()) {
                     artistsUiState.copy(
                         isLoading = false,
-                        artistsResult = null,
+                        result = null,
                         message = AppConstants.EMPTY_RESULT_MESSAGE
                     )
                 } else {
                     artistsUiState.copy(
                         isLoading = false,
-                        artistsResult = musicMapper.toArtistList(artistsResult)
+                        result = musicMapper.toArtistList(artistsResult)
                     )
                 }
             } catch (exc: Exception) {
                 artistsUiState.copy(
                     isLoading = false,
-                    artistsResult = null,
+                    result = null,
                     message = exc.localizedMessage
                 )
             }
@@ -110,7 +108,7 @@ class MusicViewModel(
 
     fun findAlbumsByName() {
 
-        albumsUiState = albumsUiState.copy(isLoading = true, albumsResult = null, message = null)
+        albumsUiState = albumsUiState.copy(isLoading = true, result = null, message = null)
         viewModelScope.launch {
             delay(1000)
             albumsUiState = try {
@@ -120,19 +118,19 @@ class MusicViewModel(
                 if (albumsResult.isNullOrEmpty()) {
                     albumsUiState.copy(
                         isLoading = false,
-                        albumsResult = null,
+                        result = null,
                         message = AppConstants.EMPTY_RESULT_MESSAGE
                     )
                 } else {
                     albumsUiState.copy(
                         isLoading = false,
-                        albumsResult = musicMapper.toAlbumList(albumsResult),
+                        result = musicMapper.toAlbumList(albumsResult),
                     )
                 }
             } catch (exc: Exception) {
                 albumsUiState.copy(
                     isLoading = false,
-                    albumsResult = null,
+                    result = null,
                     message = exc.localizedMessage
                 )
             }
@@ -142,7 +140,7 @@ class MusicViewModel(
     fun findArtistsTracks() {
 
         artistTracksUiState =
-            artistTracksUiState.copy(isLoading = true, tracksResult = null, message = null)
+            artistTracksUiState.copy(isLoading = true, result = null, message = null)
         viewModelScope.launch {
             delay(1000)
             artistTracksUiState = try {
@@ -152,13 +150,13 @@ class MusicViewModel(
                 if (artistTracksResult.isNullOrEmpty()) {
                     artistTracksUiState.copy(
                         isLoading = false,
-                        tracksResult = null,
+                        result = null,
                         message = AppConstants.EMPTY_ARTIST_TRACKS_MESSAGE
                     )
                 } else {
                     artistTracksUiState.copy(
                         isLoading = false,
-                        tracksResult = musicMapper.toArtistTracksList(
+                        result = musicMapper.toArtistTracksList(
                             currentArtist,
                             artistTracksResult
                         )
@@ -167,7 +165,7 @@ class MusicViewModel(
             } catch (exc: Exception) {
                 artistTracksUiState.copy(
                     isLoading = false,
-                    tracksResult = null,
+                    result = null,
                     message = exc.localizedMessage
                 )
             }
@@ -178,7 +176,7 @@ class MusicViewModel(
     fun findAlbumsTracks() {
 
         albumTracksUiState =
-            albumTracksUiState.copy(isLoading = true, tracksResult = null, message = null)
+            albumTracksUiState.copy(isLoading = true, result = null, message = null)
         viewModelScope.launch {
             delay(1000)
             albumTracksUiState = try {
@@ -188,7 +186,7 @@ class MusicViewModel(
 
                 albumTracksUiState.copy(
                     isLoading = false,
-                    tracksResult = musicMapper.toAlbumTracksList(
+                    result = musicMapper.toAlbumTracksList(
                         currentAlbum,
                         albumTracksResult!!
                     )
@@ -197,7 +195,7 @@ class MusicViewModel(
             } catch (exc: Exception) {
                 albumTracksUiState.copy(
                     isLoading = false,
-                    tracksResult = null,
+                    result = null,
                     message = exc.localizedMessage
                 )
             }

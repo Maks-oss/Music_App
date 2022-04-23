@@ -4,6 +4,7 @@ import com.maks.musicapp.data.dto.albums.Albums
 import com.maks.musicapp.data.dto.albums.tracks.AlbumTracks
 import com.maks.musicapp.data.dto.artists.Artists
 import com.maks.musicapp.data.dto.artists.tracks.ArtistTracks
+import com.maks.musicapp.data.dto.feeds.Feeds
 import com.maks.musicapp.data.dto.tracks.Track
 import retrofit2.Response
 import retrofit2.http.GET
@@ -39,4 +40,10 @@ interface MusicService {
         @Query("client_id") clientId:String,
         @Query("id") id:String,
     ):Response<AlbumTracks>
+
+    @GET("feeds")
+    suspend fun getFeedsResponse(
+        @Query("client_id") clientId:String,
+        @Query("type") type:String,
+    ):Response<Feeds>
 }

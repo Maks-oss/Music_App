@@ -14,13 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.maks.musicapp.R
 import com.maks.musicapp.data.domain.Track
-import com.maks.musicapp.data.dto.tracks.TrackResult
-import com.maks.musicapp.ui.states.TracksUiState
 import com.maks.musicapp.ui.animation.DisplayShimmer
+import com.maks.musicapp.ui.states.UiState
 import com.maks.musicapp.utils.AppConstants
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
@@ -28,16 +26,14 @@ import com.skydoves.landscapist.glide.GlideImage
 @ExperimentalFoundationApi
 @Composable
 fun TracksList(
-//    isLoading:Boolean,
-    tracksUiState: TracksUiState,
+    tracksUiState: UiState<Track>,
     listScrollAction: (LazyGridState) -> Unit,
     trackListItemClickAction: (Track) -> Unit
 ) {
-//    val tracks by tracksLiveData.observeAsState()
     val scrollState = rememberLazyGridState()
     listScrollAction(scrollState)
     DisplayShimmer(tracksUiState.isLoading)
-    DisplayTrackList(tracksUiState.tracksResult, scrollState, trackListItemClickAction)
+    DisplayTrackList(tracksUiState.result, scrollState, trackListItemClickAction)
 
 }
 

@@ -11,14 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.maks.musicapp.R
 import com.maks.musicapp.data.domain.Album
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
 import com.maks.musicapp.ui.composeutils.TrackBottomSheetLayout
-import com.maks.musicapp.ui.states.ProcessTracksUiStateMessages
+import com.maks.musicapp.ui.states.ProcessUiStateMessages
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.utils.Routes
 import com.skydoves.landscapist.CircularReveal
@@ -52,8 +51,8 @@ fun AlbumDetailScreen(
             }
         })
     }
-    ProcessTracksUiStateMessages(
-        tracksUiState = musicViewModel.albumTracksUiState,
+    ProcessUiStateMessages(
+        uiState = musicViewModel.albumTracksUiState,
         snackbarHostState = snackbarHostState,
         messageShown = {
             coroutineScope.launch {

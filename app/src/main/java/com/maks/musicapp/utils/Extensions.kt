@@ -69,6 +69,6 @@ fun Track.getTrackTitle(): String {
 @Composable
 fun Modifier.setBackground(selectedItem: Int, expectedItem: Int) =
     background(
-        if (selectedItem == expectedItem) MaterialTheme.colors.primarySurface else MaterialTheme.colors.surface,
+        color = if (selectedItem == expectedItem) MaterialTheme.colors.primarySurface else MaterialTheme.colors.surface,
         shape = RoundedCornerShape(8.dp)
     )

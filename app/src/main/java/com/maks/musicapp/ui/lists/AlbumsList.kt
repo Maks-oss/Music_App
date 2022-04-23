@@ -15,13 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.maks.musicapp.R
 import com.maks.musicapp.data.domain.Album
-import com.maks.musicapp.data.dto.albums.AlbumResult
-import com.maks.musicapp.ui.states.AlbumsUiState
+import com.maks.musicapp.data.domain.Artist
 import com.maks.musicapp.ui.animation.DisplayShimmer
+import com.maks.musicapp.ui.states.UiState
 import com.maks.musicapp.utils.AppConstants
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
@@ -29,7 +28,7 @@ import com.skydoves.landscapist.glide.GlideImage
 @ExperimentalFoundationApi
 @Composable
 fun AlbumsList(
-    albumsUiState: AlbumsUiState,
+    albumsUiState: UiState<Album>,
     listScrollAction: (LazyGridState) -> Unit,
     albumListItemClickAction: (Album) -> Unit
 ) {
@@ -37,7 +36,7 @@ fun AlbumsList(
     val scrollState = rememberLazyGridState()
     listScrollAction(scrollState)
     DisplayShimmer(albumsUiState.isLoading)
-    DisplayAlbumsList(albumsUiState.albumsResult, scrollState,albumListItemClickAction)
+    DisplayAlbumsList(albumsUiState.result, scrollState,albumListItemClickAction)
 
 }
 
