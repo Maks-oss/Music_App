@@ -36,7 +36,7 @@ fun FeedsScreen(feedsViewModel: FeedsViewModel) {
                 })
             }
         }
-        FeedsList(feedsUiState = feedsViewModel.feedsUiState)
+        FeedsList(feedsViewModel)
     }
 
 }

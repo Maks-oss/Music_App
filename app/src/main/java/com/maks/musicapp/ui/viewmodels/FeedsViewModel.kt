@@ -20,9 +20,19 @@ class FeedsViewModel(
 
 
     val selectedChip = mutableStateOf("artist")
+    val expandedFeedCards = mutableStateOf(listOf<String>())
 
     fun setChipValue(value: String){
         selectedChip.value = value
+    }
+    fun applyExpandedCard(value: String){
+        expandedFeedCards.value = expandedFeedCards.value.toMutableList().apply {
+            if (contains(value)){
+                remove(value)
+            } else {
+                add(value)
+            }
+        }
     }
 
     fun applyFeeds(type: String = "artist") {
