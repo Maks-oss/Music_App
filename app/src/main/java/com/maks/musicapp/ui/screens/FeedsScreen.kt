@@ -1,12 +1,50 @@
 package com.maks.musicapp.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.maks.musicapp.ui.composeutils.CustomChip
 import com.maks.musicapp.ui.lists.FeedsList
 import com.maks.musicapp.ui.viewmodels.FeedsViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FeedsScreen(feedsViewModel: FeedsViewModel){
-    FeedsList(feedsUiState = feedsViewModel.feedsUiState)
+fun FeedsScreen(feedsViewModel: FeedsViewModel) {
+    val feedsCategoriesList = listOf(
+        "album",
+        "artist",
+        "playlist",
+        "track",
+        "news",
+        "interview",
+        "contest",
+        "video",
+        "update"
+    )
+    val selected by feedsViewModel.selectedChip
+    Column {
+        Row(
+            Modifier
+                .padding(8.dp)
+                .horizontalScroll(rememberScrollState())
+        ) {
+            feedsCategoriesList.forEach { category ->
+                CustomChip(selected == category, category, action = {
+                    feedsViewModel.setChipValue(category)
+                })
+            }
+        }
+        Spacer(modifier = Modifier.padding(8.dp))
+        FeedsList(feedsUiState = feedsViewModel.feedsUiState)
+    }
+
 }

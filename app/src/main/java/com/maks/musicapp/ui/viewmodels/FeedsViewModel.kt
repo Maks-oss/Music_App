@@ -18,6 +18,13 @@ class FeedsViewModel(
     var feedsUiState by mutableStateOf(UiState<Feed>())
         private set
 
+
+    val selectedChip = mutableStateOf("artist")
+
+    fun setChipValue(value: String){
+        selectedChip.value = value
+    }
+
     fun applyFeeds(type: String = "artist") {
         feedsUiState = feedsUiState.copy(isLoading = true, message = null)
         viewModelScope.launch {
