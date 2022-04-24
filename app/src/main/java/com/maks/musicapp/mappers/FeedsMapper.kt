@@ -7,6 +7,6 @@ class FeedsMapper {
     fun toFeedList(feedResultList: List<FeedResult>): List<Feed> {
         return feedResultList.map { feedResult ->
             Feed(title = feedResult.title.en, text = feedResult.text.en, type = feedResult.type)
-        }
+        }.filter { it.title.isNotEmpty() }
     }
 }

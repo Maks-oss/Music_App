@@ -11,7 +11,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
+import com.maks.musicapp.R
 import com.maks.musicapp.ui.composeutils.CustomChip
 import com.maks.musicapp.ui.lists.FeedsList
 import com.maks.musicapp.ui.viewmodels.FeedsViewModel
@@ -19,17 +21,7 @@ import com.maks.musicapp.ui.viewmodels.FeedsViewModel
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FeedsScreen(feedsViewModel: FeedsViewModel) {
-    val feedsCategoriesList = listOf(
-        "album",
-        "artist",
-        "playlist",
-        "track",
-        "news",
-        "interview",
-        "contest",
-        "video",
-        "update"
-    )
+    val feedsCategoriesList = stringArrayResource(id = R.array.feeds_categories)
     val selected by feedsViewModel.selectedChip
     Column {
         Row(
@@ -40,10 +32,10 @@ fun FeedsScreen(feedsViewModel: FeedsViewModel) {
             feedsCategoriesList.forEach { category ->
                 CustomChip(selected == category, category, action = {
                     feedsViewModel.setChipValue(category)
+                    feedsViewModel.applyFeeds(category)
                 })
             }
         }
-        Spacer(modifier = Modifier.padding(8.dp))
         FeedsList(feedsUiState = feedsViewModel.feedsUiState)
     }
 

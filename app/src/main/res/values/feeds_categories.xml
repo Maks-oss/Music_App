@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="feeds_categories">
+        <item>album</item>
+        <item>artist</item>
+        <item>playlist</item>
+        <item>track</item>
+        <item>news</item>
+        <item>interview</item>
+        <item>contest</item>
+        <item>video</item>
+        <item>update</item>
+    </string-array>
+</resources>

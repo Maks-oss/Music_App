@@ -23,7 +23,7 @@ fun CustomChip(
             selected -> MaterialTheme.colors.surface
             else -> MaterialTheme.colors.primary
         },
-        shape = CircleShape,
+        shape = MaterialTheme.shapes.small,
         elevation = 8.dp,
         modifier = Modifier
             .padding(8.dp)
