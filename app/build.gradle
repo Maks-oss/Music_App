@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
+apply plugin: 'kotlin-kapt'
+
 
 android {
     compileSdk 31
@@ -99,6 +101,13 @@ dependencies {
     implementation "com.github.skydoves:landscapist-coil:1.5.0"
 
     implementation "com.google.accompanist:accompanist-permissions:0.24.6-alpha"
+
+    // room
+    def roomVersion = "2.4.2"
+    implementation "androidx.room:room-runtime:$roomVersion"
+    annotationProcessor "androidx.room:room-compiler:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
 
 
 

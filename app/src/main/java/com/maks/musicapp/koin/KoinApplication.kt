@@ -13,6 +13,7 @@ class KoinApplication:Application() {
             androidContext(this@KoinApplication)
             modules(listOf(
                 retrofitModule,
+                databaseModule,
                 repositoryModule,
                 viewModelModule
             ))

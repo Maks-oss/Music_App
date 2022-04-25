@@ -50,7 +50,7 @@ fun ExpandableFeedCard(
                 Text(
                     text = feed.title,
                     modifier = Modifier
-                        .fillMaxWidth(fraction = 0.8f)
+                        .fillMaxWidth(fraction = 0.9f)
                         .horizontalScroll(rememberScrollState())
                         .align(Alignment.CenterVertically),
                     style = MaterialTheme.typography.h6,

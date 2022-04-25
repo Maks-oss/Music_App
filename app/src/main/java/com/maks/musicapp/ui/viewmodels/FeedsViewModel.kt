@@ -11,10 +11,7 @@ import com.maks.musicapp.repository.FeedsRepository
 import com.maks.musicapp.ui.states.UiState
 import kotlinx.coroutines.launch
 
-class FeedsViewModel(
-    private val feedsRepository: FeedsRepository,
-    private val feedsMapper: FeedsMapper
-) : ViewModel() {
+class FeedsViewModel(private val feedsRepository: FeedsRepository) : ViewModel() {
     var feedsUiState by mutableStateOf(UiState<Feed>())
         private set
 
@@ -43,7 +40,7 @@ class FeedsViewModel(
                 feedsUiState.copy(
                     isLoading = false,
                     message = null,
-                    result = feedsMapper.toFeedList(feeds ?: emptyList())
+                    result = feeds
                 )
             } catch (exc: Exception) {
                 feedsUiState.copy(isLoading = false, message = exc.message, result = null)
