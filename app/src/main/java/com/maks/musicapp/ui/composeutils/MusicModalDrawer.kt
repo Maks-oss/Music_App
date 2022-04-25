@@ -59,8 +59,8 @@ fun MusicModalDrawer(
                         .clickable {
                             coroutineScope.launch {
                                 musicViewModel.setSelectedModalDrawerItem(ModalDrawerConstants.MAIN_INDEX)
-                                navController.navigate(Routes.MainScreenRoute.route)
                                 drawerState.close()
+                                navController.navigate(Routes.MainScreenRoute.route)
                             }
                         }
                         .setBackground(
@@ -78,8 +78,8 @@ fun MusicModalDrawer(
                             coroutineScope.launch {
                                 musicViewModel.setSelectedModalDrawerItem(ModalDrawerConstants.FEEDS_INDEX)
                                 feedsViewModel.applyFeeds()
-                                navController.navigate(Routes.FeedsScreenRoute.route)
                                 drawerState.close()
+                                navController.navigate(Routes.FeedsScreenRoute.route)
                             }
                         }
                         .setBackground(

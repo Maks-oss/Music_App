@@ -18,8 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.unit.IntOffset
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.navigation
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.maks.musicapp.ui.broadcastreceivers.TrackDownloadBroadCast
 import com.maks.musicapp.ui.composeutils.MusicModalDrawer
 import com.maks.musicapp.ui.composeutils.MusicTopAppBar
@@ -75,7 +78,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun AppNavigator() {
 
-        val navController = rememberNavController()
+        val navController = rememberAnimatedNavController()
         val scaffoldState = rememberScaffoldState()
         val coroutineScope = rememberCoroutineScope()
         val musicViewModel = getViewModel<MusicViewModel>()
@@ -83,20 +86,20 @@ class MainActivity : ComponentActivity() {
         val feedsViewModel = getViewModel<FeedsViewModel>()
         val drawerState = rememberDrawerState(DrawerValue.Closed)
         registerTrackDownloadBroadcastReceiver(scaffoldState.snackbarHostState)
-//        val springSpec = spring<IntOffset>(dampingRatio = Spring.DampingRatioMediumBouncy)
-        NavHost(
+        val springSpec = spring<IntOffset>(dampingRatio = Spring.DampingRatioMediumBouncy)
+        AnimatedNavHost(
             navController = navController,
             startDestination = Routes.MainScreenRoute.route
         ) {
-            composable(Routes.MainScreenRoute.route/*, enterTransition = { _, _ ->
+            composable(Routes.MainScreenRoute.route, enterTransition = {
                 slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = springSpec)
-            }, exitTransition = { _, _ ->
+            }, exitTransition = {
                 slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = springSpec)
-            }, popEnterTransition = { _, _ ->
+            }, popEnterTransition = {
                 slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = springSpec)
-            }, popExitTransition = { _, _ ->
+            }, popExitTransition = {
                 slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = springSpec)
-            }*/) {
+            }) {
                 MusicModalDrawer(
                     drawerState = drawerState,
                     navController = navController,
@@ -119,15 +122,15 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-            composable(Routes.FeedsScreenRoute.route/*, enterTransition = { _, _ ->
+            composable(Routes.FeedsScreenRoute.route, enterTransition = {
                 slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = springSpec)
-            }, exitTransition = { _, _ ->
+            }, exitTransition = {
                 slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = springSpec)
-            }, popEnterTransition = { _, _ ->
+            }, popEnterTransition = {
                 slideInHorizontally(initialOffsetX = { -1000 }, animationSpec = springSpec)
-            }, popExitTransition = { _, _ ->
+            }, popExitTransition = {
                 slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = springSpec)
-            }*/) {
+            }) {
                 MusicModalDrawer(
                     drawerState = drawerState,
                     navController = navController,
