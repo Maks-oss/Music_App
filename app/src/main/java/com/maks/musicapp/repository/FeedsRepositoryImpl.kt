@@ -1,9 +1,7 @@
 package com.maks.musicapp.repository
 
-import android.util.Log
 import com.maks.musicapp.BuildConfig
 import com.maks.musicapp.data.domain.Feed
-import com.maks.musicapp.data.dto.feeds.FeedResult
 import com.maks.musicapp.mappers.FeedsMapper
 import com.maks.musicapp.retrofit.retrofitservices.MusicService
 import com.maks.musicapp.room.FeedDao
@@ -25,5 +23,12 @@ class FeedsRepositoryImpl(
         } else {
             feeds
         }
+    }
+
+    override suspend fun getFeedsFromServer(type: String): List<Feed>? =
+        feedsMapper.toFeedList(musicService.getFeedsResponse(BuildConfig.clientId, type).body()?.results)
+
+    override suspend fun insertFeeds(feeds: List<Feed>) {
+        feedsDao.insertFeeds(feeds)
     }
 }

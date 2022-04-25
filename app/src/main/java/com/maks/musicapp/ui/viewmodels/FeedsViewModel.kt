@@ -15,28 +15,41 @@ class FeedsViewModel(private val feedsRepository: FeedsRepository) : ViewModel()
     var feedsUiState by mutableStateOf(UiState<Feed>())
         private set
 
-
-    val selectedChip = mutableStateOf("artist")
-    val expandedFeedCards = mutableStateOf(listOf<String>())
+    var feedsViewModelState by mutableStateOf(FeedsViewModelStates())
+        private set
 
     fun setChipValue(value: String){
-        selectedChip.value = value
+        feedsViewModelState = feedsViewModelState.copy(selectedChip = value)
     }
     fun applyExpandedCard(value: String){
-        expandedFeedCards.value = expandedFeedCards.value.toMutableList().apply {
+        val expandedCard = feedsViewModelState.expandedFeedCards.toMutableList().apply {
             if (contains(value)){
                 remove(value)
             } else {
                 add(value)
             }
         }
+        feedsViewModelState = feedsViewModelState.copy(expandedFeedCards = expandedCard)
+
     }
 
-    fun applyFeeds(type: String = "artist") {
+    fun setIsRefreshingValue(value: Boolean){
+        feedsViewModelState = feedsViewModelState.copy(isRefreshing = value)
+    }
+
+    fun applyFeeds(type: String = "artist",isRefresh: Boolean = false) {
         feedsUiState = feedsUiState.copy(isLoading = true, message = null)
         viewModelScope.launch {
             feedsUiState = try {
-                val feeds = feedsRepository.getFeeds(type)
+                val feeds = if (isRefresh){
+                    val serverFeeds = feedsRepository.getFeedsFromServer(type)
+                    setIsRefreshingValue(false)
+                    feedsRepository.insertFeeds(serverFeeds!!)
+                    serverFeeds
+                } else {
+                    feedsRepository.getFeeds(type)
+                }
+
                 feedsUiState.copy(
                     isLoading = false,
                     message = null,

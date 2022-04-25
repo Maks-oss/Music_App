@@ -15,7 +15,7 @@ fun FeedsList(
     feedsViewModel: FeedsViewModel,
 ) {
     val feedsUiState = feedsViewModel.feedsUiState
-    val expandedCards by feedsViewModel.expandedFeedCards
+    val expandedCards = feedsViewModel.feedsViewModelState.expandedFeedCards
     DisplayShimmer(feedsUiState.isLoading,isVertical = false)
     val feeds = feedsUiState.result
     feeds?.let { feedList ->

@@ -6,4 +6,6 @@ import com.maks.musicapp.data.dto.feeds.FeedResult
 
 interface FeedsRepository {
     suspend fun getFeeds(type: String): List<Feed>?
+    suspend fun getFeedsFromServer(type: String): List<Feed>?
+    suspend fun insertFeeds(feeds: List<Feed>)
 }
