@@ -3,7 +3,10 @@ package com.maks.musicapp.ui.composeutils
 import android.annotation.SuppressLint
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandMore
@@ -35,7 +38,6 @@ fun ExpandableFeedCard(
     }, label = "rotationDegreeTransition") {
         if (expanded) 0f else 180f
     }
-    var overflowText by remember { mutableStateOf(feed.title) }
     Card(
         modifier = Modifier
             .padding(8.dp), elevation = 8.dp
@@ -47,19 +49,12 @@ fun ExpandableFeedCard(
             ) {
                 Text(
                     text = feed.title,
-                    modifier = Modifier.wrapContentWidth().align(Alignment.CenterVertically),
+                    modifier = Modifier
+                        .fillMaxWidth(fraction = 0.8f)
+                        .horizontalScroll(rememberScrollState())
+                        .align(Alignment.CenterVertically),
                     style = MaterialTheme.typography.h6,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                   /* onTextLayout = { textLayoutResult ->
-                        if (textLayoutResult.hasVisualOverflow) {
-                            val lineEndIndex = textLayoutResult.getLineEnd(
-                                lineIndex = 0,
-                                visibleEnd = true
-                            )
-                            overflowText = overflowText.substring(0,lineEndIndex - 8).plus("...")
-                        }
-                    },*/
+                    maxLines = 1
                 )
                 CardArrow(
                     degrees = arrowRotationDegree,
