@@ -8,4 +8,6 @@
     <string name="track_download_cancel">Download Cancelled!</string>
     <string name="ok">OK</string>
     <string name="external_storage_permission_message">In order to download track, please give access to external storage</string>
+    <string name="music_text_field_description">music text field</string>
+    <string name="shimmer_animation_item">Shimmer Animation Item</string>
 </resources>

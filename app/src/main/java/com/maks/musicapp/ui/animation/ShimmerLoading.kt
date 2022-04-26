@@ -15,17 +15,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.maks.musicapp.R
 
 @Composable
 private fun ShimmerCard(brush: Brush) {
     Column(modifier = Modifier.padding(8.dp)) {
+        val shimmerAnimationItemDescription = stringResource(R.string.shimmer_animation_item)
         Surface(
             shape = MaterialTheme.shapes.medium,
         ) {
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .semantics { contentDescription = shimmerAnimationItemDescription }
                     .height(200.dp)
                     .background(brush = brush)
             )

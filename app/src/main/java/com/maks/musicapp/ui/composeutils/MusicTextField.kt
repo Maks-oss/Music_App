@@ -17,11 +17,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.maks.musicapp.R
 
 @Composable
 fun MusicTextField(textValue: String, isVisible: Boolean, onValueChange: (String) -> Unit) {
 
+    val textFieldDescription = stringResource(R.string.music_text_field_description)
     AnimatedVisibility(
         visible = isVisible,
         enter = fadeIn(animationSpec = tween(durationMillis = 1000)),
@@ -29,6 +34,7 @@ fun MusicTextField(textValue: String, isVisible: Boolean, onValueChange: (String
     ) {
         TextField(value = textValue, onValueChange = onValueChange,
             modifier = Modifier
+                .semantics { contentDescription = textFieldDescription }
                 .fillMaxWidth()
                 .padding(8.dp)
                 .clip(CircleShape)
