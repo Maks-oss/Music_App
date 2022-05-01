@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -23,18 +22,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.navigation.NavController
 import com.google.accompanist.permissions.*
 import com.maks.musicapp.R
 import com.maks.musicapp.data.domain.Track
 import com.maks.musicapp.data.dto.tracks.Tags
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
 import com.maks.musicapp.ui.viewmodels.TrackViewModel
-import com.maks.musicapp.ui.viewmodels.TrackViewModelState
 import com.maks.musicapp.utils.*
 import com.maks.musicapp.utils.player.MusicPlayer
 import com.maks.musicapp.utils.player.MusicPlayerImpl
@@ -48,7 +47,7 @@ fun TrackDetailScreen(
     snackbarHostState: SnackbarHostState,
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
-    initMusicPlayer(LocalContext.current,track, trackViewModel)
+    initMusicPlayer(LocalContext.current, track, trackViewModel)
 
     Surface(
         elevation = 8.dp, shape = MaterialTheme.shapes.medium, modifier = Modifier
@@ -62,7 +61,7 @@ fun TrackDetailScreen(
     }
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_STOP){
+            if (event == Lifecycle.Event.ON_STOP) {
                 trackViewModel.stopTrack()
             }
         }
@@ -72,8 +71,9 @@ fun TrackDetailScreen(
         }
     }
 }
+
 private fun initMusicPlayer(
-    context:Context,
+    context: Context,
     track: Track,
     trackViewModel: TrackViewModel
 ) {
@@ -86,6 +86,7 @@ private fun initMusicPlayer(
         }
     })
     trackViewModel.musicPlayer = musicPlayer
+
 
 }
 
@@ -169,16 +170,21 @@ private fun AudioPlayer(
     val trackViewModelState = trackViewModel.trackViewModelState
     Column(modifier = Modifier.padding(8.dp)) {
         Row {
+            val playerSlider = stringResource(R.string.player_slider)
             Icon(
                 imageVector = if (trackViewModelState.isTrackPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .clickable(onClick = audioPlayerAction),
-                contentDescription = ""
+                contentDescription = if (trackViewModelState.isTrackPlaying) "Pause Button" else stringResource(
+                    R.string.play_button
+                )
             )
             Slider(
                 value = trackViewModelState.trackMinutes,
-                modifier = Modifier.padding(horizontal = 8.dp),
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+                    .semantics { contentDescription = playerSlider },
                 valueRange = 0f..trackViewModel.trackDuration(),
                 onValueChange = {
                     trackViewModel.seekTo(it)

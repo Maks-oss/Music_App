@@ -16,7 +16,7 @@ class FeedsRepositoryImpl(
         val feeds = feedsDao.getFeeds(type)
         return if (feeds.isNullOrEmpty()) {
             val feedsFromServer = feedsMapper.toFeedList(
-                musicService.getFeedsResponse(BuildConfig.APPLICATION_ID, type).body()?.results
+                musicService.getFeedsResponse(BuildConfig.clientId, type).body()?.results
             )
             feedsDao.insertFeeds(feedsFromServer!!)
             feedsFromServer
@@ -26,7 +26,7 @@ class FeedsRepositoryImpl(
     }
 
     override suspend fun getFeedsFromServer(type: String): List<Feed>? =
-        feedsMapper.toFeedList(musicService.getFeedsResponse(BuildConfig.APPLICATION_ID, type).body()?.results)
+        feedsMapper.toFeedList(musicService.getFeedsResponse(BuildConfig.clientId, type).body()?.results)
 
     override suspend fun insertFeeds(feeds: List<Feed>) {
         feedsDao.insertFeeds(feeds)

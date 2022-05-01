@@ -9,12 +9,9 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.maks.musicapp.MainActivity
 import com.maks.musicapp.R
-import com.maks.musicapp.data.domain.Artist
 import com.maks.musicapp.fakedata.FakeDataProvider
 import com.maks.musicapp.mappers.MusicMapper
 import com.maks.musicapp.repository.MusicRepository
@@ -22,6 +19,7 @@ import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.utils.AsyncTimer
 import com.maks.musicapp.utils.Routes
+import com.maks.musicapp.utils.waitUntil
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Before
@@ -42,9 +40,9 @@ class NavigationTest {
     @Before
     fun setup() {
         musicRepository = mockk()
-        coEvery { musicRepository.getTracksByName(any()) } returns FakeDataProvider.provideFakeTrackResult()
-        coEvery { musicRepository.getAlbumsByName(any()) } returns FakeDataProvider.provideFakeAlbumResult()
-        coEvery { musicRepository.getArtistsByName(any()) } returns FakeDataProvider.provideFakeArtistResult()
+        coEvery { musicRepository.getTracksByName(any()) } returns FakeDataProvider.provideFakeTrackResultList()
+        coEvery { musicRepository.getAlbumsByName(any()) } returns FakeDataProvider.provideFakeAlbumResultList()
+        coEvery { musicRepository.getArtistsByName(any()) } returns FakeDataProvider.provideFakeArtistResultList()
         musicViewModel = MusicViewModel(musicRepository, MusicMapper())
     }
 
@@ -61,13 +59,10 @@ class NavigationTest {
             }
         }
         composeTestRule.onNodeWithContentDescription(textField).performTextInput("sorry")
-        AsyncTimer.start(2000)
-        composeTestRule.waitUntil(3000) {
-            AsyncTimer.expired
-        }
-        composeTestRule.onNodeWithText("fake artist - fake track").performClick()
-
-        assert(navController.currentBackStackEntry?.destination?.route == Routes.TrackDetailsScreenRoute.route)
+        composeTestRule.waitUntil(expression = {
+            composeTestRule.onNodeWithText("fake artist - fake track").performClick()
+            assert(navController.currentBackStackEntry?.destination?.route == Routes.TrackDetailsScreenRoute.route)
+        },delay = 2000)
     }
 
     @Test
@@ -84,14 +79,13 @@ class NavigationTest {
             }
         }
         composeTestRule.onNodeWithContentDescription(textField).performTextInput("sorry")
-        AsyncTimer.start(2000)
-        composeTestRule.waitUntil(3000) {
-            AsyncTimer.expired
-        }
-        composeTestRule.onNodeWithText(artists).performClick()
-        composeTestRule.onNodeWithText("fake artist").performClick()
 
-        assert(navController.currentBackStackEntry?.destination?.route == Routes.ArtistDetailsScreenRoute.route)
+        composeTestRule.waitUntil(expression = {
+            composeTestRule.onNodeWithText(artists).performClick()
+            composeTestRule.onNodeWithText("fake artist").performClick()
+
+            assert(navController.currentBackStackEntry?.destination?.route == Routes.ArtistDetailsScreenRoute.route)
+        },delay = 2000)
     }
 
     @Test
@@ -108,14 +102,14 @@ class NavigationTest {
             }
         }
         composeTestRule.onNodeWithContentDescription(textField).performTextInput("sorry")
-        AsyncTimer.start(2000)
-        composeTestRule.waitUntil(3000) {
-            AsyncTimer.expired
-        }
-        composeTestRule.onNodeWithText(albums).performClick()
-        composeTestRule.onNodeWithText("fake album").performClick()
+        composeTestRule.waitUntil(expression = {
+            composeTestRule.onNodeWithText(albums).performClick()
+            composeTestRule.onNodeWithText("fake album").performClick()
 
-        assert(navController.currentBackStackEntry?.destination?.route == Routes.AlbumDetailsScreenRoute.route)
+            assert(navController.currentBackStackEntry?.destination?.route == Routes.AlbumDetailsScreenRoute.route)
+
+        },delay = 2000)
+
     }
 
 }

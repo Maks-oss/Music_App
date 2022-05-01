@@ -12,21 +12,21 @@ class MusicRepositoryImpl(private val musicService: MusicService) : MusicReposit
 
 
     override suspend fun getTracksByName(name: String): List<TrackResult>? =
-        musicService.getTracksResponse(BuildConfig.APPLICATION_ID, name).body()?.results
+        musicService.getTracksResponse(BuildConfig.clientId, name).body()?.results?.filter { it.audio.isNotEmpty() }
 
 
     override suspend fun getArtistsByName(name: String): List<ArtistResult>? =
-        musicService.getArtistsResponse(BuildConfig.APPLICATION_ID, name).body()?.results
+        musicService.getArtistsResponse(BuildConfig.clientId, name).body()?.results
 
     override suspend fun getAlbumsByName(name: String): List<AlbumResult>? =
-        musicService.getAlbumsResponse(BuildConfig.APPLICATION_ID, name).body()?.results
+        musicService.getAlbumsResponse(BuildConfig.clientId, name).body()?.results
 
     override suspend fun getArtistTracks(id: String): List<ArtistTracksResult>? =
-        musicService.getArtistTracksResponse(BuildConfig.APPLICATION_ID, id)
+        musicService.getArtistTracksResponse(BuildConfig.clientId, id)
             .body()?.results?.firstOrNull()?.tracks
 
     override suspend fun getAlbumTracks(id: String): List<AlbumTracksResult>? =
-        musicService.getAlbumsTracksResponse(BuildConfig.APPLICATION_ID, id)
+        musicService.getAlbumsTracksResponse(BuildConfig.clientId, id)
             .body()?.results?.firstOrNull()?.tracks
 
 }

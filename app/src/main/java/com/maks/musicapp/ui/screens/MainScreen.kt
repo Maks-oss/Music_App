@@ -7,6 +7,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.navigation.NavController
 import com.maks.musicapp.data.domain.Album
 import com.maks.musicapp.data.domain.Artist
@@ -33,6 +35,7 @@ fun MainScreen(
     snackbarHostState: SnackbarHostState
 ) {
     val musicViewModelStates = musicViewModel.musicViewModelStates
+    val focusManager = LocalFocusManager.current
 
     val scope = rememberCoroutineScope()
     val tabsList = listOf(TabRoutes.TracksTab, TabRoutes.ArtistsTab, TabRoutes.AlbumsTab)
@@ -41,34 +44,40 @@ fun MainScreen(
         MusicTabs(tabIndex = musicViewModelStates.tabState, tabsList = tabsList, tabAction = {
             musicViewModel.setTabStateValue(it)
         })
-        MusicTextField(textValue = musicViewModelStates.searchInput, isVisible = musicViewModelStates.textFieldVisibility, onValueChange = {
-            musicViewModel.setSearchInputValue(it)
-            musicViewModelStates.currentJob?.cancel()
-            if (it.isNotEmpty()) {
-                val job = scope.async {
-                    musicViewModel.setSearchInputValue(it)
-                    delay(1000)
-                    musicViewModel.apply {
-                        findTracksByName()
-                        findArtistsByName()
-                        findAlbumsByName()
+        MusicTextField(
+            textValue = musicViewModelStates.searchInput,
+            isVisible = musicViewModelStates.textFieldVisibility,
+            onValueChange = {
+                musicViewModel.setSearchInputValue(it)
+                musicViewModelStates.currentJob?.cancel()
+                if (it.isNotEmpty()) {
+                    val job = scope.async {
+                        musicViewModel.setSearchInputValue(it)
+                        delay(1000)
+                        musicViewModel.apply {
+                            findTracksByName()
+                            findArtistsByName()
+                            findAlbumsByName()
+                        }
                     }
+                    musicViewModel.setCurrentJobValue(job)
                 }
-                musicViewModel.setCurrentJobValue(job)
-            }
-        })
+            })
 
         DisplayList(musicViewModelStates.tabState, musicViewModel,
             listScrollAction = { scrollState ->
                 musicViewModel.setTextFieldVisibilityValue(scrollState.firstVisibleItemIndex == 0)
             }, trackItemClickAction = { trackResult ->
                 musicViewModel.currentTrack = trackResult
+                focusManager.clearFocus()
                 navController.navigate(Routes.TrackDetailsScreenRoute.route)
             }, artistItemClickAction = { artistResult ->
                 musicViewModel.currentArtist = artistResult
+                focusManager.clearFocus()
                 navController.navigate(Routes.ArtistDetailsScreenRoute.route)
             }, albumItemClickAction = { albumResult ->
                 musicViewModel.currentAlbum = albumResult
+                focusManager.clearFocus()
                 navController.navigate(Routes.AlbumDetailsScreenRoute.route)
             })
         ProcessListUiStateMessages(

@@ -15,6 +15,7 @@ import com.maks.musicapp.ui.screens.ArtistDetailScreen
 import com.maks.musicapp.ui.screens.MainScreen
 import com.maks.musicapp.ui.screens.TrackDetailScreen
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
+import com.maks.musicapp.ui.viewmodels.TrackViewModel
 import com.maks.musicapp.utils.Routes
 import io.mockk.mockk
 
@@ -30,7 +31,7 @@ fun TestNavHostController(musicViewModel: MusicViewModel,navController: NavHostC
             MainScreen(musicViewModel = musicViewModel, navController = navController, snackbarHostState = mockk())
         }
         composable(Routes.TrackDetailsScreenRoute.route){
-            TrackDetailScreen(musicViewModel.currentTrack, mockk(),mockk())
+            TrackDetailScreen(musicViewModel.currentTrack, TrackViewModel(),mockk())
         }
         composable(Routes.ArtistDetailsScreenRoute.route){
             ArtistDetailScreen(musicViewModel, navController = navController,mockk(),musicViewModel.currentArtist)

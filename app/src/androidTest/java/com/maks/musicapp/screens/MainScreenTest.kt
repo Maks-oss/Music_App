@@ -6,7 +6,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.test.*
-import androidx.compose.ui.test.junit4.createComposeRule
 import com.maks.musicapp.R
 import com.maks.musicapp.fakedata.FakeDataProvider
 import com.maks.musicapp.mappers.MusicMapper
@@ -15,17 +14,15 @@ import com.maks.musicapp.ui.screens.MainScreen
 import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.utils.AppConstants
-import com.maks.musicapp.utils.AsyncTimer
+import com.maks.musicapp.utils.waitUntil
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
-class MainScreenTest {
-    @get:Rule
-    val composeTestRule = createComposeRule()
+class MainScreenTest: BaseScreenTest() {
+
 
     private lateinit var musicViewModel: MusicViewModel
 
@@ -34,9 +31,9 @@ class MainScreenTest {
     @Before
     fun setup() {
         musicRepository = mockk()
-        coEvery { musicRepository.getTracksByName(any()) } returns FakeDataProvider.provideFakeTrackResult()
-        coEvery { musicRepository.getAlbumsByName(any()) } returns FakeDataProvider.provideFakeAlbumResult()
-        coEvery { musicRepository.getArtistsByName(any()) } returns FakeDataProvider.provideFakeArtistResult()
+        coEvery { musicRepository.getTracksByName(any()) } returns FakeDataProvider.provideFakeTrackResultList()
+        coEvery { musicRepository.getAlbumsByName(any()) } returns FakeDataProvider.provideFakeAlbumResultList()
+        coEvery { musicRepository.getArtistsByName(any()) } returns FakeDataProvider.provideFakeArtistResultList()
         musicViewModel = MusicViewModel(musicRepository, MusicMapper())
     }
 
@@ -56,11 +53,9 @@ class MainScreenTest {
             }
         }
         composeTestRule.onNodeWithContentDescription(textField).performTextInput("sorry")
-        AsyncTimer.start()
-        composeTestRule.waitUntil(2000) {
-            AsyncTimer.expired
-        }
-        composeTestRule.onAllNodesWithContentDescription(shimmerItem).onFirst().assertIsDisplayed()
+        composeTestRule.waitUntil(expression = {
+            composeTestRule.onAllNodesWithContentDescription(shimmerItem).onFirst().assertIsDisplayed()
+        })
 
     }
 
@@ -79,11 +74,9 @@ class MainScreenTest {
             }
         }
         composeTestRule.onNodeWithContentDescription(textField).performTextInput("sorry")
-        AsyncTimer.start(2000)
-        composeTestRule.waitUntil(3000) {
-            AsyncTimer.expired
-        }
-        composeTestRule.onNodeWithText("fake artist - fake track").assertIsDisplayed()
+        composeTestRule.waitUntil(expression = {
+            composeTestRule.onNodeWithText("fake artist - fake track").assertIsDisplayed()
+        },2000)
     }
 
     @Test
@@ -104,11 +97,9 @@ class MainScreenTest {
             }
         }
         composeTestRule.onNodeWithContentDescription(textField).performTextInput("sorry")
-        AsyncTimer.start(2000)
-        composeTestRule.waitUntil(3000) {
-            AsyncTimer.expired
-        }
-        composeTestRule.onNodeWithText(AppConstants.EMPTY_RESULT_MESSAGE).assertIsDisplayed()
+        composeTestRule.waitUntil(expression = {
+            composeTestRule.onNodeWithText(AppConstants.EMPTY_RESULT_MESSAGE).assertIsDisplayed()
+        },2000)
     }
 
     @Test
@@ -132,20 +123,16 @@ class MainScreenTest {
             }
         }
         composeTestRule.onNodeWithContentDescription(textField).performTextInput("sorry")
-        AsyncTimer.start(2000)
-        composeTestRule.waitUntil(3000) {
-            AsyncTimer.expired
-        }
+        composeTestRule.waitUntil(expression = {
+            composeTestRule.onNodeWithText(artists).performClick()
+            composeTestRule.onNodeWithText("fake artist").assertIsDisplayed()
 
-        composeTestRule.onNodeWithText(artists).performClick()
-        composeTestRule.onNodeWithText("fake artist").assertIsDisplayed()
+            composeTestRule.onNodeWithText(albums).performClick()
+            composeTestRule.onNodeWithText("fake album").assertIsDisplayed()
 
-        composeTestRule.onNodeWithText(albums).performClick()
-        composeTestRule.onNodeWithText("fake album").assertIsDisplayed()
-
-        composeTestRule.onNodeWithText(tracks).performClick()
-        composeTestRule.onNodeWithText("fake artist - fake track").assertIsDisplayed()
-
+            composeTestRule.onNodeWithText(tracks).performClick()
+            composeTestRule.onNodeWithText("fake artist - fake track").assertIsDisplayed()
+        },2000)
     }
 
     @Test
@@ -169,13 +156,11 @@ class MainScreenTest {
             }
         }
         composeTestRule.onNodeWithContentDescription(textField).performTextInput("sorry")
-        AsyncTimer.start(2000)
-        composeTestRule.waitUntil(3000) {
-            AsyncTimer.expired
-        }
+        composeTestRule.waitUntil(expression = {
+            composeTestRule.onNodeWithText(artists).performClick()
+            composeTestRule.onNodeWithText(AppConstants.EMPTY_RESULT_MESSAGE).assertIsDisplayed()
+        },2000)
 
-        composeTestRule.onNodeWithText(artists).performClick()
-        composeTestRule.onNodeWithText(AppConstants.EMPTY_RESULT_MESSAGE).assertIsDisplayed()
 
 
     }
