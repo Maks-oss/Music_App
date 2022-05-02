@@ -1,4 +1,4 @@
-package com.maks.musicapp.navigation
+package com.maks.musicapp.ui.navigation
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi

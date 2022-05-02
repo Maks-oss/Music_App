@@ -1,8 +1,12 @@
 package com.maks.musicapp.fakedata
 
+import com.maks.musicapp.data.domain.Album
+import com.maks.musicapp.data.domain.Artist
 import com.maks.musicapp.data.domain.Track
 import com.maks.musicapp.data.dto.albums.AlbumResult
+import com.maks.musicapp.data.dto.albums.tracks.AlbumTracksResult
 import com.maks.musicapp.data.dto.artists.ArtistResult
+import com.maks.musicapp.data.dto.artists.tracks.ArtistTracksResult
 import com.maks.musicapp.data.dto.tracks.TrackResult
 import com.maks.musicapp.utils.AppConstants
 
@@ -12,6 +16,20 @@ object FakeDataProvider {
             TrackResult("", AppConstants.DEFAULT_IMAGE, "fake name", "", "", "fake artist", "https://prod-1.storage.jamendo.com//?trackid=1532771&format=mp31&from=app-devsite","",false,0,"1","","",null,"fake track",0,"","","","",""),
             TrackResult("", AppConstants.DEFAULT_IMAGE, "fake name2", "", "", "fake artist2", "","",false,0,"2","","",null,"fake track2",0,"","","","",""),
             TrackResult("", AppConstants.DEFAULT_IMAGE, "fake name3", "", "", "fake artist3", "","",false,0,"3","","",null,"fake track3",0,"","","","",""),
+        )
+    }
+    fun provideFakeArtistTrackResultList(): List<ArtistTracksResult> {
+        return listOf(
+            ArtistTracksResult("", AppConstants.DEFAULT_IMAGE, "fake album", "https://prod-1.storage.jamendo.com//?trackid=1532771&format=mp31&from=app-devsite", "", false, "","",AppConstants.DEFAULT_IMAGE,"","fake name",""),
+            ArtistTracksResult("", AppConstants.DEFAULT_IMAGE, "fake album2", "", "", false, "","","2","","fake name2",""),
+            ArtistTracksResult("", AppConstants.DEFAULT_IMAGE, "fake album3", "", "", false, "","","3","","fake name3",""),
+        )
+    }
+    fun provideFakeAlbumTracksResultList():List<AlbumTracksResult>{
+        return listOf(
+            AlbumTracksResult("https://prod-1.storage.jamendo.com//?trackid=1532771&format=mp31&from=app-devsite","",true,"","1","","fake name",""),
+            AlbumTracksResult("","",true,"","","2","fake name2",""),
+            AlbumTracksResult("","",true,"","","3","fake name3",""),
         )
     }
     fun provideFakeAlbumResultList(): List<AlbumResult> {
@@ -42,6 +60,26 @@ object FakeDataProvider {
             musicinfo = null,
             releasedate = "2018-03-15",
             name = "fake name"
+        )
+    }
+
+    fun provideFakeArtist(): Artist {
+        return Artist(
+            id = "",
+            image = AppConstants.DEFAULT_IMAGE,
+            name = "fake artist",
+            website = ""
+        )
+    }
+    fun provideFakeAlbum(): Album {
+        return Album(
+            id = "",
+            image = AppConstants.DEFAULT_IMAGE,
+            name = "fake artist",
+            artist_id = "",
+            artist_name = "fake artist",
+            releasedate = "",
+            zip = ""
         )
     }
 }

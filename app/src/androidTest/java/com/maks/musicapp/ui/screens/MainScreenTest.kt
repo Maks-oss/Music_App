@@ -1,4 +1,4 @@
-package com.maks.musicapp.screens
+package com.maks.musicapp.ui.screens
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
@@ -6,11 +6,11 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.test.*
+import com.maks.musicapp.ui.BaseUiTest
 import com.maks.musicapp.R
 import com.maks.musicapp.fakedata.FakeDataProvider
 import com.maks.musicapp.mappers.MusicMapper
 import com.maks.musicapp.repository.MusicRepository
-import com.maks.musicapp.ui.screens.MainScreen
 import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.utils.AppConstants
@@ -21,7 +21,7 @@ import org.junit.Before
 import org.junit.Test
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
-class MainScreenTest: BaseScreenTest() {
+class MainScreenTest: BaseUiTest() {
 
 
     private lateinit var musicViewModel: MusicViewModel

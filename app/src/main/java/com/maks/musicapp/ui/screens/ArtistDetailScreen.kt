@@ -39,10 +39,10 @@ fun ArtistDetailScreen(
     navController: NavController,
     snackbarHostState: SnackbarHostState,
     artist: Artist,
-) {
-    val bottomSheetState = rememberModalBottomSheetState(
+    bottomSheetState: ModalBottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
     )
+) {
     val coroutineScope = rememberCoroutineScope()
     TrackBottomSheetLayout(
         tracksUiState = musicViewModel.artistTracksUiState,
@@ -111,7 +111,7 @@ private fun DisplayArtistDetail(artist: Artist, showTracksAction: () -> Unit) {
             Spacer(modifier = Modifier.padding(8.dp))
             CustomOutlinedButton(
                 modifier = Modifier.padding(8.dp),
-                text = "Show Album Tracks",
+                text = "Show Artist Tracks",
                 onClick = showTracksAction
             )
 

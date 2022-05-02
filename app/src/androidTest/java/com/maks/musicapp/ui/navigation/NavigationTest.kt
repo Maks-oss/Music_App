@@ -1,37 +1,34 @@
-package com.maks.musicapp.navigation
+package com.maks.musicapp.ui.navigation
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.maks.musicapp.ui.BaseUiTest
 import com.maks.musicapp.R
 import com.maks.musicapp.fakedata.FakeDataProvider
 import com.maks.musicapp.mappers.MusicMapper
 import com.maks.musicapp.repository.MusicRepository
 import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
-import com.maks.musicapp.utils.AsyncTimer
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.waitUntil
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalFoundationApi
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
-class NavigationTest {
-    @get:Rule
-    val composeTestRule = createComposeRule()
+class NavigationTest: BaseUiTest() {
+
 
     private lateinit var musicViewModel: MusicViewModel
 

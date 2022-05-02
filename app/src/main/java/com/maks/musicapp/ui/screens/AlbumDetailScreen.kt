@@ -31,11 +31,11 @@ fun AlbumDetailScreen(
     album: Album,
     musicViewModel: MusicViewModel,
     navController: NavController,
-    snackbarHostState: SnackbarHostState
-) {
-    val bottomSheetState = rememberModalBottomSheetState(
+    snackbarHostState: SnackbarHostState,
+    bottomSheetState: ModalBottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
     )
+) {
     val coroutineScope = rememberCoroutineScope()
     TrackBottomSheetLayout(
         tracksUiState = musicViewModel.albumTracksUiState,

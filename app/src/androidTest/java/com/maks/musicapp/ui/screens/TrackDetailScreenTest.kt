@@ -1,4 +1,4 @@
-package com.maks.musicapp.screens
+package com.maks.musicapp.ui.screens
 
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -8,12 +8,12 @@ import androidx.compose.ui.test.*
 import androidx.test.espresso.Espresso
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.common.truth.Truth.assertThat
+import com.maks.musicapp.ui.BaseUiTest
 import com.maks.musicapp.R
 import com.maks.musicapp.fakedata.FakeDataProvider
 import com.maks.musicapp.mappers.MusicMapper
-import com.maks.musicapp.navigation.TestNavHostController
+import com.maks.musicapp.ui.navigation.TestNavHostController
 import com.maks.musicapp.repository.MusicRepository
-import com.maks.musicapp.ui.screens.TrackDetailScreen
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.ui.viewmodels.TrackViewModel
 import com.maks.musicapp.utils.waitUntil
@@ -21,7 +21,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Test
 
-class TrackDetailScreenTest: BaseScreenTest() {
+class TrackDetailScreenTest: BaseUiTest() {
 
     private val trackViewModel: TrackViewModel = TrackViewModel()
 
