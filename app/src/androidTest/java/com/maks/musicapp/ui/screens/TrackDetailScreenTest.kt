@@ -16,7 +16,6 @@ import com.maks.musicapp.ui.navigation.TestNavHostController
 import com.maks.musicapp.repository.MusicRepository
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.ui.viewmodels.TrackViewModel
-import com.maks.musicapp.utils.waitUntil
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Test

@@ -14,9 +14,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.maks.musicapp.R
 import com.maks.musicapp.data.domain.Feed
 import com.maks.musicapp.utils.ExpandableCardsConstants
 
@@ -79,7 +81,7 @@ fun CardArrow(
         content = {
             Icon(
                 imageVector = Icons.Filled.ExpandMore,
-                contentDescription = "Expandable Arrow",
+                contentDescription = stringResource(R.string.expandable_arrow),
                 modifier = Modifier.rotate(degrees),
             )
         },

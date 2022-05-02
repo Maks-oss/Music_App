@@ -9,6 +9,7 @@ import com.maks.musicapp.data.domain.Feed
 import com.maks.musicapp.mappers.FeedsMapper
 import com.maks.musicapp.repository.FeedsRepository
 import com.maks.musicapp.ui.states.UiState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class FeedsViewModel(private val feedsRepository: FeedsRepository) : ViewModel() {

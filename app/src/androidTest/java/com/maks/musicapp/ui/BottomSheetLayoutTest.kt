@@ -12,7 +12,6 @@ import com.maks.musicapp.ui.screens.AlbumDetailScreen
 import com.maks.musicapp.ui.screens.ArtistDetailScreen
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.utils.AppConstants
-import com.maks.musicapp.utils.waitUntil
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Before

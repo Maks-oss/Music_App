@@ -12,4 +12,6 @@
     <string name="shimmer_animation_item">Shimmer Animation Item</string>
     <string name="player_slider">Player Slider</string>
     <string name="play_button">Play Button</string>
+    <string name="expandable_arrow">Expandable Arrow</string>
+    <string name="feeds_column">feeds column</string>
 </resources>

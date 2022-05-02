@@ -4,7 +4,7 @@ data class FeedResult(
     val date_end: String,
     val date_start: String,
     val id: String,
-    val images: Images,
+    val images: Images?=null,
     val joinid: String,
     val lang: List<String>,
     val link: String,
