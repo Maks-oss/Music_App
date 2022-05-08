@@ -7,7 +7,7 @@ import java.io.Serializable
 class MusicPlayerImpl(
     private val mediaPlayer: MediaPlayer,
     private val onTick: () -> Unit
-) : MusicPlayer, Serializable {
+) : MusicPlayer {
 
     private val trackCountDownTimer = object : CountDownTimer(mediaPlayer.duration.toLong(), 100) {
         override fun onTick(millisUntilFinished: Long) {

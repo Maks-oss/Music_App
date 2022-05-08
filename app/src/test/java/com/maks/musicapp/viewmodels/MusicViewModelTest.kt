@@ -19,20 +19,13 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class MusicViewModelTest {
+class MusicViewModelTest: BaseViewModelTest() {
 
     private lateinit var musicViewModel: MusicViewModel
-
-    @get:Rule
-    val instantTaskRule = InstantTaskExecutorRule()
-
-    @ExperimentalCoroutinesApi
-    @get:Rule
-    val mainCoroutineRule = MainCoroutineRule()
-
+    private lateinit var musicRepository: MusicRepository
     @Before
     fun setup() {
-        val musicRepository = mockk<MusicRepository>()
+        musicRepository = mockk()
 
         coEvery { musicRepository.getTracksByName(any()) } returns FakeDataProvider.provideFakeTrackResultList()
         coEvery { musicRepository.getAlbumsByName(any()) } returns FakeDataProvider.provideFakeAlbumResultList()
@@ -47,16 +40,28 @@ class MusicViewModelTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun viewModelTrackSearchShouldReturnStateWithTracks() = runTest {
+    fun musicViewModelTrackSearchShouldReturnStateWithTracks() = runTest {
         musicViewModel.findTracksByName()
         delay(2000)
         assertThat(musicViewModel.tracksUiState.isLoading).isFalse()
         assertThat(musicViewModel.tracksUiState.result).isNotEmpty()
         assertThat(musicViewModel.tracksUiState.message).isNull()
     }
+
     @ExperimentalCoroutinesApi
     @Test
-    fun viewModelAlbumSearchShouldReturnStateWithAlbums() = runTest {
+    fun musicViewModelTrackSearchShouldReturnStateWithEmptyTracksResult() = runTest {
+        coEvery { musicRepository.getTracksByName(any()) } returns null
+        musicViewModel.findTracksByName()
+        delay(2000)
+        assertThat(musicViewModel.tracksUiState.isLoading).isFalse()
+        assertThat(musicViewModel.tracksUiState.result).isNull()
+        assertThat(musicViewModel.tracksUiState.message).isNotNull()
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun musicViewModelAlbumSearchShouldReturnStateWithAlbums() = runTest {
         musicViewModel.findAlbumsByName()
         delay(2000)
         assertThat(musicViewModel.albumsUiState.isLoading).isFalse()
@@ -66,7 +71,17 @@ class MusicViewModelTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun viewModelArtistSearchShouldReturnStateWithArtists() = runTest {
+    fun musicViewModelAlbumSearchShouldReturnStateWithEmptyAlbumsResult() = runTest {
+        coEvery { musicRepository.getAlbumsByName(any()) } returns null
+        musicViewModel.findAlbumsByName()
+        delay(2000)
+        assertThat(musicViewModel.albumsUiState.isLoading).isFalse()
+        assertThat(musicViewModel.albumsUiState.result).isNull()
+        assertThat(musicViewModel.albumsUiState.message).isNotNull()
+    }
+    @ExperimentalCoroutinesApi
+    @Test
+    fun musicViewModelArtistSearchShouldReturnStateWithArtists() = runTest {
         musicViewModel.findArtistsByName()
         delay(2000)
         assertThat(musicViewModel.artistsUiState.isLoading).isFalse()
@@ -76,7 +91,18 @@ class MusicViewModelTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun viewModelArtistTracksSearchShouldReturnStateWithArtistTracks() = runTest {
+    fun musicViewModelArtistSearchShouldReturnStateWithEmptyArtistsResult() = runTest {
+        coEvery { musicRepository.getArtistsByName(any()) } returns null
+        musicViewModel.findArtistsByName()
+        delay(2000)
+        assertThat(musicViewModel.artistsUiState.isLoading).isFalse()
+        assertThat(musicViewModel.artistsUiState.result).isNull()
+        assertThat(musicViewModel.artistsUiState.message).isNotNull()
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun musicViewModelArtistTracksSearchShouldReturnStateWithArtistTracks() = runTest {
         musicViewModel.currentArtist = FakeDataProvider.provideFakeArtist()
         musicViewModel.findArtistsTracks()
         delay(2000)
@@ -87,7 +113,19 @@ class MusicViewModelTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun viewModelAlbumTracksSearchShouldReturnStateWithAlbumTracks() = runTest {
+    fun musicViewModelArtistTracksSearchShouldReturnStateWithNoTracks() = runTest {
+        coEvery { musicRepository.getArtistTracks(any()) } returns null
+        musicViewModel.currentArtist = FakeDataProvider.provideFakeArtist()
+        musicViewModel.findArtistsTracks()
+        delay(2000)
+        assertThat(musicViewModel.artistTracksUiState.isLoading).isFalse()
+        assertThat(musicViewModel.artistTracksUiState.result).isNull()
+        assertThat(musicViewModel.artistTracksUiState.message).isNotEmpty()
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun musicViewModelAlbumTracksSearchShouldReturnStateWithAlbumTracks() = runTest {
         musicViewModel.currentAlbum = FakeDataProvider.provideFakeAlbum()
         musicViewModel.findAlbumsTracks()
         delay(2000)
@@ -98,7 +136,7 @@ class MusicViewModelTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun viewModelMessageShownMethodsShouldReturnStateWithNoMessages() = runTest {
+    fun musicViewModelMessageShownMethodsShouldReturnStateWithNoMessages() = runTest {
 
         musicViewModel.tracksMessageDisplayed()
         musicViewModel.artistsMessageDisplayed()
