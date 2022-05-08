@@ -2,7 +2,8 @@ package com.maks.musicapp.ui
 
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
-import com.maks.musicapp.utils.AsyncTimer
+import utils.AsyncTimer
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 
 open class BaseUiTest {
@@ -14,6 +15,7 @@ open class BaseUiTest {
         waitUntil(delay + 1000) {
             AsyncTimer.expired
         }
+        runBlockingTest {  }
         expression()
     }
 }
