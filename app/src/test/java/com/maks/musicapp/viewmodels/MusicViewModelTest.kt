@@ -1,22 +1,16 @@
 package com.maks.musicapp.viewmodels
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import com.google.common.truth.Truth.assertThat
-import com.maks.musicapp.MainCoroutineRule
 import com.maks.musicapp.fakedata.FakeDataProvider
 import com.maks.musicapp.mappers.MusicMapper
 import com.maks.musicapp.repository.MusicRepository
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
-import utils.AsyncTimer
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
 class MusicViewModelTest: BaseViewModelTest() {

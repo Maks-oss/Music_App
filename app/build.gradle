@@ -44,7 +44,6 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
         useIR = true
-
     }
     buildFeatures {
         compose true
@@ -61,7 +60,6 @@ android {
 }
 
 dependencies {
-
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
@@ -82,7 +80,6 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation "com.google.accompanist:accompanist-swiperefresh:0.24.7-alpha"
 
-
     // koin
     def koin_version = "3.1.5"
     implementation "io.insert-koin:koin-core:$koin_version"
@@ -92,7 +89,6 @@ dependencies {
     implementation "io.insert-koin:koin-androidx-compose:$koin_version"
     testImplementation "com.google.truth:truth:1.1.3"
     androidTestImplementation "com.google.truth:truth:1.1.3"
-
 
     // mockk
     testImplementation "io.mockk:mockk-android:1.12.1"
@@ -123,6 +119,4 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$roomVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
     implementation "androidx.room:room-ktx:$roomVersion"
-
-
 }

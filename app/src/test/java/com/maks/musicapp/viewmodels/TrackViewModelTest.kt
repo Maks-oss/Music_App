@@ -1,20 +1,11 @@
 package com.maks.musicapp.viewmodels
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth.assertThat
-import com.maks.musicapp.MainCoroutineRule
-import com.maks.musicapp.fakedata.FakeDataProvider
-import com.maks.musicapp.mappers.MusicMapper
-import com.maks.musicapp.repository.MusicRepository
-import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.ui.viewmodels.TrackViewModel
 import com.maks.musicapp.utils.player.MusicPlayer
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
 class TrackViewModelTest: BaseViewModelTest() {

@@ -22,7 +22,7 @@ object FakeDataProvider {
                 "",
                 "",
                 "fake artist",
-                "https://prod-1.storage.jamendo.com//?trackid=1532771&format=mp31&from=app-devsite",
+                provideFakeAudio(),
                 "",
                 false,
                 0,
@@ -93,7 +93,7 @@ object FakeDataProvider {
                 "",
                 AppConstants.DEFAULT_IMAGE,
                 "fake album",
-                "https://prod-1.storage.jamendo.com//?trackid=1532771&format=mp31&from=app-devsite",
+                provideFakeAudio(),
                 "",
                 false,
                 "",
@@ -137,7 +137,7 @@ object FakeDataProvider {
     fun provideFakeAlbumTracksResultList(): List<AlbumTracksResult> {
         return listOf(
             AlbumTracksResult(
-                "https://prod-1.storage.jamendo.com//?trackid=1532771&format=mp31&from=app-devsite",
+                provideFakeAudio(),
                 "",
                 true,
                 "",
@@ -257,4 +257,5 @@ object FakeDataProvider {
             zip = ""
         )
     }
+    fun provideFakeAudio():String = "https://prod-1.storage.jamendo.com//?trackid=1532771&format=mp31&from=app-devsite"
 }
