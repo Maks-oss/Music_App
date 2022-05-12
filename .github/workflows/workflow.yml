@@ -9,17 +9,16 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v2
-
+      - name: Access clientId
+        env: 
+          clientId: $
+        run: echo clientId=\"$clientId\" > ./local.properties
       - name: Unit tests
         run: ./gradlew test
   android_tests:
     runs-on: [ macos-latest ]
     steps:
       - uses: actions/checkout@v2
-      - name: Access clientId
-        env: 
-          clientId: $
-        run: echo clientId=\"$clientId\" > ./local.properties
       - name: Instrumentation Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
