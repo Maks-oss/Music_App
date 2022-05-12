@@ -9,6 +9,10 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - uses: actions/checkout@v2
+      - name: Access clientId
+        env:
+          clientId: $
+        run: echo clientId=\"$clientId\" > ./local.properties
       - name: Unit tests
         run: ./gradlew test
   android_tests:
@@ -26,5 +30,5 @@ jobs:
       - name: Instrumentation Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 29
+          api-level: 27
           script: ./gradlew connectedAndroidTest
