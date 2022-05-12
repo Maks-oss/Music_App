@@ -4,8 +4,12 @@ plugins {
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 apply plugin: 'kotlin-kapt'
-
-
+String getClientId() {
+    def propFile = rootProject.file("./local.properties")
+    def properties = new Properties()
+    properties.load(new FileInputStream(propFile))
+    return properties['clientId']
+}
 android {
     compileSdk 31
     buildToolsVersion "30.0.3"
@@ -25,6 +29,8 @@ android {
         versionCode 1
         versionName "1.0"
 
+
+        buildConfigField 'String', "clientId", getClientId()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary true
@@ -32,6 +38,7 @@ android {
     }
 
     buildTypes {
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
