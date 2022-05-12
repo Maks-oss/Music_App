@@ -1,6 +1,7 @@
-package utils
+package com.maks.musicapp.utils
 
 import java.util.*
+import java.util.concurrent.CountDownLatch
 import kotlin.concurrent.schedule
 
 object AsyncTimer {
@@ -10,7 +11,6 @@ object AsyncTimer {
         Timer().schedule(delay) {
             expired = true
         }
-
     }
 
 }

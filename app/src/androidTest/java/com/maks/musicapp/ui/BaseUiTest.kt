@@ -2,7 +2,7 @@ package com.maks.musicapp.ui
 
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
-import utils.AsyncTimer
+import com.maks.musicapp.utils.AsyncTimer
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 
