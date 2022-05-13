@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.maks.musicapp.R
 
 sealed class Routes(val route: String) {
+    object MainGraphRoute: Routes("Main Graph")
     object MainScreenRoute : Routes("MainScreen")
 
     object FeedsScreenRoute : Routes("FeedsScreen")

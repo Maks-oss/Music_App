@@ -28,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.maks.musicapp.ui.broadcastreceivers.TrackDownloadBroadCast
 import com.maks.musicapp.ui.composeutils.MusicModalDrawer
 import com.maks.musicapp.ui.composeutils.MusicTopAppBar
+import com.maks.musicapp.ui.composeutils.mainGraph
 import com.maks.musicapp.ui.screens.*
 import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.ui.viewmodels.FeedsViewModel
@@ -101,64 +102,7 @@ class MainActivity : ComponentActivity() {
                 LoginScreen(loginViewModel = loginViewModel)
             }
 
-            composable(Routes.MainScreenRoute.route, enterTransition = {
-                slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = springSpec)
-            }, exitTransition = {
-                slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = springSpec)
-            }, popEnterTransition = {
-                slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = springSpec)
-            }, popExitTransition = {
-                slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = springSpec)
-            }) {
-                MusicModalDrawer(
-                    drawerState = drawerState,
-                    navController = navController,
-                    musicViewModel = musicViewModel,
-                    feedsViewModel = feedsViewModel
-                ) {
-                    Scaffold(scaffoldState = scaffoldState,
-                        topBar = {
-                            MusicTopAppBar(navigationIconClick = {
-                                coroutineScope.launch {
-                                    drawerState.open()
-                                }
-                            })
-                        }) {
-                        MainScreen(
-                            musicViewModel = musicViewModel,
-                            navController = navController,
-                            snackbarHostState = scaffoldState.snackbarHostState,
-                        )
-                    }
-                }
-            }
-            composable(Routes.FeedsScreenRoute.route, enterTransition = {
-                slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = springSpec)
-            }, exitTransition = {
-                slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = springSpec)
-            }, popEnterTransition = {
-                slideInHorizontally(initialOffsetX = { -1000 }, animationSpec = springSpec)
-            }, popExitTransition = {
-                slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = springSpec)
-            }) {
-                MusicModalDrawer(
-                    drawerState = drawerState,
-                    navController = navController,
-                    musicViewModel = musicViewModel,
-                    feedsViewModel = feedsViewModel
-                ) {
-                    Scaffold(scaffoldState = scaffoldState,
-                        topBar = {
-                            MusicTopAppBar(navigationIconClick = {
-                                coroutineScope.launch {
-                                    drawerState.open()
-                                }
-                            })
-                        }) {
-                        FeedsScreen(feedsViewModel)
-                    }
-                }
-            }
+            mainGraph(navController, musicViewModel, feedsViewModel, scaffoldState, drawerState, coroutineScope)
 
             composable(Routes.TrackDetailsScreenRoute.route) {
                 Scaffold(scaffoldState = scaffoldState) {
