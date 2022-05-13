@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "39972456311",
+    "firebase_url": "https://music-app-80fce-default-rtdb.firebaseio.com",
+    "project_id": "music-app-80fce",
+    "storage_bucket": "music-app-80fce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:39972456311:android:568a71d3f5181581368372",
+        "android_client_info": {
+          "package_name": "com.maks.musicapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "39972456311-d2kjlmgr59u1qo2g4f1f202gqi0252ct.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPfTbnBXTIPCUqMMwDUyEFlA_Ie4lzM_0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "39972456311-d2kjlmgr59u1qo2g4f1f202gqi0252ct.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

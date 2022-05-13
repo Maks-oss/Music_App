@@ -1,5 +1,6 @@
 package com.maks.musicapp
 
+import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.IntentFilter
 import android.os.Build
@@ -23,12 +24,14 @@ import com.google.accompanist.navigation.animation.navigation
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.google.firebase.auth.FirebaseAuth
 import com.maks.musicapp.ui.broadcastreceivers.TrackDownloadBroadCast
 import com.maks.musicapp.ui.composeutils.MusicModalDrawer
 import com.maks.musicapp.ui.composeutils.MusicTopAppBar
 import com.maks.musicapp.ui.screens.*
 import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.ui.viewmodels.FeedsViewModel
+import com.maks.musicapp.ui.viewmodels.LoginViewModel
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.ui.viewmodels.TrackViewModel
 import com.maks.musicapp.utils.Routes
@@ -40,10 +43,11 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 @ExperimentalFoundationApi
 class MainActivity : ComponentActivity() {
     private var trackDownloadBroadCast: TrackDownloadBroadCast? = null
-
+    lateinit var firebaseAuth: FirebaseAuth
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        firebaseAuth = FirebaseAuth.getInstance()
         setContent {
             MusicAppTheme {
                 AppNavigator()
@@ -73,6 +77,7 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @OptIn(ExperimentalAnimationApi::class)
     @RequiresApi(Build.VERSION_CODES.O)
     @Composable
@@ -84,13 +89,18 @@ class MainActivity : ComponentActivity() {
         val musicViewModel = getViewModel<MusicViewModel>()
         val trackViewModel = getViewModel<TrackViewModel>()
         val feedsViewModel = getViewModel<FeedsViewModel>()
+        val loginViewModel = getViewModel<LoginViewModel>()
         val drawerState = rememberDrawerState(DrawerValue.Closed)
         registerTrackDownloadBroadcastReceiver(scaffoldState.snackbarHostState)
         val springSpec = spring<IntOffset>(dampingRatio = Spring.DampingRatioMediumBouncy)
         AnimatedNavHost(
             navController = navController,
-            startDestination = Routes.MainScreenRoute.route
+            startDestination = Routes.LoginScreenRoute.route
         ) {
+            composable(Routes.LoginScreenRoute.route){
+                LoginScreen(loginViewModel = loginViewModel)
+            }
+
             composable(Routes.MainScreenRoute.route, enterTransition = {
                 slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = springSpec)
             }, exitTransition = {

@@ -18,6 +18,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -35,23 +36,37 @@ fun MusicTextField(textValue: String, isVisible: Boolean, onValueChange: (String
         enter = fadeIn(animationSpec = tween(durationMillis = 1000)),
         exit = fadeOut(tween(durationMillis = 1000))
     ) {
-        TextField(value = textValue, onValueChange = onValueChange,
-            modifier = Modifier
-                .semantics { contentDescription = textFieldDescription }
-                .fillMaxWidth()
-                .padding(8.dp)
-                .clip(CircleShape)
-                .border(
-                    1.dp,
-                    Color.Black, CircleShape
-                ), maxLines = 1,
-            leadingIcon = {
-                Icon(Icons.Filled.Search, "")
-            }, label = {
-                Text("Enter song name or artist...")
-            })
-
-
+        CustomTextField(
+            value = textValue,
+            leadingIcon = Icons.Filled.Search,
+            onValueChange = onValueChange,
+            label = "Enter song name or artist...",
+            textFieldDescription = textFieldDescription
+        )
     }
+}
 
+@Composable
+fun CustomTextField(
+    value: String,
+    leadingIcon: ImageVector,
+    onValueChange: (String) -> Unit,
+    label: String,
+    textFieldDescription: String = ""
+) {
+    TextField(value = value, onValueChange = onValueChange,
+        modifier = Modifier
+            .semantics { contentDescription = textFieldDescription }
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clip(CircleShape)
+            .border(
+                1.dp,
+                Color.Black, CircleShape
+            ), maxLines = 1,
+        leadingIcon = {
+            Icon(leadingIcon, "")
+        }, label = {
+            Text(label)
+        })
 }

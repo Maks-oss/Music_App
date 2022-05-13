@@ -16,6 +16,8 @@ sealed class Routes(val route: String) {
     object TrackDetailsScreenRoute : Routes("TrackDetailsScreenRoute")
     object ArtistDetailsScreenRoute : Routes("ArtistDetailsScreenRoute")
     object AlbumDetailsScreenRoute : Routes("AlbumDetailsScreenRoute")
+
+    object LoginScreenRoute : Routes("LoginScreenRoute")
 }
 
 sealed class TabRoutes(@StringRes val tabName: Int, val icon: ImageVector) {
