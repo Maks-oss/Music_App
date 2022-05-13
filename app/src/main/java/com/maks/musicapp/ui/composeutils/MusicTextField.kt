@@ -37,6 +37,7 @@ fun MusicTextField(textValue: String, isVisible: Boolean, onValueChange: (String
         exit = fadeOut(tween(durationMillis = 1000))
     ) {
         CustomTextField(
+            modifier = Modifier.padding(8.dp),
             value = textValue,
             leadingIcon = Icons.Filled.Search,
             onValueChange = onValueChange,
@@ -48,6 +49,7 @@ fun MusicTextField(textValue: String, isVisible: Boolean, onValueChange: (String
 
 @Composable
 fun CustomTextField(
+    modifier: Modifier = Modifier,
     value: String,
     leadingIcon: ImageVector,
     onValueChange: (String) -> Unit,
@@ -55,10 +57,9 @@ fun CustomTextField(
     textFieldDescription: String = ""
 ) {
     TextField(value = value, onValueChange = onValueChange,
-        modifier = Modifier
+        modifier = modifier
             .semantics { contentDescription = textFieldDescription }
             .fillMaxWidth()
-            .padding(8.dp)
             .clip(CircleShape)
             .border(
                 1.dp,

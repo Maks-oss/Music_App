@@ -99,7 +99,7 @@ class MainActivity : ComponentActivity() {
             startDestination = Routes.LoginScreenRoute.route
         ) {
             composable(Routes.LoginScreenRoute.route){
-                LoginScreen(loginViewModel = loginViewModel)
+                LoginScreen(loginViewModel = loginViewModel,navController = navController)
             }
 
             mainGraph(navController, musicViewModel, feedsViewModel, scaffoldState, drawerState, coroutineScope)
