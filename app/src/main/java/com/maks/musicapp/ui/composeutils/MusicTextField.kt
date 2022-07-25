@@ -8,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.maks.musicapp.R
 
@@ -54,20 +56,35 @@ fun CustomTextField(
     leadingIcon: ImageVector,
     onValueChange: (String) -> Unit,
     label: String,
-    textFieldDescription: String = ""
+    textFieldDescription: String = "",
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    isError: Boolean = false,
+    trailingIcon: @Composable (() -> Unit)? = null
 ) {
-    TextField(value = value, onValueChange = onValueChange,
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
         modifier = modifier
-            .semantics { contentDescription = textFieldDescription }
+            .semantics {
+                contentDescription = textFieldDescription
+            }
             .fillMaxWidth()
             .clip(CircleShape)
             .border(
                 1.dp,
                 Color.Black, CircleShape
-            ), maxLines = 1,
+            ),
+        maxLines = 1,
         leadingIcon = {
             Icon(leadingIcon, "")
-        }, label = {
+        },
+        label = {
             Text(label)
-        })
+        },
+        isError = isError,
+        trailingIcon = trailingIcon,
+        visualTransformation = visualTransformation,
+        keyboardOptions = keyboardOptions
+    )
 }

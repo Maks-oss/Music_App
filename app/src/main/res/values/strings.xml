@@ -14,4 +14,10 @@
     <string name="play_button">Play Button</string>
     <string name="expandable_arrow">Expandable Arrow</string>
     <string name="feeds_column">feeds column</string>
+    <string name="empty_email_or_password">Email or password must not be empty</string>
+    <string name="user_not_exist_message">User does not exist</string>
+    <string name="password_error_message">Password length must be bigger than 3 symbols</string>
+    <string name="email_error_message">Email is not valid.</string>
+    <string name="failed_auth_message">Authentication failed</string>
+    <string name="server_client_id">55148770379-bs6u82v97qgcb1bb2p7tscc3poa4n6rh.apps.googleusercontent.com</string>
 </resources>
