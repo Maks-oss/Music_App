@@ -35,8 +35,8 @@ import com.maks.musicapp.data.dto.tracks.Tags
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
 import com.maks.musicapp.ui.viewmodels.TrackViewModel
 import com.maks.musicapp.utils.*
-import com.maks.musicapp.utils.player.MusicPlayer
-import com.maks.musicapp.utils.player.MusicPlayerImpl
+import com.maks.musicapp.utils.music_player.MusicPlayer
+import com.maks.musicapp.utils.music_player.MusicPlayerImpl
 import com.skydoves.landscapist.CircularReveal
 import com.skydoves.landscapist.glide.GlideImage
 

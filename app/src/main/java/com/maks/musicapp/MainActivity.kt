@@ -23,11 +23,11 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.maks.musicapp.firebase.authorization.GoogleAuthorization
+import com.maks.musicapp.firebase.authorization.InAppAuthorization
 import com.maks.musicapp.ui.broadcastreceivers.TrackDownloadBroadCast
 import com.maks.musicapp.ui.composeutils.mainGraph
 import com.maks.musicapp.ui.composeutils.navigateFromLoginScreen
-import com.maks.musicapp.ui.loginutils.GoogleAuth
-import com.maks.musicapp.ui.loginutils.InAppAuth
 import com.maks.musicapp.ui.screens.AlbumDetailScreen
 import com.maks.musicapp.ui.screens.ArtistDetailScreen
 import com.maks.musicapp.ui.screens.LoginScreen
@@ -46,16 +46,16 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 class MainActivity : ComponentActivity() {
     private var trackDownloadBroadCast: TrackDownloadBroadCast? = null
     lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var googleSignIn: GoogleAuth
-    private lateinit var inAppAuth: InAppAuth
+    private lateinit var googleSignIn: GoogleAuthorization
+    private lateinit var inAppAuthorization: InAppAuthorization
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         firebaseAuth = Firebase.auth
-        googleSignIn = GoogleAuth(this)
-        inAppAuth = InAppAuth(this)
-//        Firebase.auth.signOut()
+        googleSignIn = GoogleAuthorization(this)
+        inAppAuthorization = InAppAuthorization(firebaseAuth)
+        Firebase.auth.signOut()
         Log.d(
             "TAG",
             "onCreate: ${firebaseAuth.currentUser?.email} ${firebaseAuth.currentUser?.photoUrl}"
@@ -131,22 +131,41 @@ class MainActivity : ComponentActivity() {
                             googleSignIn.startGoogleAuthorization(startForResult)
                         },
                         inAppSignIn = { email, password ->
-                            inAppAuth.signInUser(
-                                firebaseAuth,
-                                email,
-                                password,
-                                navController,
-                                scaffoldState.snackbarHostState,
-                                loginViewModel
+                            inAppAuthorization.setUserCredentials(email, password)
+                            inAppAuthorization.signInUser(
+                                navigateToMainScreen = { navController.navigateFromLoginScreen() },
+                                displayUserNotExistMessage = {
+                                    scaffoldState.snackbarHostState.showMessage(
+                                        getString(R.string.user_not_exist_message)
+                                    )
+                                },
+                                displayEmptyCredentialsMessage = {
+                                    scaffoldState.snackbarHostState.showMessage(
+                                        getString(R.string.empty_email_or_password)
+                                    )
+                                },
+                                setInputError = { isValidEmail, isValidPassword ->
+                                    loginViewModel.applyEmailError(isValidEmail)
+                                    loginViewModel.applyPasswordError(isValidPassword)
+                                }
                             )
                         }, inAppSignUp = { email, password ->
-                            inAppAuth.signUpUser(
-                                firebaseAuth,
-                                email,
-                                password,
-                                navController,
-                                scaffoldState.snackbarHostState,
-                                loginViewModel
+                            inAppAuthorization.setUserCredentials(email, password)
+                            inAppAuthorization.signUpUser(
+                                navigateToMainScreen = { navController.navigateFromLoginScreen() },
+                                emptyCredentialsMessage = {
+                                    scaffoldState.snackbarHostState.showMessage(
+                                        getString(R.string.empty_email_or_password)
+                                    )
+                                },
+                                setInputError = { isValidEmail, isValidPassword ->
+                                    loginViewModel.applyEmailError(isValidEmail)
+                                    loginViewModel.applyPasswordError(isValidPassword)
+                                }, displayAuthFailMessage = {
+                                    scaffoldState.snackbarHostState.showMessage(
+                                        getString(R.string.failed_auth_message)
+                                    )
+                                }
                             )
                         }
                     )

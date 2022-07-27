@@ -1,4 +1,4 @@
-package com.maks.musicapp.utils.player
+package com.maks.musicapp.utils.music_player
 
 interface MusicPlayer {
     fun play()

@@ -2,7 +2,7 @@ package com.maks.musicapp.viewmodels
 
 import com.google.common.truth.Truth.assertThat
 import com.maks.musicapp.ui.viewmodels.TrackViewModel
-import com.maks.musicapp.utils.player.MusicPlayer
+import com.maks.musicapp.utils.music_player.MusicPlayer
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before

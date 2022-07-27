@@ -7,9 +7,8 @@ import androidx.test.internal.runner.junit4.statement.UiThreadStatement
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import com.maks.musicapp.fakedata.FakeDataProvider
-import com.maks.musicapp.utils.AsyncTimer
-import com.maks.musicapp.utils.player.MusicPlayer
-import com.maks.musicapp.utils.player.MusicPlayerImpl
+import com.maks.musicapp.utils.music_player.MusicPlayer
+import com.maks.musicapp.utils.music_player.MusicPlayerImpl
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

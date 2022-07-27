@@ -1,4 +1,4 @@
-package com.maks.musicapp.ui.loginutils
+package com.maks.musicapp.utils
 
 import android.util.Patterns
 

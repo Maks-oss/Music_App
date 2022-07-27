@@ -1,4 +1,4 @@
-package com.maks.musicapp.ui.loginutils
+package com.maks.musicapp.firebase.authorization
 
 //import android.R
 
@@ -10,7 +10,6 @@ import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.IntentSenderRequest
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.GetSignInIntentRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.common.api.ApiException
@@ -19,7 +18,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.maks.musicapp.R
 
 
-class GoogleAuth(private val activity: Activity) {
+class GoogleAuthorization(private val activity: Activity) {
 
     private val oneTapClient: SignInClient = Identity.getSignInClient(activity)
     private val signInRequest: BeginSignInRequest = BeginSignInRequest.builder()
@@ -33,21 +32,18 @@ class GoogleAuth(private val activity: Activity) {
         .build()
     private val GOOGLE_AUTH_TAG = "GoogleAuth"
 
-    fun signInGoogle(firebaseAuth: FirebaseAuth,data: Intent?,navigateToMainScreen:()->Unit) {
+    fun signInGoogle(firebaseAuth: FirebaseAuth, data: Intent?, navigateToMainScreen: () -> Unit) {
         try {
             val credential = oneTapClient.getSignInCredentialFromIntent(data)
             val idToken = credential.googleIdToken
             when {
                 idToken != null -> {
-                    processAuthorization(idToken, firebaseAuth,navigateToMainScreen)
+                    processAuthorization(idToken, firebaseAuth, navigateToMainScreen)
                 }
                 else -> {
                     Log.e(GOOGLE_AUTH_TAG, "Id Token is null")
                 }
             }
-
-//            val credentials = Identity.getSignInClient(activity).getSignInCredentialFromIntent(data)
-//            navigateToMainScreen()
 
         } catch (e: ApiException) {
             Log.e(GOOGLE_AUTH_TAG, e.localizedMessage)
@@ -82,7 +78,7 @@ class GoogleAuth(private val activity: Activity) {
             GoogleAuthProvider.getCredential(idToken, null)
         firebaseAuth.signInWithCredential(firebaseCredential)
             .addOnCompleteListener(activity) { task ->
-                if (task.isSuccessful){
+                if (task.isSuccessful) {
                     navigateToMainScreen()
                 }
                 Log.d(

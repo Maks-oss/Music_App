@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.maks.musicapp.utils.player.MusicPlayer
+import com.maks.musicapp.utils.music_player.MusicPlayer
 import kotlin.properties.Delegates
 
 class TrackViewModel : ViewModel() {
