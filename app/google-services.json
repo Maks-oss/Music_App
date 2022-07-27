@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "39972456311-ubeflgrpsofqjfprmutd3ia1jppo2f8n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.maks.musicapp",
+            "certificate_hash": "cf3ccde742f30b6753efb070251971cf92ce3816"
+          }
+        },
+        {
           "client_id": "39972456311-d2kjlmgr59u1qo2g4f1f202gqi0252ct.apps.googleusercontent.com",
           "client_type": 3
         }

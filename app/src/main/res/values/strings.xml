@@ -19,5 +19,5 @@
     <string name="password_error_message">Password length must be bigger than 3 symbols</string>
     <string name="email_error_message">Email is not valid.</string>
     <string name="failed_auth_message">Authentication failed</string>
-    <string name="server_client_id">55148770379-bs6u82v97qgcb1bb2p7tscc3poa4n6rh.apps.googleusercontent.com</string>
+    <string name="server_client_id">39972456311-d2kjlmgr59u1qo2g4f1f202gqi0252ct.apps.googleusercontent.com</string>
 </resources>

@@ -35,8 +35,6 @@ fun NavGraphBuilder.mainGraph(
     drawerState: DrawerState,
     coroutineScope: CoroutineScope
 ) {
-//    val coroutineScope = rememberCoroutineScope()
-//    val drawerState = rememberDrawerState(DrawerValue.Closed)
     val springSpec = spring<IntOffset>(dampingRatio = Spring.DampingRatioMediumBouncy)
     navigation(Routes.MainScreenRoute.route, Routes.MainGraphRoute.route) {
         composable(Routes.MainScreenRoute.route, enterTransition = {
@@ -96,6 +94,13 @@ fun NavGraphBuilder.mainGraph(
                     FeedsScreen(feedsViewModel)
                 }
             }
+        }
+    }
+}
+fun NavController.navigateFromLoginScreen(){
+    navigate(Routes.MainGraphRoute.route) {
+        popUpTo(Routes.LoginScreenRoute.route) {
+            inclusive = true
         }
     }
 }

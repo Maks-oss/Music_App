@@ -1,16 +1,15 @@
 package com.maks.musicapp
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.DownloadManager
 import android.content.IntentFilter
-import android.content.IntentSender
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -18,7 +17,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.navigation.NavController
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -27,8 +25,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.maks.musicapp.ui.broadcastreceivers.TrackDownloadBroadCast
 import com.maks.musicapp.ui.composeutils.mainGraph
-import com.maks.musicapp.ui.loginutils.GoogleSignIn
-import com.maks.musicapp.ui.loginutils.InAppSignIn
+import com.maks.musicapp.ui.composeutils.navigateFromLoginScreen
+import com.maks.musicapp.ui.loginutils.GoogleAuth
+import com.maks.musicapp.ui.loginutils.InAppAuth
 import com.maks.musicapp.ui.screens.AlbumDetailScreen
 import com.maks.musicapp.ui.screens.ArtistDetailScreen
 import com.maks.musicapp.ui.screens.LoginScreen
@@ -47,19 +46,20 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 class MainActivity : ComponentActivity() {
     private var trackDownloadBroadCast: TrackDownloadBroadCast? = null
     lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var googleSignIn: GoogleSignIn
-    private lateinit var inAppSignIn: InAppSignIn
-
-    private val REQ_ONE_TAP = 2  // Can be any integer unique to the Activity
-    private val GOOGLE_AUTH_TAG = " GoogleAuth"
+    private lateinit var googleSignIn: GoogleAuth
+    private lateinit var inAppAuth: InAppAuth
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         firebaseAuth = Firebase.auth
-        googleSignIn = GoogleSignIn(this)
-        inAppSignIn = InAppSignIn(this)
-//        Log.d("TAG", "onCreate: ${firebaseAuth.currentUser}")
+        googleSignIn = GoogleAuth(this)
+        inAppAuth = InAppAuth(this)
+//        Firebase.auth.signOut()
+        Log.d(
+            "TAG",
+            "onCreate: ${firebaseAuth.currentUser?.email} ${firebaseAuth.currentUser?.photoUrl}"
+        )
         setContent {
             MusicAppTheme {
                 AppNavigator()
@@ -75,22 +75,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun startGoogleAuthorization(navController: NavController) {
-        googleSignIn.oneTapClient.beginSignIn(googleSignIn.signInRequest)
-            .addOnSuccessListener(this) { result ->
-                try {
-                    val activityResultLauncher = registerActivityForResult(navController)
-                    val intentSenderRequest =
-                        IntentSenderRequest.Builder(result.pendingIntent.intentSender).build()
-                    activityResultLauncher.launch(intentSenderRequest)
-                } catch (e: IntentSender.SendIntentException) {
-                    Log.e(GOOGLE_AUTH_TAG, "Couldn't start One Tap UI: ${e.localizedMessage}")
-                }
-            }
-            .addOnFailureListener(this) { e ->
-                Log.d(GOOGLE_AUTH_TAG, e.localizedMessage)
-            }
-    }
 
     private fun registerTrackDownloadBroadcastReceiver(
         snackbarHostState: SnackbarHostState,
@@ -102,18 +86,6 @@ class MainActivity : ComponentActivity() {
             trackDownloadBroadCast,
             IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
         )
-    }
-
-    private fun registerActivityForResult(navController: NavController): ActivityResultLauncher<IntentSenderRequest> {
-        return registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-            when (result.resultCode) {
-                REQ_ONE_TAP -> googleSignIn.signInGoogle(
-                    firebaseAuth = firebaseAuth,
-                    navController = navController,
-                    data = result.data
-                )
-            }
-        }
     }
 
 
@@ -131,10 +103,22 @@ class MainActivity : ComponentActivity() {
         val feedsViewModel = getViewModel<FeedsViewModel>()
         val loginViewModel = getViewModel<LoginViewModel>()
         val drawerState = rememberDrawerState(DrawerValue.Closed)
+        val startForResult =
+            rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    googleSignIn.signInGoogle(
+                        data = result.data,
+                        navigateToMainScreen = {
+                            navController.navigateFromLoginScreen()
+                        },
+                        firebaseAuth = firebaseAuth
+                    )
+                }
+            }
+
         val startDestination =
             if (firebaseAuth.currentUser != null) Routes.MainGraphRoute.route else Routes.LoginScreenRoute.route
         registerTrackDownloadBroadcastReceiver(scaffoldState.snackbarHostState)
-
         AnimatedNavHost(
             navController = navController,
             startDestination = startDestination
@@ -143,9 +127,11 @@ class MainActivity : ComponentActivity() {
                 Scaffold(scaffoldState = scaffoldState) {
                     LoginScreen(
                         loginViewModel = loginViewModel,
-                        googleSignIn = { startGoogleAuthorization(navController) },
+                        googleSignIn = {
+                            googleSignIn.startGoogleAuthorization(startForResult)
+                        },
                         inAppSignIn = { email, password ->
-                            inAppSignIn.signInUser(
+                            inAppAuth.signInUser(
                                 firebaseAuth,
                                 email,
                                 password,
@@ -154,7 +140,7 @@ class MainActivity : ComponentActivity() {
                                 loginViewModel
                             )
                         }, inAppSignUp = { email, password ->
-                            inAppSignIn.signUpUser(
+                            inAppAuth.signUpUser(
                                 firebaseAuth,
                                 email,
                                 password,
