@@ -8,6 +8,7 @@ object TabRowConstants {
 object ModalDrawerConstants{
     const val MAIN_INDEX = 0
     const val FEEDS_INDEX = 1
+    const val FAVOURITES_INDEX = 2
 }
 object ExpandableCardsConstants{
     const val EXPAND_ANIMATION_DURATION = 300

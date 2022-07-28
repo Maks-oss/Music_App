@@ -15,6 +15,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
 import com.google.accompanist.navigation.animation.composable
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.maks.musicapp.ui.screens.FeedsScreen
 import com.maks.musicapp.ui.screens.MainScreen
 import com.maks.musicapp.ui.viewmodels.FeedsViewModel
@@ -28,6 +30,7 @@ import kotlinx.coroutines.launch
     ExperimentalFoundationApi::class
 )
 fun NavGraphBuilder.mainGraph(
+    firebaseAuth: FirebaseAuth,
     navController: NavController,
     musicViewModel: MusicViewModel,
     feedsViewModel: FeedsViewModel,
@@ -50,7 +53,15 @@ fun NavGraphBuilder.mainGraph(
                 drawerState = drawerState,
                 navController = navController,
                 musicViewModel = musicViewModel,
-                feedsViewModel = feedsViewModel
+                feedsViewModel = feedsViewModel,
+                user = firebaseAuth.currentUser,
+                userSignOut = {
+                    navController.navigate(Routes.LoginScreenRoute.route){
+                        popUpTo(Routes.MainGraphRoute.route){
+                            inclusive = true
+                        }
+                    }
+                }
             ) {
                 Scaffold(scaffoldState = scaffoldState,
                     topBar = {
@@ -78,10 +89,18 @@ fun NavGraphBuilder.mainGraph(
             slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = springSpec)
         }) {
             MusicModalDrawer(
+                user = firebaseAuth.currentUser,
                 drawerState = drawerState,
                 navController = navController,
                 musicViewModel = musicViewModel,
-                feedsViewModel = feedsViewModel
+                feedsViewModel = feedsViewModel,
+                userSignOut = {
+                    navController.navigate(Routes.LoginScreenRoute.route){
+                        popUpTo(Routes.MainGraphRoute.route){
+                            inclusive = true
+                        }
+                    }
+                }
             ) {
                 Scaffold(scaffoldState = scaffoldState,
                     topBar = {

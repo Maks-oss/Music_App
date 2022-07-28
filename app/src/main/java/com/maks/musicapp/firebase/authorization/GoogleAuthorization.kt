@@ -81,9 +81,10 @@ class GoogleAuthorization(private val activity: Activity) {
                 if (task.isSuccessful) {
                     navigateToMainScreen()
                 }
+
                 Log.d(
                     GOOGLE_AUTH_TAG,
-                    "registerActivityForResult: ${task.result.user}"
+                    "registerActivityForResult: ${task.result.user?.email}"
                 )
             }
 
