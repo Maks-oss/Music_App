@@ -154,7 +154,7 @@ private fun TrackInfo(track: Track) {
             style = MaterialTheme.typography.body2
         )
         Text(
-            text = track.releasedate
+            text = track.releasedate!!
         )
     }
 }

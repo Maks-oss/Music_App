@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.maks.musicapp.R
+import com.maks.musicapp.firebase.database.FirebaseDatabaseUtil
 import com.maks.musicapp.ui.viewmodels.FeedsViewModel
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.utils.AppConstants
@@ -49,6 +50,7 @@ fun MusicModalDrawer(
     val selectedItem = musicViewModel.musicViewModelStates.selectedModalDrawerItem
     val coroutineScope = rememberCoroutineScope()
     user?.let { firebaseUser ->
+        FirebaseDatabaseUtil.setCurrentUserId(firebaseUser.email.hashCode().toString())
         ModalDrawer(
             drawerState = drawerState,
             drawerContent = {
