@@ -185,7 +185,7 @@ private fun SetupListItems(
                     musicViewModel.setSelectedModalDrawerItem(ModalDrawerConstants.FAVOURITES_INDEX)
 //                    feedsViewModel.applyFeeds()
                     drawerState.close()
-//                    navController.navigate(Routes.FeedsScreenRoute.route)
+                    navController.navigate(Routes.FavouritesScreenRoute.route)
                 }
             }
             .setBackground(

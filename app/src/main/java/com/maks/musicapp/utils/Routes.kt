@@ -14,6 +14,8 @@ sealed class Routes(val route: String) {
 
     object FeedsScreenRoute : Routes("FeedsScreen")
 
+    object FavouritesScreenRoute: Routes("FavouritesScreen")
+
     object TrackDetailsScreenRoute : Routes("TrackDetailsScreenRoute")
     object ArtistDetailsScreenRoute : Routes("ArtistDetailsScreenRoute")
     object AlbumDetailsScreenRoute : Routes("AlbumDetailsScreenRoute")

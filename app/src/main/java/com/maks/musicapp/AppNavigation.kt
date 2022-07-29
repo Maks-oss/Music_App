@@ -22,10 +22,7 @@ import com.maks.musicapp.firebase.authorization.InAppAuthorization
 import com.maks.musicapp.ui.broadcastreceivers.TrackDownloadBroadCast
 import com.maks.musicapp.ui.composeutils.mainGraph
 import com.maks.musicapp.ui.composeutils.navigateFromLoginScreen
-import com.maks.musicapp.ui.screens.AlbumDetailScreen
-import com.maks.musicapp.ui.screens.ArtistDetailScreen
-import com.maks.musicapp.ui.screens.LoginScreen
-import com.maks.musicapp.ui.screens.TrackDetailScreen
+import com.maks.musicapp.ui.screens.*
 import com.maks.musicapp.ui.viewmodels.FeedsViewModel
 import com.maks.musicapp.ui.viewmodels.LoginViewModel
 import com.maks.musicapp.ui.viewmodels.MusicViewModel
@@ -134,7 +131,6 @@ fun AppNavigator(
             drawerState,
             coroutineScope
         )
-
         composable(Routes.TrackDetailsScreenRoute.route) {
             Scaffold(scaffoldState = scaffoldState) {
                 TrackDetailScreen(

@@ -11,10 +11,14 @@ class TrackViewModel : ViewModel() {
     var trackViewModelState by mutableStateOf(TrackViewModelState())
         private set
 
-    var musicPlayer: MusicPlayer by Delegates.notNull()
-
+//    var musicPlayer: MusicPlayer by Delegates.notNull()
+    var musicPlayer: MusicPlayer? by mutableStateOf(null)
+        private set
     fun setIsTrackPlayingValue(value: Boolean) {
         trackViewModelState = trackViewModelState.copy(isTrackPlaying = value)
+    }
+    fun setMusicPlayerValue(musicPlayer: MusicPlayer?){
+        this.musicPlayer = musicPlayer
     }
 
     fun setTrackMinutesValue(value: Float) {
@@ -23,25 +27,24 @@ class TrackViewModel : ViewModel() {
 
     fun playTrack() {
         if (!trackViewModelState.isTrackPlaying) {
-            musicPlayer.play()
+            musicPlayer?.play()
         } else {
-            musicPlayer.pause()
+            musicPlayer?.pause()
         }
         setIsTrackPlayingValue(!trackViewModelState.isTrackPlaying)
     }
 
     fun seekTo(value: Float) {
         setTrackMinutesValue(value)
-        musicPlayer.seekTo(value)
+        musicPlayer?.seekTo(value)
     }
 
     fun stopTrack() {
         setTrackMinutesValue(0f)
         setIsTrackPlayingValue(false)
-        musicPlayer.pause()
+        setMusicPlayerValue(null)
+        musicPlayer?.pause()
     }
-
-    fun trackDuration() = musicPlayer.duration()
 
 
 }

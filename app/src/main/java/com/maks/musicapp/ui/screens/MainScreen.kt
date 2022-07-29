@@ -7,7 +7,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.navigation.NavController
 import com.maks.musicapp.data.domain.Album
@@ -36,7 +36,7 @@ fun MainScreen(
 ) {
     val musicViewModelStates = musicViewModel.musicViewModelStates
     val focusManager = LocalFocusManager.current
-
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val tabsList = listOf(TabRoutes.TracksTab, TabRoutes.ArtistsTab, TabRoutes.AlbumsTab)
 
@@ -71,6 +71,7 @@ fun MainScreen(
                 musicViewModel.currentTrack = trackResult
                 focusManager.clearFocus()
                 navController.navigate(Routes.TrackDetailsScreenRoute.route)
+
             }, artistItemClickAction = { artistResult ->
                 musicViewModel.currentArtist = artistResult
                 focusManager.clearFocus()

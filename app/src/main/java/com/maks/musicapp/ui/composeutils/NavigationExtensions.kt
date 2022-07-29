@@ -17,6 +17,7 @@ import androidx.navigation.navigation
 import com.google.accompanist.navigation.animation.composable
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.maks.musicapp.ui.screens.FavouriteTracksScreen
 import com.maks.musicapp.ui.screens.FeedsScreen
 import com.maks.musicapp.ui.screens.MainScreen
 import com.maks.musicapp.ui.viewmodels.FeedsViewModel
@@ -114,8 +115,44 @@ fun NavGraphBuilder.mainGraph(
                 }
             }
         }
+        composable(Routes.FavouritesScreenRoute.route, enterTransition = {
+            slideInHorizontally(initialOffsetX = { 1000 }, animationSpec = springSpec)
+        }, exitTransition = {
+            slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = springSpec)
+        }, popEnterTransition = {
+            slideInHorizontally(initialOffsetX = { -1000 }, animationSpec = springSpec)
+        }, popExitTransition = {
+            slideOutHorizontally(targetOffsetX = { -1000 }, animationSpec = springSpec)
+        }) {
+            MusicModalDrawer(
+                user = firebaseAuth.currentUser,
+                drawerState = drawerState,
+                navController = navController,
+                musicViewModel = musicViewModel,
+                feedsViewModel = feedsViewModel,
+                userSignOut = {
+                    navController.navigate(Routes.LoginScreenRoute.route){
+                        popUpTo(Routes.MainGraphRoute.route){
+                            inclusive = true
+                        }
+                    }
+                }
+            ) {
+                Scaffold(scaffoldState = scaffoldState,
+                    topBar = {
+                        MusicTopAppBar(navigationIconClick = {
+                            coroutineScope.launch {
+                                drawerState.open()
+                            }
+                        })
+                    }) {
+                    FavouriteTracksScreen()
+                }
+            }
+        }
     }
 }
+
 fun NavController.navigateFromLoginScreen(){
     navigate(Routes.MainGraphRoute.route) {
         popUpTo(Routes.LoginScreenRoute.route) {
