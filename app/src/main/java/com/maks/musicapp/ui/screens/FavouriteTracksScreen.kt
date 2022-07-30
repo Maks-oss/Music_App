@@ -16,7 +16,7 @@ import com.maks.musicapp.ui.viewmodels.FavouritesViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FavouriteTracksScreen(favouritesViewModel: FavouritesViewModel) {
+fun FavouriteTracksScreen(favouritesViewModel: FavouritesViewModel,trackListItemAction:(Track)->Unit) {
     val favouritesTracks = favouritesViewModel.favouritesTracksList
     favouritesViewModel.applyFavouritesTracks()
 
@@ -30,7 +30,7 @@ fun FavouriteTracksScreen(favouritesViewModel: FavouritesViewModel) {
                 items(value) {
                     TracksListItem(
                         track = it,
-                        trackListItemClickAction = {}
+                        trackListItemClickAction = trackListItemAction
                     )
                 }
             }

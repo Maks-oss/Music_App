@@ -147,7 +147,10 @@ fun NavGraphBuilder.mainGraph(
                             }
                         })
                     }) {
-                    FavouriteTracksScreen(getViewModel())
+                    FavouriteTracksScreen(getViewModel(), trackListItemAction = { track ->
+                        musicViewModel.currentTrack = track
+                        navController.navigate(Routes.TrackDetailsScreenRoute.navigateWithArgument(Routes.FavouritesScreenRoute.route))
+                    })
                 }
             }
         }

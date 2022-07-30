@@ -131,12 +131,13 @@ fun AppNavigator(
             drawerState,
             coroutineScope
         )
-        composable(Routes.TrackDetailsScreenRoute.route) {
+        composable(Routes.TrackDetailsScreenRoute.route) { backstackEntry ->
             Scaffold(scaffoldState = scaffoldState) {
                 TrackDetailScreen(
                     track = musicViewModel.currentTrack,
                     trackViewModel = trackViewModel,
                     snackbarHostState = scaffoldState.snackbarHostState,
+                    navigatedFrom = backstackEntry.arguments?.getString("navigatedFrom")?:""
                 )
             }
 

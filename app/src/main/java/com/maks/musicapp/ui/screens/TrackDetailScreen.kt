@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.navigation.NavController
 import com.google.accompanist.permissions.*
 import com.maks.musicapp.R
 import com.maks.musicapp.data.domain.Track
@@ -51,6 +52,7 @@ fun TrackDetailScreen(
     track: Track,
     trackViewModel: TrackViewModel,
     snackbarHostState: SnackbarHostState,
+    navigatedFrom:String
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
@@ -63,7 +65,8 @@ fun TrackDetailScreen(
         DisplayTrackDetail(
             track,
             trackViewModel,
-            snackbarHostState
+            snackbarHostState,
+            navigatedFrom
         )
     }
 
@@ -108,6 +111,7 @@ fun DisplayTrackDetail(
     track: Track,
     trackViewModel: TrackViewModel,
     snackbarHostState: SnackbarHostState,
+    navigatedFrom: String
 ) {
     val localContext = LocalContext.current
 
@@ -124,7 +128,7 @@ fun DisplayTrackDetail(
             },
             showPermissionMessage = { message ->
                 snackbarHostState.showMessage(message)
-            })
+            }, navigatedFrom = navigatedFrom)
         Spacer(modifier = Modifier.padding(8.dp))
         DisplayMusicInfo(track.musicinfo?.tags)
     }
@@ -179,6 +183,7 @@ private fun TrackInfo(track: Track) {
 private fun AudioPlayer(
     trackViewModel: TrackViewModel,
     track: Track,
+    navigatedFrom: String,
     audioPlayerAction: () -> Unit,
     downloadTrack: () -> Unit,
     showPermissionMessage: (String) -> Unit
@@ -230,9 +235,15 @@ private fun AudioPlayer(
                     downloadTrack = downloadTrack,
                     showPermissionMessage = showPermissionMessage
                 )
-                CustomOutlinedButton(text = "Add to favourite", onClick = {
-                    FirebaseDatabaseUtil.addUserNewFavouriteTrack(track)
-                })
+                if (navigatedFrom == Routes.MainGraphRoute.route) {
+                    CustomOutlinedButton(text = "Add to favourite", onClick = {
+                        FirebaseDatabaseUtil.addUserNewFavouriteTrack(track)
+                    })
+                } else if (navigatedFrom == Routes.FavouritesScreenRoute.route) {
+                    CustomOutlinedButton(text = "Remove From favourite", onClick = {
+                        FirebaseDatabaseUtil.deleteNewUserFavouriteTrack(track.id!!)
+                    })
+                }
             }
         }
     }

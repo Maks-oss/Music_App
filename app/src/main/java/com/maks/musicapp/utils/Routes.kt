@@ -16,7 +16,9 @@ sealed class Routes(val route: String) {
 
     object FavouritesScreenRoute: Routes("FavouritesScreen")
 
-    object TrackDetailsScreenRoute : Routes("TrackDetailsScreenRoute")
+    object TrackDetailsScreenRoute : Routes("TrackDetailsScreenRoute/{navigatedFrom}"){
+        fun navigateWithArgument(argument:String) = "TrackDetailsScreenRoute/$argument"
+    }
     object ArtistDetailsScreenRoute : Routes("ArtistDetailsScreenRoute")
     object AlbumDetailsScreenRoute : Routes("AlbumDetailsScreenRoute")
 

@@ -70,7 +70,7 @@ fun MainScreen(
             }, trackItemClickAction = { trackResult ->
                 musicViewModel.currentTrack = trackResult
                 focusManager.clearFocus()
-                navController.navigate(Routes.TrackDetailsScreenRoute.route)
+                navController.navigate(Routes.TrackDetailsScreenRoute.navigateWithArgument(Routes.MainGraphRoute.route))
 
             }, artistItemClickAction = { artistResult ->
                 musicViewModel.currentArtist = artistResult
