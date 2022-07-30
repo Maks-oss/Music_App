@@ -83,7 +83,8 @@ fun MusicModalDrawer(
                                     musicViewModel.setSelectedModalDrawerItem(-1)
                                     drawerState.close()
                                 }
-                            }.background(MaterialTheme.colors.surface),
+                            }
+                            .background(MaterialTheme.colors.surface),
                         text = {
                             Text(text = "SignOut")
                         })
@@ -116,9 +117,10 @@ private fun DisplayUser(user: FirebaseUser?) {
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape)
-                    .border(2.dp, Color.White, CircleShape)
-
+                    .border(2.dp, Color.White, CircleShape),
+                contentScale = ContentScale.Crop
             )
+            Spacer(modifier = Modifier.padding(4.dp))
             Text(
                 text = user?.email?:"",
                 color = Color.White,
