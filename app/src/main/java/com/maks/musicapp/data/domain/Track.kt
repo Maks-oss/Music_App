@@ -15,5 +15,6 @@ data class Track(
     val image: String? = null,
     val musicinfo: Musicinfo? = null,
     val name: String? = null,
-    val releasedate: String? = null
+    val releasedate: String? = null,
+    val searchQuery: String = ""
 ): Serializable

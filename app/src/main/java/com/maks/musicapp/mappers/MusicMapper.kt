@@ -24,7 +24,8 @@ class MusicMapper {
         }
     }
 
-    fun toTrackList(trackResult: List<TrackResult>): List<Track> {
+    fun toTrackList(trackResult: List<TrackResult>,query:String): List<Track> {
+
         return trackResult.map { result ->
             Track(
                 album_id = result.album_id,
@@ -38,7 +39,8 @@ class MusicMapper {
                 image = result.image,
                 musicinfo = result.musicinfo,
                 name = result.name,
-                releasedate = result.releasedate
+                releasedate = result.releasedate,
+                searchQuery = query
             )
         }
     }

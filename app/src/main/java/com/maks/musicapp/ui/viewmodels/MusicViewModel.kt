@@ -62,7 +62,7 @@ class MusicViewModel(
                 } else {
                     tracksUiState.copy(
                         isLoading = false,
-                        result = musicMapper.toTrackList(tracksResult),
+                        result = musicMapper.toTrackList(tracksResult,musicViewModelStates.searchInput),
                     )
                 }
 

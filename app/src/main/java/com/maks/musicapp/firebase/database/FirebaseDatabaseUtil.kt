@@ -29,6 +29,10 @@ object FirebaseDatabaseUtil {
         databaseReference.child("$currentUserId/${track.id}").setValue(track)
     }
 
+//    fun addTrackQuery(query:String,track: Track){
+//        databaseReference.child("$currentUserId/${track.id}/$query").setValue(query)
+//    }
+
     fun deleteNewUserFavouriteTrack(trackId: String) {
         databaseReference.child("$currentUserId/${trackId}").removeValue()
     }
@@ -36,10 +40,9 @@ object FirebaseDatabaseUtil {
     fun addTracksValueListener(onDataChange:(List<Track>?)->Unit){
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                // Get Post object and use the values to update the UI
-                val value = dataSnapshot.getValue<HashMap<String,HashMap<String, Track>>>()
-                val tracks = value?.get(currentUserId)?.values
-                Log.d(TAG, "onDataChange: ${tracks?.first()}")
+                val value = dataSnapshot.child(currentUserId).getValue<HashMap<String,Track>>()
+                val tracks = value?.values
+                Log.d(TAG, "onDataChange: $tracks")
                 onDataChange(tracks?.toList())
             }
 

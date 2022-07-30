@@ -14,6 +14,7 @@ val fonts = FontFamily(
     Font(R.font.redhatmono_regular,weight = FontWeight.Normal),
     Font(R.font.redhatmono_medium,weight = FontWeight.Medium),
     Font(R.font.redhatmono_bold,weight = FontWeight.Bold),
+    Font(R.font.redhatmono_italic,weight = FontWeight.Normal),
 )
 val Typography = Typography(
     body1 = TextStyle(
