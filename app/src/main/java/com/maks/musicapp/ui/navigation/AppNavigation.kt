@@ -162,9 +162,9 @@ fun AppNavigator(
                                     applyPasswordError(isValidPassword)
                                     applyRepeatPasswordError(isValidRepeatPassword)
                                 }
-                            }, displayAuthFailMessage = {
+                            }, displayAuthFailMessage = { message ->
                                 scaffoldState.snackbarHostState.showMessage(
-                                    context.getString(R.string.failed_auth_message)
+                                    message
                                 )
                             }
                         )

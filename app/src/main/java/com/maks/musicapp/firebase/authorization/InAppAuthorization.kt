@@ -51,7 +51,7 @@ class InAppAuthorization(
     fun signUpUser(
         navigateToMainScreen: () -> Unit,
         emptyCredentialsMessage: () -> Unit,
-        displayAuthFailMessage: () -> Unit,
+        displayAuthFailMessage: (String) -> Unit,
         setInputError: (isValidEmail: Boolean, isValidPassword: Boolean, isValidRepeat: Boolean) -> Unit
     ) {
         val isInputValid =
@@ -64,7 +64,6 @@ class InAppAuthorization(
                     firebaseUser.updateProfile(
                         UserProfileChangeRequest.Builder().setPhotoUri(Uri.parse(image)).build()
                     ).addOnCompleteListener {
-
                         navigateToMainScreen()
                     }
                 } else {
@@ -73,7 +72,7 @@ class InAppAuthorization(
 
             } else {
                 Log.e(IN_APP_AUTH, "signUpUser: ${task.exception?.localizedMessage}")
-                displayAuthFailMessage()
+                displayAuthFailMessage(task.exception?.localizedMessage!!)
             }
 
         }
