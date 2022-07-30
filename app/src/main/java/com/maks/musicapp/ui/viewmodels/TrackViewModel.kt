@@ -20,6 +20,9 @@ class TrackViewModel : ViewModel() {
     fun setMusicPlayerValue(musicPlayer: MusicPlayer?){
         this.musicPlayer = musicPlayer
     }
+    fun setIsAudioPlayerLoadingValue(value: Boolean){
+        trackViewModelState = trackViewModelState.copy(isAudioPlayerLoading = value)
+    }
 
     fun setTrackMinutesValue(value: Float) {
         trackViewModelState = trackViewModelState.copy(trackMinutes = value)

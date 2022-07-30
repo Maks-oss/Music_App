@@ -80,6 +80,7 @@ fun MusicModalDrawer(
                                 coroutineScope.launch {
                                     Firebase.auth.signOut()
                                     userSignOut()
+                                    musicViewModel.setSelectedModalDrawerItem(-1)
                                     drawerState.close()
                                 }
                             }.background(MaterialTheme.colors.surface),

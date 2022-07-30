@@ -8,10 +8,7 @@ import com.maks.musicapp.repository.*
 import com.maks.musicapp.retrofit.RetrofitClient
 import com.maks.musicapp.room.AppDatabase
 import com.maks.musicapp.room.FeedDao
-import com.maks.musicapp.ui.viewmodels.FeedsViewModel
-import com.maks.musicapp.ui.viewmodels.LoginViewModel
-import com.maks.musicapp.ui.viewmodels.MusicViewModel
-import com.maks.musicapp.ui.viewmodels.TrackViewModel
+import com.maks.musicapp.ui.viewmodels.*
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -45,4 +42,5 @@ val viewModelModule = module {
     viewModel { TrackViewModel() }
     viewModel { LoginViewModel() }
     viewModel { FeedsViewModel(get()) }
+    viewModel { FavouritesViewModel() }
 }

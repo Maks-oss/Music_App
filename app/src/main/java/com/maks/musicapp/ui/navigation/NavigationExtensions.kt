@@ -25,6 +25,7 @@ import com.maks.musicapp.ui.viewmodels.MusicViewModel
 import com.maks.musicapp.utils.Routes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.getViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterialApi::class,
@@ -146,7 +147,7 @@ fun NavGraphBuilder.mainGraph(
                             }
                         })
                     }) {
-                    FavouriteTracksScreen()
+                    FavouriteTracksScreen(getViewModel())
                 }
             }
         }

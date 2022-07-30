@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.runtime.*
@@ -33,6 +32,7 @@ import com.google.accompanist.permissions.*
 import com.maks.musicapp.R
 import com.maks.musicapp.data.domain.Track
 import com.maks.musicapp.data.dto.tracks.Tags
+import com.maks.musicapp.firebase.database.FirebaseDatabaseUtil
 import com.maks.musicapp.ui.animation.CircularProgressBar
 import com.maks.musicapp.ui.composeutils.CustomOutlinedButton
 import com.maks.musicapp.ui.viewmodels.TrackViewModel
@@ -71,7 +71,7 @@ fun TrackDetailScreen(
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_STOP) {
                 trackViewModel.stopTrack()
-            } else if (event == Lifecycle.Event.ON_CREATE){
+            } else if (event == Lifecycle.Event.ON_CREATE) {
                 initMusicPlayer(context, track, trackViewModel)
             }
 
@@ -108,14 +108,14 @@ fun DisplayTrackDetail(
     track: Track,
     trackViewModel: TrackViewModel,
     snackbarHostState: SnackbarHostState,
-
-    ) {
+) {
     val localContext = LocalContext.current
 
     Column(Modifier.verticalScroll(rememberScrollState())) {
         TrackInfo(track)
         AudioPlayer(
             trackViewModel = trackViewModel,
+            track = track,
             downloadTrack = {
                 localContext.downloadTrack(track)
             },
@@ -178,21 +178,19 @@ private fun TrackInfo(track: Track) {
 @Composable
 private fun AudioPlayer(
     trackViewModel: TrackViewModel,
+    track: Track,
     audioPlayerAction: () -> Unit,
     downloadTrack: () -> Unit,
     showPermissionMessage: (String) -> Unit
 ) {
     val trackViewModelState = trackViewModel.trackViewModelState
     val musicPlayer = trackViewModel.musicPlayer
-    var isLoading by remember {
-        mutableStateOf(false)
-    }
+
     if (musicPlayer == null) {
-        isLoading = true
-        CircularProgressBar(isLoading = isLoading)
-    }
-    if (musicPlayer != null) {
-        isLoading = false
+        trackViewModel.setIsAudioPlayerLoadingValue(true)
+        CircularProgressBar(isLoading = trackViewModelState.isAudioPlayerLoading)
+    } else {
+        trackViewModel.setIsAudioPlayerLoadingValue(false)
         Column(modifier = Modifier.padding(8.dp)) {
             Row {
                 val playerSlider = stringResource(R.string.player_slider)
@@ -232,13 +230,9 @@ private fun AudioPlayer(
                     downloadTrack = downloadTrack,
                     showPermissionMessage = showPermissionMessage
                 )
-                OutlinedButton(
-                    onClick = { /*TODO*/ },
-                    border = BorderStroke(2.dp, MaterialTheme.colors.primary)
-                ) {
-                    Icon(imageVector = Icons.Filled.Favorite, contentDescription = "")
-                    Text(text = "Add to favourite")
-                }
+                CustomOutlinedButton(text = "Add to favourite", onClick = {
+                    FirebaseDatabaseUtil.addUserNewFavouriteTrack(track)
+                })
             }
         }
     }
