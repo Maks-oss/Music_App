@@ -15,12 +15,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -33,6 +35,8 @@ import com.maks.musicapp.utils.AppConstants
 import com.maks.musicapp.utils.ModalDrawerConstants
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.setBackground
+import com.skydoves.landscapist.CircularReveal
+import com.skydoves.landscapist.glide.GlideImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -44,7 +48,7 @@ fun MusicModalDrawer(
     feedsViewModel: FeedsViewModel,
     navController: NavController,
     user: FirebaseUser?,
-    userSignOut:()->Unit,
+    userSignOut: () -> Unit,
     content: @Composable () -> Unit
 ) {
     val selectedItem = musicViewModel.musicViewModelStates.selectedModalDrawerItem
@@ -110,19 +114,23 @@ private fun DisplayUser(user: FirebaseUser?) {
             contentScale = ContentScale.Crop
         )
         Column(modifier = Modifier.padding(8.dp)) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(user?.photoUrl ?: AppConstants.DEFAULT_IMAGE)
-                    .build(), contentDescription = "User Image",
+            val model = if (user?.photoUrl?.toString().isNullOrEmpty()) {
+                AppConstants.DEFAULT_IMAGE
+            } else {
+                user!!.photoUrl
+            }
+            GlideImage(
+                imageModel = model,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(100.dp)
                     .clip(CircleShape)
                     .border(2.dp, Color.White, CircleShape),
-                contentScale = ContentScale.Crop
             )
+
             Spacer(modifier = Modifier.padding(4.dp))
             Text(
-                text = user?.email?:"",
+                text = user?.email ?: "",
                 color = Color.White,
                 modifier = Modifier
 

@@ -4,6 +4,8 @@ import android.app.DownloadManager
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -20,6 +22,11 @@ import com.maks.musicapp.firebase.database.FirebaseDatabaseUtil
 import com.maks.musicapp.ui.broadcastreceivers.TrackDownloadBroadCast
 import com.maks.musicapp.ui.theme.MusicAppTheme
 import com.maks.musicapp.utils.showMessage
+import androidx.core.app.ActivityCompat.startActivityForResult
+
+import android.content.Intent
+import android.util.Log
+
 
 @ExperimentalMaterialApi
 @ExperimentalFoundationApi
@@ -34,6 +41,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         firebaseAuth = Firebase.auth
         googleSignIn = GoogleAuthorization(this)
+
         inAppAuthorization = InAppAuthorization(firebaseAuth)
 //        val element = Track("1", "album 1", "1", "artist 2", "2", "1", 1, "2", "1", null, "1", "1")
 //        val testUser = User("test maks", "pass")
@@ -48,10 +56,10 @@ class MainActivity : ComponentActivity() {
 //        FirebaseDatabaseUtil.addTracksValueListener{}
 //        FirebaseDatabaseUtil.deleteNewUserFavouriteTrack(element.id)
 //        Log.d("TAG", "onCreate: ${FirebaseDatabaseUtil.getUser(testUser.hashCode())}")
-//        Log.d(
-//            "TAG",
-//            "onCreate: ${firebaseAuth.currentUser?.email} ${firebaseAuth.currentUser?.photoUrl}"
-//        )
+        Log.d(
+            "TAG",
+            "onCreate: ${firebaseAuth.currentUser?.email} ${firebaseAuth.currentUser?.photoUrl}"
+        )
         setContent {
             MusicAppTheme {
                 AppNavigator(
@@ -62,19 +70,15 @@ class MainActivity : ComponentActivity() {
                         registerTrackDownloadBroadcastReceiver(
                             it
                         )
+                    }, unRegisterTrackDownloadBroadCast = {
+                        trackDownloadBroadCast?.let { broadCast ->
+                            unregisterReceiver(broadCast)
+                        }
                     })
             }
 
         }
     }
-
-    override fun onStop() {
-        super.onStop()
-        trackDownloadBroadCast?.let { broadCast ->
-            unregisterReceiver(broadCast)
-        }
-    }
-
 
     private fun registerTrackDownloadBroadcastReceiver(
         snackbarHostState: SnackbarHostState,

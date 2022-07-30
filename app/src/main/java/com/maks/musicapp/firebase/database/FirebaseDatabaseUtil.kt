@@ -29,9 +29,9 @@ object FirebaseDatabaseUtil {
         databaseReference.child("$currentUserId/${track.id}").setValue(track)
     }
 
-//    fun addTrackQuery(query:String,track: Track){
-//        databaseReference.child("$currentUserId/${track.id}/$query").setValue(query)
-//    }
+    fun addUserImage(image:String){
+        databaseReference.child("$currentUserId/userImage").setValue(image)
+    }
 
     fun deleteNewUserFavouriteTrack(trackId: String) {
         databaseReference.child("$currentUserId/${trackId}").removeValue()
@@ -52,5 +52,12 @@ object FirebaseDatabaseUtil {
         }
         databaseReference.addValueEventListener(postListener)
     }
+    fun getUserImage(){
+        databaseReference.child("$currentUserId/userImage").get().addOnSuccessListener {
+            Log.d(TAG, "Got value ${it.value}")
 
+        }.addOnFailureListener {
+            Log.e(TAG, "Error getting data", it)
+        }
+    }
 }

@@ -16,7 +16,8 @@
     <string name="feeds_column">feeds column</string>
     <string name="empty_email_or_password">Email or password must not be empty</string>
     <string name="user_not_exist_message">User does not exist</string>
-    <string name="password_error_message">Password length must be bigger than 3 symbols</string>
+    <string name="password_error_message">Password length must be bigger than 6 symbols</string>
+    <string name="repeat_password_error_message">Passwords are not equal</string>
     <string name="email_error_message">Email is not valid.</string>
     <string name="failed_auth_message">Authentication failed</string>
     <string name="server_client_id">39972456311-d2kjlmgr59u1qo2g4f1f202gqi0252ct.apps.googleusercontent.com</string>

@@ -29,7 +29,7 @@ fun LoginScreen(
     loginViewModel: LoginViewModel,
     googleSignIn: () -> Unit,
     inAppSignIn: (email: String, password: String) -> Unit,
-    inAppSignUp: (email: String, password: String) -> Unit,
+    navigateToRegistrationScreen:()->Unit
 ) {
     val loginViewModelStates = loginViewModel.loginViewModelStates
     Surface(
@@ -97,7 +97,8 @@ fun LoginScreen(
                 }
                 Spacer(modifier = Modifier.padding(8.dp))
                 OutlinedButton(onClick = {
-                    inAppSignUp(loginViewModelStates.email, loginViewModelStates.password)
+//                    inAppSignUp(loginViewModelStates.email, loginViewModelStates.password)
+                    navigateToRegistrationScreen()
                 }) {
                     Text("Sign up")
                 }

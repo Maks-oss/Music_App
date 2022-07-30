@@ -2,7 +2,7 @@ package com.maks.musicapp
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -11,22 +11,22 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.maks.musicapp.firebase.authorization.GoogleAuthorization
 import com.maks.musicapp.firebase.authorization.InAppAuthorization
-import com.maks.musicapp.ui.broadcastreceivers.TrackDownloadBroadCast
 import com.maks.musicapp.ui.composeutils.mainGraph
 import com.maks.musicapp.ui.composeutils.navigateFromLoginScreen
 import com.maks.musicapp.ui.screens.*
-import com.maks.musicapp.ui.viewmodels.FeedsViewModel
-import com.maks.musicapp.ui.viewmodels.LoginViewModel
-import com.maks.musicapp.ui.viewmodels.MusicViewModel
-import com.maks.musicapp.ui.viewmodels.TrackViewModel
+import com.maks.musicapp.ui.viewmodels.*
 import com.maks.musicapp.utils.Routes
 import com.maks.musicapp.utils.showMessage
 import org.koin.androidx.compose.getViewModel
@@ -41,7 +41,8 @@ fun AppNavigator(
     googleSignIn: GoogleAuthorization,
     inAppAuthorization: InAppAuthorization,
     firebaseAuth: FirebaseAuth,
-    registerTrackDownloadBroadcastReceiver: (SnackbarHostState) -> Unit
+    registerTrackDownloadBroadcastReceiver: (SnackbarHostState) -> Unit,
+    unRegisterTrackDownloadBroadCast: ()->Unit
 ) {
 
     val navController = rememberAnimatedNavController()
@@ -51,8 +52,10 @@ fun AppNavigator(
     val trackViewModel = getViewModel<TrackViewModel>()
     val feedsViewModel = getViewModel<FeedsViewModel>()
     val loginViewModel = getViewModel<LoginViewModel>()
+    val registrationViewModel = getViewModel<RegistrationViewModel>()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val startForResult =
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val startIntentSenderForResult =
         rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 googleSignIn.signInGoogle(
@@ -64,11 +67,33 @@ fun AppNavigator(
                 )
             }
         }
+    val startActivityForResult =
+        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val image = result.data?.data
+                registrationViewModel.applyImage(image.toString())
+            }
+        }
     val context = LocalContext.current
 
     val startDestination =
         if (firebaseAuth.currentUser != null) Routes.MainGraphRoute.route else Routes.LoginScreenRoute.route
-    registerTrackDownloadBroadcastReceiver(scaffoldState.snackbarHostState)
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) {
+                unRegisterTrackDownloadBroadCast()
+            } else if (event == Lifecycle.Event.ON_RESUME) {
+                registerTrackDownloadBroadcastReceiver(scaffoldState.snackbarHostState)
+            }
+
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     AnimatedNavHost(
         navController = navController,
         startDestination = startDestination
@@ -78,7 +103,7 @@ fun AppNavigator(
                 LoginScreen(
                     loginViewModel = loginViewModel,
                     googleSignIn = {
-                        googleSignIn.startGoogleAuthorization(startForResult)
+                        googleSignIn.startGoogleAuthorization(startIntentSenderForResult)
                     },
                     inAppSignIn = { email, password ->
                         inAppAuthorization.setUserCredentials(email, password)
@@ -99,8 +124,31 @@ fun AppNavigator(
                                 loginViewModel.applyPasswordError(isValidPassword)
                             }
                         )
-                    }, inAppSignUp = { email, password ->
-                        inAppAuthorization.setUserCredentials(email, password)
+                    },
+                    navigateToRegistrationScreen = {
+                        navController.navigate(Routes.RegistrationScreenRoute.route)
+                    }
+                )
+            }
+        }
+        composable(Routes.RegistrationScreenRoute.route){
+            Scaffold(scaffoldState = scaffoldState) {
+                RegistrationScreen(
+                    registrationViewModel = registrationViewModel,
+                    selectImage = {
+                        startActivityForResult.launch(Intent(Intent.ACTION_GET_CONTENT).apply {
+                            type = "image/*"
+                        })
+                    },
+                    inAppSignUp = {
+                        val registrationViewModelStates =
+                            registrationViewModel.registrationViewModelStates
+                        inAppAuthorization.setUserCredentials(
+                            registrationViewModelStates.email,
+                            registrationViewModelStates.password,
+                            registrationViewModelStates.repeatPassword,
+                            registrationViewModelStates.image
+                        )
                         inAppAuthorization.signUpUser(
                             navigateToMainScreen = { navController.navigateFromLoginScreen() },
                             emptyCredentialsMessage = {
@@ -108,16 +156,19 @@ fun AppNavigator(
                                     context.getString(R.string.empty_email_or_password)
                                 )
                             },
-                            setInputError = { isValidEmail, isValidPassword ->
-                                loginViewModel.applyEmailError(isValidEmail)
-                                loginViewModel.applyPasswordError(isValidPassword)
+                            setInputError = { isValidEmail, isValidPassword, isValidRepeatPassword ->
+                                registrationViewModel.apply {
+                                    applyEmailError(isValidEmail)
+                                    applyPasswordError(isValidPassword)
+                                    applyRepeatPasswordError(isValidRepeatPassword)
+                                }
                             }, displayAuthFailMessage = {
                                 scaffoldState.snackbarHostState.showMessage(
                                     context.getString(R.string.failed_auth_message)
                                 )
                             }
                         )
-                    }
+                    },
                 )
             }
         }

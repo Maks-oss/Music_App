@@ -41,6 +41,7 @@ val viewModelModule = module {
     viewModel { MusicViewModel(get(), MusicMapper()) }
     viewModel { TrackViewModel() }
     viewModel { LoginViewModel() }
+    viewModel { RegistrationViewModel() }
     viewModel { FeedsViewModel(get()) }
     viewModel { FavouritesViewModel() }
 }

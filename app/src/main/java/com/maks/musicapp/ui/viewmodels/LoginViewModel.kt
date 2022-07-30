@@ -26,7 +26,5 @@ class LoginViewModel : ViewModel() {
     fun applyPasswordError(passwordError: Boolean){
         loginViewModelStates = loginViewModelStates.copy(isPasswordError = passwordError)
     }
-    fun applyRepeatPassword(repeatPassword: String) {
-        loginViewModelStates = loginViewModelStates.copy(repeatPassword = repeatPassword)
-    }
+
 }

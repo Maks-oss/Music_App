@@ -16,13 +16,16 @@ import com.maks.musicapp.ui.viewmodels.FavouritesViewModel
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun FavouriteTracksScreen(favouritesViewModel: FavouritesViewModel,trackListItemAction:(Track)->Unit) {
+fun FavouriteTracksScreen(
+    favouritesViewModel: FavouritesViewModel,
+    trackListItemAction: (Track) -> Unit
+) {
     val favouritesTracks = favouritesViewModel.favouritesTracksList
     favouritesViewModel.applyFavouritesTracks()
 
     favouritesTracks?.let { tracksList ->
-        val map = convertToMap(tracksList)
         LazyVerticalGrid(columns = GridCells.Fixed(2), state = rememberLazyGridState()) {
+            val map = convertToMap(tracksList)
             map.forEach { (key, value) ->
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     TracksDivider(searchQuery = key)
@@ -33,11 +36,14 @@ fun FavouriteTracksScreen(favouritesViewModel: FavouritesViewModel,trackListItem
                         trackListItemClickAction = trackListItemAction
                     )
                 }
+
             }
         }
-    }
 
+    }
 }
+
+
 
 @Composable
 private fun TracksDivider(searchQuery: String) {
