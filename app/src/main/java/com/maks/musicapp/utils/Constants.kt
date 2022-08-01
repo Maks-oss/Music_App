@@ -22,3 +22,7 @@ object AppConstants {
     const val EMPTY_ARTIST_TRACKS_MESSAGE = "Artist doesn't have tracks"
     const val WORDS_PER_LINES = 3
 }
+object KeyConstants{
+    const val MUSIC_NOTIFICATION_EXPANDED_KEY = "music notification expanded"
+    const val NOTIFICATION_KEY = "notification"
+}

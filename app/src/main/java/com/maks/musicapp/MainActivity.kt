@@ -26,6 +26,7 @@ import androidx.core.app.ActivityCompat.startActivityForResult
 
 import android.content.Intent
 import android.util.Log
+import com.maks.musicapp.services.MusicForegroundService
 
 
 @ExperimentalMaterialApi
@@ -62,6 +63,7 @@ class MainActivity : ComponentActivity() {
         )
         setContent {
             MusicAppTheme {
+                val intent = Intent(this, MusicForegroundService::class.java)
                 AppNavigator(
                     googleSignIn = googleSignIn,
                     inAppAuthorization = inAppAuthorization,
@@ -74,6 +76,14 @@ class MainActivity : ComponentActivity() {
                         trackDownloadBroadCast?.let { broadCast ->
                             unregisterReceiver(broadCast)
                         }
+                    }, startForegroundService = { track, isPlaying ->
+
+                        startForegroundService(intent.apply {
+                            putExtra("track",track)
+                            putExtra("isPlaying",isPlaying)
+                        })
+                    }, stopForegroundService = {
+                        stopService(intent)
                     })
             }
 

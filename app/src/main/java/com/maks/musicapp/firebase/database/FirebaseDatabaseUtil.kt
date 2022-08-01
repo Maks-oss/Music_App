@@ -21,16 +21,8 @@ object FirebaseDatabaseUtil {
         this.databaseReference = databaseReference
     }
 
-//    fun addNewUser(user: User) {
-//        databaseReference.child("users/${user.hashCode()}").setValue(user)
-//    }
-
     fun addUserNewFavouriteTrack(track: Track) {
         databaseReference.child("$currentUserId/${track.id}").setValue(track)
-    }
-
-    fun addUserImage(image:String){
-        databaseReference.child("$currentUserId/userImage").setValue(image)
     }
 
     fun deleteNewUserFavouriteTrack(trackId: String) {
@@ -52,12 +44,5 @@ object FirebaseDatabaseUtil {
         }
         databaseReference.addValueEventListener(postListener)
     }
-    fun getUserImage(){
-        databaseReference.child("$currentUserId/userImage").get().addOnSuccessListener {
-            Log.d(TAG, "Got value ${it.value}")
 
-        }.addOnFailureListener {
-            Log.e(TAG, "Error getting data", it)
-        }
-    }
 }

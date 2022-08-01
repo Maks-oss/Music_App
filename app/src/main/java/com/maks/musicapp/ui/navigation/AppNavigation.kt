@@ -21,8 +21,10 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.maks.musicapp.data.domain.Track
 import com.maks.musicapp.firebase.authorization.GoogleAuthorization
 import com.maks.musicapp.firebase.authorization.InAppAuthorization
+import com.maks.musicapp.services.MusicForegroundService
 import com.maks.musicapp.ui.composeutils.mainGraph
 import com.maks.musicapp.ui.composeutils.navigateFromLoginScreen
 import com.maks.musicapp.ui.screens.*
@@ -42,7 +44,9 @@ fun AppNavigator(
     inAppAuthorization: InAppAuthorization,
     firebaseAuth: FirebaseAuth,
     registerTrackDownloadBroadcastReceiver: (SnackbarHostState) -> Unit,
-    unRegisterTrackDownloadBroadCast: ()->Unit
+    unRegisterTrackDownloadBroadCast: ()->Unit,
+    startForegroundService: (Track,isPlaying: Boolean) -> Unit,
+    stopForegroundService: () -> Unit
 ) {
 
     val navController = rememberAnimatedNavController()
@@ -188,7 +192,9 @@ fun AppNavigator(
                     track = musicViewModel.currentTrack,
                     trackViewModel = trackViewModel,
                     snackbarHostState = scaffoldState.snackbarHostState,
-                    navigatedFrom = backstackEntry.arguments?.getString("navigatedFrom")?:""
+                    navigatedFrom = backstackEntry.arguments?.getString("navigatedFrom")?:"",
+                    startService = startForegroundService,
+                    stopService = stopForegroundService
                 )
             }
 

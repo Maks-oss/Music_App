@@ -52,7 +52,9 @@ fun TrackDetailScreen(
     track: Track,
     trackViewModel: TrackViewModel,
     snackbarHostState: SnackbarHostState,
-    navigatedFrom:String
+    navigatedFrom:String,
+    startService: (Track,isPlaying: Boolean) -> Unit,
+    stopService: () -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
@@ -73,8 +75,15 @@ fun TrackDetailScreen(
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_STOP) {
-                trackViewModel.stopTrack()
+//               trackViewModel.stopTrack()
+                if (navigatedFrom == Routes.MainGraphRoute.route){
+                    trackViewModel.stopTrack()
+                } else {
+                    startService(track,trackViewModel.trackViewModelState.isTrackPlaying)
+                }
             } else if (event == Lifecycle.Event.ON_CREATE) {
+                trackViewModel.stopTrack()
+                stopService()
                 initMusicPlayer(context, track, trackViewModel)
             }
 
@@ -93,6 +102,7 @@ private fun initMusicPlayer(
 ) {
     CoroutineScope(Dispatchers.IO).launch {
         val mediaPlayer = MediaPlayer.create(context, Uri.parse(track.audio))
+        MediaPlayerUtil.mediaPlayer = mediaPlayer
         val musicPlayer: MusicPlayer = withContext(Dispatchers.Main.immediate) {
             MusicPlayerImpl(mediaPlayer, onTick = {
                 trackViewModel.setTrackMinutesValue(mediaPlayer.currentPosition.toFloat())

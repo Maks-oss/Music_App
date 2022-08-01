@@ -36,7 +36,8 @@
         android:layout_toLeftOf="@id/notification_track_end"
         android:layout_below="@id/notification_track_slider"
         android:background="@android:color/transparent"
-        android:src="@android:drawable/ic_media_play" />
+        android:src="@android:drawable/ic_media_pause"
+        android:contentDescription="TODO" />
 
     <TextView
         android:id="@+id/notification_track_start"

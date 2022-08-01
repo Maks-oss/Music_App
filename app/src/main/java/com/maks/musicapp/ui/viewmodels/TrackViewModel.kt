@@ -48,6 +48,10 @@ class TrackViewModel : ViewModel() {
         setMusicPlayerValue(null)
         musicPlayer?.pause()
     }
-
+    fun resetMusicPlayer(){
+        setTrackMinutesValue(0f)
+        setIsTrackPlayingValue(false)
+        setMusicPlayerValue(null)
+    }
 
 }

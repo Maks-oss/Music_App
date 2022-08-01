@@ -25,7 +25,6 @@ class MusicMapper {
     }
 
     fun toTrackList(trackResult: List<TrackResult>,query:String): List<Track> {
-
         return trackResult.map { result ->
             Track(
                 album_id = result.album_id,
