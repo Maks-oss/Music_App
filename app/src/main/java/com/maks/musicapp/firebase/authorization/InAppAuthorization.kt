@@ -12,13 +12,13 @@ class InAppAuthorization(
     private val IN_APP_AUTH = "InAppAuth"
     private lateinit var email: String
     private lateinit var password: String
-    private lateinit var repeatPassword: String
+    private var repeatPassword: String? = null
     private lateinit var image: String
 
     fun setUserCredentials(
         email: String,
         password: String,
-        repeatPassword: String = "",
+        repeatPassword: String? = null,
         image: String = ""
     ) {
         this.email = email
@@ -88,10 +88,13 @@ class InAppAuthorization(
             return false
         }
 
-        val isNotValidCredentials = if (!this::repeatPassword.isInitialized) {
+        val isNotValidCredentials = if (repeatPassword == null) {
             !LoginValidator.isEmailValid(email) || !LoginValidator.isPasswordValid(password)
         } else {
-            !LoginValidator.isEmailValid(email) || !LoginValidator.isPasswordValid(password) || !LoginValidator.isPasswordsEqual(password, repeatPassword)
+            !LoginValidator.isEmailValid(email) || !LoginValidator.isPasswordValid(password) || !LoginValidator.isPasswordsEqual(
+                password,
+                repeatPassword!!
+            )
         }
 
         if (setLoginInputError != null) {
@@ -103,7 +106,7 @@ class InAppAuthorization(
             setRegistrationInputError(
                 !LoginValidator.isEmailValid(email),
                 !LoginValidator.isPasswordValid(password),
-                !LoginValidator.isPasswordsEqual(password, repeatPassword),
+                !LoginValidator.isPasswordsEqual(password, repeatPassword!!),
             )
         }
         if (isNotValidCredentials) {
