@@ -87,8 +87,12 @@ class InAppAuthorization(
             displayUserNotExistMessage()
             return false
         }
-        val isNotValidCredentials =
+
+        val isNotValidCredentials = if (!this::repeatPassword.isInitialized) {
             !LoginValidator.isEmailValid(email) || !LoginValidator.isPasswordValid(password)
+        } else {
+            !LoginValidator.isEmailValid(email) || !LoginValidator.isPasswordValid(password) || !LoginValidator.isPasswordsEqual(password, repeatPassword)
+        }
 
         if (setLoginInputError != null) {
             setLoginInputError(
